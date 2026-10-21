@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Palestras</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=Fraunces:ital,wght@0,400..700;1,400..700&display=swap">
+<style>
+:root{--navy:#142034;--wine:#7E233B;--paper:#F8F6F1;--soft:#4A5263;--gold:#CDA254}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--navy);font-family:Inter,Arial,sans-serif;min-height:100vh;padding:72px 16px}
+main{max-width:880px;margin:0 auto}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--wine)}
+h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(40px,7vw,64px);line-height:1.05;margin:12px 0 40px}
+a.card{display:grid;grid-template-columns:1fr auto;gap:8px 24px;align-items:center;text-decoration:none;color:inherit;background:var(--navy);color:var(--paper);border-radius:20px;padding:32px}
+a.card:hover{outline:3px solid var(--gold)}
+.card h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(26px,4vw,36px)}
+.card h2 i{color:var(--gold)}
+.card p{color:#C9CFDA;font-size:16px;line-height:1.5;grid-column:1}
+.card span{grid-row:1/3;grid-column:2;font-weight:600;color:var(--gold)}
+@media (max-width:560px){a.card{grid-template-columns:1fr}.card span{grid-row:auto;grid-column:1}}
+</style>
+</head>
+<body>
+<main>
+<p class="eyebrow">Prof. Ari Junior</p>
+<h1>Palestras</h1>
+<a class="card" href="salario-sumiu/">
+<h2>O salário sumiu. <i>E agora?</i></h2>
+<p>Educação financeira na prática com o Método C.A.P.: a jornada de Jhudy do aperto financeiro ao planejamento consciente.</p>
+<span>Abrir apresentação →</span>
+</a>
+</main>
+</body>
+</html>
