@@ -13,4 +13,4 @@ Apresentações publicadas com GitHub Pages: https://prof-arijunior.github.io/Pa
 - `N`: mostrar ou ocultar as notas do palestrante
 - `#5` no fim do endereço abre direto no slide 5
 
-Os exemplos da personagem Jhudy são fictícios. Confira os dados estatísticos antes de cada nova edição da palestra.
+Os exemplos da personagem Jimmy são fictícios. Confira os dados estatísticos antes de cada nova edição da palestra.
