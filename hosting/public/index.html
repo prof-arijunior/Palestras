@@ -12,6 +12,24 @@
   --ok:#3D6F58;--ok-bg:#E1EBE4;
   --warn:#7E233B;--warn-bg:#F3E3E7;
   --zero-bg:#EFEBE2;
+  --header-bg:#142034;--header-text:#F8F6F1;--header-soft:#C9CFDA;
+}
+/* Modo escuro: reaproveita as cores que a palestra já usa nas seções dark */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#F8F6F1;--ink-soft:#AEB7C9;--bg:#0F1726;--surface:#142034;--surface-2:#1A2740;
+    --line:#2A3B5C;--accent:#CDA254;
+    --ok:#5BC2A0;--ok-bg:#16291F;
+    --warn:#F3B6C2;--warn-bg:#3A2029;
+    --zero-bg:#1A2740;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F8F6F1;--ink-soft:#AEB7C9;--bg:#0F1726;--surface:#142034;--surface-2:#1A2740;
+  --line:#2A3B5C;--accent:#CDA254;
+  --ok:#5BC2A0;--ok-bg:#16291F;
+  --warn:#F3B6C2;--warn-bg:#3A2029;
+  --zero-bg:#1A2740;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",system-ui,Arial,sans-serif}
@@ -19,10 +37,15 @@ body{padding-bottom:76px}
 h1,h2,h3{margin:0;font-weight:700}
 p{margin:0}
 button{font-family:inherit}
-header.top{position:sticky;top:0;z-index:5;background:var(--ink);color:#fff;padding:16px 18px 18px;display:flex;flex-direction:column;gap:6px}
+header.top{position:sticky;top:0;z-index:5;background:var(--header-bg);color:var(--header-text);padding:14px 18px 18px;display:flex;flex-direction:column;gap:6px}
+header.top .top-row{display:flex;justify-content:space-between;align-items:center}
+header.top .top-controls{display:flex;gap:4px}
+.icon-btn{all:unset;box-sizing:border-box;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;color:var(--header-soft)}
+.icon-btn:hover{background:rgba(255,255,255,.1)}
+.icon-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 header.top .brand{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
 header.top .saldo-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-header.top .saldo-label{font-size:13px;color:#C9CFDA}
+header.top .saldo-label{font-size:13px;color:var(--header-soft)}
 header.top .saldo-value{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
 main{max-width:560px;margin:0 auto;padding:18px}
 section.tab{display:none;flex-direction:column;gap:18px}
@@ -73,6 +96,18 @@ section.tab.on{display:flex}
 .status-hero.st-warn .tag{color:var(--warn)}
 .status-hero h3{font-size:17px;margin:3px 0 4px}
 .status-hero p.desc{font-size:14px;color:var(--ink-soft);line-height:1.4}
+.status-actions{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.status-actions button{all:unset;box-sizing:border-box;width:100%;display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:13.5px;cursor:pointer}
+.status-actions button:hover{border-color:var(--accent)}
+.status-actions button .arrow{margin-left:auto;color:var(--ink-soft);flex:none}
+.chart-wrap{margin-top:14px}
+.chart-wrap svg{display:block;width:100%;height:auto}
+.chart-line{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.chart-area{fill:var(--accent);opacity:.12}
+.chart-goal{stroke:var(--ink-soft);stroke-dasharray:3 3;stroke-width:1}
+.chart-dot{fill:var(--accent)}
+.chart-grid{stroke:var(--line);stroke-width:1}
+.chart-caption{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);margin-top:4px}
 nav.bottom{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px env(safe-area-inset-bottom)}
 nav.bottom button{all:unset;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:10px;font-size:11px;font-weight:700;color:var(--ink-soft);cursor:pointer}
 nav.bottom button .ico{font-size:18px;line-height:1}
@@ -87,7 +122,13 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 <body>
 
 <header class="top">
-  <p class="brand">Airo Finanças Pessoais</p>
+  <div class="top-row">
+    <p class="brand">Airo Finanças Pessoais</p>
+    <div class="top-controls">
+      <button class="icon-btn" id="themeBtn" aria-label="Alternar tema claro/escuro" title="Alternar tema"></button>
+      <button class="icon-btn" id="fsBtn" aria-label="Tela cheia" title="Tela cheia"></button>
+    </div>
+  </div>
   <div class="saldo-row">
     <p class="saldo-label">Saldo mensal</p>
     <p class="saldo-value" id="hdrSaldo">—</p>
@@ -113,6 +154,11 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       <h3 id="statusTitle">Cadastre sua renda e despesas</h3>
       <p class="desc" id="statusDesc">O diagnóstico aparece aqui assim que você preencher os números abaixo.</p>
     </div>
+  </div>
+
+  <div class="card" id="statusActionsCard" style="display:none">
+    <h3>O que fazer agora</h3>
+    <ul class="status-actions" id="statusActionsList"></ul>
   </div>
 
   <div class="card">
@@ -165,6 +211,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   <div class="card" id="quitacaoCard" style="display:none">
     <h3>Quando eu fico livre das dívidas?</h3>
     <div id="quitacaoBody" class="muted"></div>
+    <div class="chart-wrap" id="quitacaoChartWrap"></div>
     <p class="muted" style="margin-top:10px;font-size:12.5px">Estimativa simplificada: segue a ordem acima, usa a sobra atual do seu orçamento todo mês e reaplica a parcela de cada dívida quitada na próxima. Não considera renegociação nem mudanças na renda.</p>
   </div>
 </section>
@@ -195,6 +242,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       <input type="number" inputmode="decimal" id="investRate" placeholder="Ex.: 10">
     </div>
     <p class="muted" id="investBody">Preencha a renda e a taxa para ver uma estimativa.</p>
+    <div class="chart-wrap" id="investChartWrap"></div>
     <p class="muted" style="margin-top:6px;font-size:12.5px">Estimativa simples de juros compostos, sem descontar impostos ou taxas. Não é recomendação de investimento.</p>
   </div>
   <div class="card">
@@ -277,6 +325,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     }));
     function restante() { return w.reduce((s, d) => s + Math.max(0, d.saldo), 0); }
     let mes = 0, jurosTotal = 0;
+    const historico = [{ mes: 0, total: restante() }];
     while (restante() > 0.5 && mes < MAX_MESES) {
       mes++;
       w.forEach(d => { if (d.saldo > 0.005) { const j = d.saldo * d.taxa; d.saldo += j; jurosTotal += j; } });
@@ -296,8 +345,9 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
           if (d.saldo <= 0.005 && d.quitadoMes == null) d.quitadoMes = mes;
         }
       }
+      historico.push({ mes, total: Math.max(0, restante()) });
     }
-    return { meses: mes, jurosTotal, travado: restante() > 0.5, dividas: w };
+    return { meses: mes, jurosTotal, travado: restante() > 0.5, dividas: w, historico };
   }
   function split503020(renda) {
     const r = Number(renda) || 0;
@@ -322,6 +372,17 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     while (saldo < meta && mes < 1200) { saldo = saldo * (1 + r) + contribuicaoMensal; mes++; }
     return saldo >= meta ? mes : Infinity;
   }
+  // Série mês a mês do saldo investido, para o gráfico — mesma lógica de mesesParaMeta.
+  function investirSerie(contribuicaoMensal, taxaAnualPct, horizonteMeses) {
+    const r = Math.pow(1 + (Number(taxaAnualPct) || 0) / 100, 1 / 12) - 1;
+    let saldo = 0;
+    const serie = [{ mes: 0, saldo: 0 }];
+    for (let mes = 1; mes <= horizonteMeses; mes++) {
+      saldo = saldo * (1 + r) + contribuicaoMensal;
+      serie.push({ mes, saldo });
+    }
+    return serie;
+  }
 
   // ---------- Formatação ----------
   const fmt = v => (Number(v) || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -331,6 +392,51 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     if (n < 12) return n + (n === 1 ? " mês" : " meses");
     const anos = Math.floor(n / 12), meses = n % 12;
     return n + " meses (~" + anos + (meses ? " anos e " + meses + " meses" : (anos === 1 ? " ano" : " anos")) + ")";
+  }
+
+  // ---------- Gráfico (SVG puro, responsivo via viewBox, cores por classe CSS) ----------
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  function svgEl(tag, attrs) {
+    const el = document.createElementNS(SVG_NS, tag);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function renderLineChart(container, series, opts) {
+    opts = opts || {};
+    container.innerHTML = "";
+    if (!series || series.length < 2) return;
+    const w = 320, h = 96, padL = 4, padR = 4, padT = 10, padB = 4;
+    const maxMes = series[series.length - 1].mes || 1;
+    const maxVal = Math.max(opts.goal || 0, ...series.map(p => p.v)) * 1.08 || 1;
+    const x = m => padL + (m / maxMes) * (w - padL - padR);
+    const y = v => h - padB - (v / maxVal) * (h - padT - padB);
+    const svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, preserveAspectRatio: "none", role: "img", "aria-label": opts.label || "gráfico" });
+
+    [0, 0.5, 1].forEach(f => {
+      const gy = padT + f * (h - padT - padB);
+      svg.appendChild(svgEl("line", { x1: padL, x2: w - padR, y1: gy, y2: gy, class: "chart-grid" }));
+    });
+
+    if (opts.goal) {
+      const gy = y(opts.goal);
+      svg.appendChild(svgEl("line", { x1: padL, x2: w - padR, y1: gy, y2: gy, class: "chart-goal" }));
+    }
+
+    const linePts = series.map(p => x(p.mes) + "," + y(p.v)).join(" ");
+    const areaPts = linePts + " " + x(maxMes) + "," + y(0) + " " + x(0) + "," + y(0);
+    svg.appendChild(svgEl("polygon", { points: areaPts, class: "chart-area" }));
+    svg.appendChild(svgEl("polyline", { points: linePts, class: "chart-line" }));
+
+    const last = series[series.length - 1];
+    svg.appendChild(svgEl("circle", { cx: x(last.mes), cy: y(last.v), r: 3, class: "chart-dot" }));
+
+    container.appendChild(svg);
+    if (opts.captionLeft || opts.captionRight) {
+      const cap = document.createElement("div");
+      cap.className = "chart-caption";
+      cap.innerHTML = `<span>${opts.captionLeft || ""}</span><span>${opts.captionRight || ""}</span>`;
+      container.appendChild(cap);
+    }
   }
 
   // ---------- Estado / persistência local (versionado) ----------
@@ -390,11 +496,13 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   }
 
   // ---------- Navegação por abas ----------
+  function switchTab(tabId) {
+    document.querySelectorAll("nav.bottom button").forEach(b => b.classList.toggle("on", b.dataset.tab === tabId));
+    document.querySelectorAll("section.tab").forEach(s => s.classList.toggle("on", s.dataset.tab === tabId));
+    window.scrollTo(0, 0);
+  }
   document.querySelectorAll("nav.bottom button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("nav.bottom button").forEach(b => b.classList.toggle("on", b === btn));
-      document.querySelectorAll("section.tab").forEach(s => s.classList.toggle("on", s.dataset.tab === btn.dataset.tab));
-    });
+    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
 
   // ---------- Consciência ----------
@@ -519,17 +627,35 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     } else {
       body.innerHTML = `<p>Usando a sobra atual do seu orçamento (<b>${fmt(extraMensal)}/mês</b>), você fica livre de todas as dívidas em <b>${sim.meses}º mês</b>, com um custo estimado de <b>${fmt(sim.jurosTotal)}</b> em juros.</p>`;
     }
+    renderLineChart(document.getElementById("quitacaoChartWrap"),
+      sim.historico.map(h => ({ mes: h.mes, v: h.total })),
+      { label: "saldo total das dívidas ao longo do tempo", captionLeft: "Hoje: " + fmt(sim.historico[0].total), captionRight: "Mês " + sim.historico[sim.historico.length - 1].mes + ": " + fmt(sim.historico[sim.historico.length - 1].total) });
   }
 
   // ---------- Diagnóstico (Positivo / Zero / Negativo) ----------
   // Função pura: usada tanto pela tela quanto pelo relatório em PDF.
   function statusInfo(saldo) {
     if (saldo > 0) return { cls: "st-ok", badge: "+", tag: "Positivo",
-      title: "Existe margem financeira.", desc: "Decidir quanto vai para prioridades, dívidas e objetivos." };
+      title: "Existe margem financeira.", desc: "Decidir quanto vai para prioridades, dívidas e objetivos.",
+      actions: [
+        { text: "Acelerar a quitação das dívidas com a sobra do mês", tab: "dividas" },
+        { text: "Separar uma parte para a reserva de emergência", tab: "planejamento" },
+        { text: "Definir uma meta com prazo para a sobra", tab: "planejamento" }
+      ] };
     if (saldo === 0) return { cls: "st-zero", badge: "0", tag: "Zero",
-      title: "Tudo já tem destino.", desc: "Revisar gastos ajustáveis e planejar despesas sazonais." };
+      title: "Tudo já tem destino.", desc: "Revisar gastos ajustáveis e planejar despesas sazonais.",
+      actions: [
+        { text: "Revisar as despesas classificadas como Rever", tab: "classificar" },
+        { text: "Planejar despesas sazonais (Prever) com antecedência", tab: "classificar" },
+        { text: "Evitar comprometer novas parcelas por enquanto", tab: "dividas" }
+      ] };
     return { cls: "st-warn", badge: "−", tag: "Negativo",
-      title: "As saídas superam as entradas.", desc: "Proteger o essencial, rever despesas e buscar negociação ou orientação." };
+      title: "As saídas superam as entradas.", desc: "Proteger o essencial, rever despesas e buscar negociação ou orientação.",
+      actions: [
+        { text: "Parar de assumir novas dívidas ou parcelas", tab: "dividas" },
+        { text: "Revisar despesas classificadas como Rever primeiro", tab: "classificar" },
+        { text: "Negociar dívidas em atraso ou com encargos altos", tab: "dividas" }
+      ] };
   }
   // Função pura: dívidas ordenadas + simulação de quitação, reaproveitada no PDF.
   function quitacaoResumo() {
@@ -540,6 +666,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   }
   function renderStatusHero(saldo) {
     const hero = document.getElementById("statusHero");
+    const actionsCard = document.getElementById("statusActionsCard");
     const temDados = state.renda !== "" || state.despesas.length || state.dividas.length;
     if (!temDados) {
       hero.className = "status-hero st-zero";
@@ -547,6 +674,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       document.getElementById("statusTag").textContent = "Zero";
       document.getElementById("statusTitle").textContent = "Cadastre sua renda e despesas";
       document.getElementById("statusDesc").textContent = "O diagnóstico aparece aqui assim que você preencher os números abaixo.";
+      actionsCard.style.display = "none";
       return;
     }
     const s = statusInfo(saldo);
@@ -555,6 +683,10 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     document.getElementById("statusTag").textContent = s.tag;
     document.getElementById("statusTitle").textContent = s.title;
     document.getElementById("statusDesc").textContent = s.desc;
+    actionsCard.style.display = "block";
+    const list = document.getElementById("statusActionsList");
+    list.innerHTML = s.actions.map((a, idx) => `<li><button type="button" data-action-tab="${a.tab}">${a.text}<span class="arrow">→</span></button></li>`).join("");
+    list.querySelectorAll("[data-action-tab]").forEach(b => b.addEventListener("click", () => switchTab(b.dataset.actionTab)));
   }
 
   // ---------- Planejamento ----------
@@ -577,11 +709,20 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 
     document.getElementById("investRate").value = state.investRate;
     const investBody = document.getElementById("investBody");
+    const investChartWrap = document.getElementById("investChartWrap");
     if (!(Number(state.renda) > 0) || !metaReserva) {
       investBody.textContent = "Preencha a renda e classifique despesas como \"Proteger\" para ver uma estimativa.";
+      investChartWrap.innerHTML = "";
     } else {
       const meses = mesesParaMeta(split.futuro, state.investRate, metaReserva);
       investBody.innerHTML = `Investindo os <b>${fmt(split.futuro)}</b> do "Futuro" todo mês a <b>${Number(state.investRate) || 0}% ao ano</b>, você chega à meta de reserva (${fmt(metaReserva)}) em <b>${fmtMeses(meses)}</b>.`;
+      if (isFinite(meses) && meses > 0) {
+        const serie = investirSerie(split.futuro, state.investRate, meses);
+        renderLineChart(investChartWrap, serie.map(p => ({ mes: p.mes, v: p.saldo })),
+          { goal: metaReserva, label: "crescimento do investimento até a meta", captionLeft: "Mês 0", captionRight: "Mês " + meses + ": " + fmt(serie[serie.length - 1].saldo) });
+      } else {
+        investChartWrap.innerHTML = "";
+      }
     }
 
     document.getElementById("metaNome").value = state.meta.nome;
@@ -861,6 +1002,45 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       pdfBtn.disabled = false; pdfBtn.textContent = "Gerar PDF";
     });
   });
+
+  // ---------- Tema claro/escuro ----------
+  const ICON_SUN = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>';
+  const ICON_MOON = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  const THEME_KEY = "airo.theme";
+  const themeBtn = document.getElementById("themeBtn");
+  function effectiveTheme() {
+    const explicit = document.documentElement.getAttribute("data-theme");
+    if (explicit) return explicit;
+    return (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  function updateThemeIcon() { themeBtn.innerHTML = effectiveTheme() === "dark" ? ICON_SUN : ICON_MOON; }
+  function applyTheme(t) {
+    if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    else document.documentElement.removeAttribute("data-theme");
+    updateThemeIcon();
+  }
+  themeBtn.addEventListener("click", () => {
+    const next = effectiveTheme() === "dark" ? "light" : "dark";
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    applyTheme(next);
+  });
+  (function initTheme() {
+    let saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+    if (saved) applyTheme(saved); else updateThemeIcon();
+  })();
+
+  // ---------- Tela cheia ----------
+  const ICON_MAXIMIZE = '<svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+  const ICON_MINIMIZE = '<svg viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>';
+  const fsBtn = document.getElementById("fsBtn");
+  function updateFsIcon() { fsBtn.innerHTML = document.fullscreenElement ? ICON_MINIMIZE : ICON_MAXIMIZE; }
+  if (!document.fullscreenEnabled) { fsBtn.style.display = "none"; } else { updateFsIcon(); }
+  fsBtn.addEventListener("click", () => {
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    else document.documentElement.requestFullscreen().catch(() => toast("Tela cheia não está disponível aqui."));
+  });
+  document.addEventListener("fullscreenchange", updateFsIcon);
 
   wireValidation(["renda", "despValor", "divSaldo", "divParcela", "divTaxa", "metaCusto", "investRate"]);
   syncInputsFromState();
