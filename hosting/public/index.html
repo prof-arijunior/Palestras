@@ -8,39 +8,56 @@
 <style>
 :root{
   --ink:#142034;--ink-soft:#4A5263;--bg:#F8F6F1;--surface:#FFFFFF;--surface-2:#EFEBE2;
-  --line:#E2DDD2;--accent:#CDA254;
+  --line:#E2DDD2;--accent:#CDA254;--accent-soft:rgba(205,162,84,.16);
   --ok:#3D6F58;--ok-bg:#E1EBE4;
   --warn:#7E233B;--warn-bg:#F3E3E7;
   --zero-bg:#EFEBE2;
   --header-bg:#142034;--header-text:#F8F6F1;--header-soft:#C9CFDA;
+  /* Preenchimentos sólidos (botões/chips/badges com texto claro por cima) — ficam
+     fixos nos dois temas de propósito: são a cor "de marca", não texto, então não
+     devem clarear no escuro como --ink/--ok/--warn fazem (senão texto claro em cima
+     de um preenchimento que também clareou vira texto invisível). */
+  --ink-solid:#142034;--ok-solid:#2F6B52;--warn-solid:#7E233B;--on-solid:#FFFFFF;
+  --card-shadow:0 1px 2px rgba(20,32,52,.05), 0 10px 26px -14px rgba(20,32,52,.18);
 }
 /* Modo escuro: reaproveita as cores que a palestra já usa nas seções dark */
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --ink:#F8F6F1;--ink-soft:#AEB7C9;--bg:#0F1726;--surface:#142034;--surface-2:#1A2740;
-    --line:#2A3B5C;--accent:#CDA254;
+    --line:#2A3B5C;--accent:#CDA254;--accent-soft:rgba(205,162,84,.16);
     --ok:#5BC2A0;--ok-bg:#16291F;
     --warn:#F3B6C2;--warn-bg:#3A2029;
     --zero-bg:#1A2740;
+    --card-shadow:0 1px 0 rgba(0,0,0,.2), 0 12px 28px -16px rgba(0,0,0,.55);
+    /* --ink-solid claro demais não fica — mas o valor do modo claro (#142034) é
+       quase idêntico ao --surface escuro e desaparece contra o próprio card;
+       precisa de um azul-marinho mais claro só aqui para continuar visível. */
+    --ink-solid:#32486E;
   }
 }
 :root[data-theme="dark"]{
   --ink:#F8F6F1;--ink-soft:#AEB7C9;--bg:#0F1726;--surface:#142034;--surface-2:#1A2740;
-  --line:#2A3B5C;--accent:#CDA254;
+  --line:#2A3B5C;--accent:#CDA254;--accent-soft:rgba(205,162,84,.16);
   --ok:#5BC2A0;--ok-bg:#16291F;
   --warn:#F3B6C2;--warn-bg:#3A2029;
   --zero-bg:#1A2740;
+  --card-shadow:0 1px 0 rgba(0,0,0,.2), 0 12px 28px -16px rgba(0,0,0,.55);
+  --ink-solid:#32486E;
 }
 *{box-sizing:border-box}
+@media (prefers-reduced-motion: reduce){*{transition-duration:.001ms !important;animation-duration:.001ms !important}}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",system-ui,Arial,sans-serif}
 body{padding-bottom:76px}
 h1,h2,h3{margin:0;font-weight:700}
 p{margin:0}
 button{font-family:inherit}
-header.top{position:sticky;top:0;z-index:5;background:var(--header-bg);color:var(--header-text);padding:14px 18px 18px;display:flex;flex-direction:column;gap:6px}
+header.top{position:sticky;top:0;z-index:5;background:var(--header-bg);color:var(--header-text);padding:14px 18px 18px;display:flex;flex-direction:column;gap:6px;overflow:hidden;isolation:isolate}
+header.top::before,header.top::after{content:"";position:absolute;z-index:-1;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(205,162,84,.22), rgba(205,162,84,0) 70%)}
+header.top::before{width:150px;height:150px;top:-70px;right:-30px}
+header.top::after{width:90px;height:90px;top:30px;right:60px;opacity:.7}
 header.top .top-row{display:flex;justify-content:space-between;align-items:center}
 header.top .top-controls{display:flex;gap:4px}
-.icon-btn{all:unset;box-sizing:border-box;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;color:var(--header-soft)}
+.icon-btn{all:unset;box-sizing:border-box;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;color:var(--header-soft);transition:background .15s ease}
 .icon-btn:hover{background:rgba(255,255,255,.1)}
 .icon-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 header.top .brand{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
@@ -50,18 +67,24 @@ header.top .saldo-value{font-size:28px;font-weight:700;font-variant-numeric:tabu
 main{max-width:560px;margin:0 auto;padding:18px}
 section.tab{display:none;flex-direction:column;gap:18px}
 section.tab.on{display:flex}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
-.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;display:block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--card-shadow)}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+.eyebrow-warn{color:var(--warn)}
+.eyebrow-ok{color:var(--ok)}
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;min-width:0}
 .field label{font-size:13px;font-weight:600;color:var(--ink-soft)}
-.field input,.field select{all:unset;box-sizing:border-box;width:100%;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:16px;color:var(--ink)}
+.field input,.field select{all:unset;box-sizing:border-box;width:100%;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:16px;color:var(--ink);transition:border-color .15s ease}
+.field input:focus,.field select:focus{border-color:var(--accent)}
 .field input.invalid{border-color:var(--warn)}
 .field .err{font-size:12.5px;color:var(--warn)}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
 .row .field{flex:1 1 120px;min-width:0;margin-bottom:0}
 .row .btn{flex:none}
-.btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-align:center}
-.btn-primary{background:var(--ink);color:#fff}
+.btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;transition:transform .12s ease,opacity .12s ease}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--ink-solid);color:var(--on-solid)}
+.btn-primary:hover{opacity:.92}
 .btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
 .btn-danger{background:transparent;color:var(--warn);min-height:36px;padding:6px 10px;font-size:13px}
 .list-row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
@@ -70,13 +93,17 @@ section.tab.on{display:flex}
 .list-row .sub{font-size:12.5px;color:var(--ink-soft);display:block;margin-top:2px}
 .list-row .amt{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
 .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.chip{all:unset;box-sizing:border-box;min-height:36px;padding:7px 13px;border:1.5px solid var(--line);border-radius:999px;font-size:13px;font-weight:600;color:var(--ink);background:var(--surface);cursor:pointer}
-.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip{all:unset;box-sizing:border-box;min-height:36px;padding:7px 13px;border:1.5px solid var(--line);border-radius:999px;font-size:13px;font-weight:600;color:var(--ink);background:var(--surface);cursor:pointer;transition:transform .12s ease}
+.chip:active{transform:scale(.96)}
+.chip.on{background:var(--ink-solid);border-color:var(--ink-solid);color:var(--on-solid)}
+.chip.on[data-cat="Desejos"]{background:var(--warn-solid);border-color:var(--warn-solid)}
+.chip.on[data-cat="Futuro"]{background:var(--ok-solid);border-color:var(--ok-solid)}
 .badge{font-size:11.5px;font-weight:700;letter-spacing:.03em;padding:4px 10px;border-radius:999px;white-space:nowrap}
 .badge-warn{background:var(--warn-bg);color:var(--warn)}
 .badge-ok{background:var(--ok-bg);color:var(--ok)}
+.badge-info{background:var(--accent-soft);color:var(--accent)}
 .split-bar{display:flex;height:34px;border-radius:10px;overflow:hidden;margin:10px 0}
-.split-seg{display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+.split-seg{display:flex;align-items:center;justify-content:center;color:var(--on-solid);font-size:13px;font-weight:700}
 .progress-bar{height:10px;border-radius:5px;overflow:hidden;background:var(--surface-2);margin:10px 0 6px}
 .progress-bar i{display:block;height:100%;background:var(--ok);border-radius:5px;transition:width .3s}
 .muted{color:var(--ink-soft);font-size:14px;line-height:1.5}
@@ -84,14 +111,14 @@ section.tab.on{display:flex}
 .checklist label{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
 .checklist label:last-child{border-bottom:0}
 .checklist input{width:20px;height:20px}
-.status-hero{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:14px}
+.status-hero{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:18px}
 .status-hero.st-ok{background:var(--ok-bg)}
 .status-hero.st-zero{background:var(--zero-bg)}
 .status-hero.st-warn{background:var(--warn-bg)}
-.status-badge{flex:none;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;color:#fff}
-.status-hero.st-ok .status-badge{background:var(--ok)}
-.status-hero.st-zero .status-badge{background:var(--ink);color:var(--accent)}
-.status-hero.st-warn .status-badge{background:var(--warn)}
+.status-badge{flex:none;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;color:var(--on-solid)}
+.status-hero.st-ok .status-badge{background:var(--ok-solid)}
+.status-hero.st-zero .status-badge{background:var(--ink-solid);color:var(--accent)}
+.status-hero.st-warn .status-badge{background:var(--warn-solid)}
 .status-hero .tag{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .status-hero.st-ok .tag{color:var(--ok)}
 .status-hero.st-zero .tag{color:var(--accent)}
@@ -99,7 +126,7 @@ section.tab.on{display:flex}
 .status-hero h3{font-size:17px;margin:3px 0 4px}
 .status-hero p.desc{font-size:14px;color:var(--ink-soft);line-height:1.4}
 .status-actions{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.status-actions button{all:unset;box-sizing:border-box;width:100%;display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:13.5px;cursor:pointer}
+.status-actions button{all:unset;box-sizing:border-box;width:100%;display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:13.5px;cursor:pointer;transition:border-color .15s ease}
 .status-actions button:hover{border-color:var(--accent)}
 .status-actions button .arrow{margin-left:auto;color:var(--ink-soft);flex:none}
 .chart-wrap{margin-top:14px}
@@ -109,14 +136,16 @@ section.tab.on{display:flex}
 .chart-goal{stroke:var(--ink-soft);stroke-dasharray:3 3;stroke-width:1}
 .chart-dot{fill:var(--accent)}
 .chart-grid{stroke:var(--line);stroke-width:1}
+.chart-tick{font-size:6.5px;fill:var(--ink-soft)}
 .chart-caption{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);margin-top:4px}
 nav.bottom{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px env(safe-area-inset-bottom)}
-nav.bottom button{all:unset;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:10px;font-size:11px;font-weight:700;color:var(--ink-soft);cursor:pointer}
-nav.bottom button .ico{font-size:18px;line-height:1}
+nav.bottom button{all:unset;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:12px;font-size:11px;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:background .15s ease,color .15s ease}
+nav.bottom button .ico{display:flex;align-items:center;justify-content:center;line-height:1}
+nav.bottom button .ico svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 .footer-area{display:flex;flex-direction:column;align-items:center;gap:8px;padding:4px 18px 16px}
 .privacy{font-size:12px;color:var(--ink-soft);text-align:center}
-#toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(14px);opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;background:var(--ink);color:#fff;padding:12px 16px;border-radius:12px;display:flex;align-items:center;gap:16px;font-size:13.5px;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:20}
+#toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(14px);opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;background:var(--ink-solid);color:var(--on-solid);padding:12px 16px;border-radius:12px;display:flex;align-items:center;gap:16px;font-size:13.5px;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:20}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 #toast button{all:unset;color:var(--accent);font-weight:700;cursor:pointer;white-space:nowrap;font-size:13.5px}
 </style>
@@ -189,6 +218,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     <div class="chip-row">
       <button class="chip" id="divAtraso" data-flag="atraso">Em atraso</button>
       <button class="chip" id="divEncargos" data-flag="encargos">Encargos altos</button>
+      <button class="chip" id="divSazonal" data-flag="sazonal" title="Dívida de origem sazonal, como IPVA ou material escolar parcelado">Sazonal</button>
     </div>
     <button class="btn btn-primary" id="addDivida" style="margin-top:10px;width:100%">Adicionar dívida</button>
   </div>
@@ -197,7 +227,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 <section class="tab" data-tab="classificar">
   <div class="card">
     <span class="eyebrow">2 · Classificar</span>
-    <h2>Proteger, Rever ou Prever?</h2>
+    <h2>Necessidade, desejo ou futuro?</h2>
     <p class="muted">Classifique cada despesa cadastrada na aba Consciência.</p>
   </div>
   <div class="card" id="classifyList"><p class="muted">Cadastre despesas na aba Consciência primeiro.</p></div>
@@ -209,7 +239,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 
 <section class="tab" data-tab="dividas">
   <div class="card">
-    <span class="eyebrow">3 · Ação</span>
+    <span class="eyebrow eyebrow-warn">3 · Ação</span>
     <h2>Minhas dívidas, em ordem</h2>
     <p class="muted">Dívidas em atraso ou com encargos altos aparecem primeiro — negocie essas antes de seguir a ordem pelo menor saldo.</p>
   </div>
@@ -224,7 +254,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 
 <section class="tab" data-tab="planejamento">
   <div class="card">
-    <span class="eyebrow">4 · Planejamento</span>
+    <span class="eyebrow eyebrow-ok">4 · Planejamento</span>
     <h2>Seu 50/30/20</h2>
     <div class="split-bar" id="splitBar"></div>
     <div id="splitBody" class="muted"></div>
@@ -243,7 +273,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       <label>Quanto você já tem guardado</label>
       <input type="number" inputmode="decimal" id="reservaGuardada" placeholder="0,00">
     </div>
-    <p class="muted">Meta de reserva: <b id="reserveTarget">—</b> (baseada nas despesas marcadas como "Proteger")</p>
+    <p class="muted">Meta de reserva: <b id="reserveTarget">—</b> (baseada nas despesas marcadas como "Necessidades")</p>
     <div class="progress-bar"><i id="reservaProgressBar" style="width:0%"></i></div>
     <p class="muted" id="reservaProgressBody"></p>
   </div>
@@ -300,11 +330,11 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 </div>
 
 <nav class="bottom">
-  <button data-tab="consciencia" class="on"><span class="ico">①</span>Consciência</button>
-  <button data-tab="classificar"><span class="ico">②</span>Classificar</button>
-  <button data-tab="dividas"><span class="ico">③</span>Dívidas</button>
-  <button data-tab="planejamento"><span class="ico">④</span>Planejar</button>
-  <button data-tab="plano"><span class="ico">⑤</span>Plano</button>
+  <button data-tab="consciencia" class="on"><span class="ico"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></span>Consciência</button>
+  <button data-tab="classificar"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.17L3 3v6.59a2 2 0 0 0 .66 1.41l9.59 9.59a2 2 0 0 0 2.83 0l5.51-5.51a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.2" fill="currentColor" stroke="none"/></svg></span>Classificar</button>
+  <button data-tab="dividas"><span class="ico"><svg viewBox="0 0 24 24"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg></span>Dívidas</button>
+  <button data-tab="planejamento"><span class="ico"><svg viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></span>Planejar</button>
+  <button data-tab="plano"><span class="ico"><svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 14l2 2 4-4"/></svg></span>Plano</button>
 </nav>
 
 <div id="toast"><span id="toastMsg"></span><button id="toastAction" hidden>Desfazer</button></div>
@@ -380,8 +410,8 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const r = Number(renda) || 0;
     return { necessidades: r * 0.5, desejos: r * 0.3, futuro: r * 0.2 };
   }
-  function reservaMeta(despesasProteger, meses) {
-    return (Number(despesasProteger) || 0) * (Number(meses) || 0);
+  function reservaMeta(despesasNecessidades, meses) {
+    return (Number(despesasNecessidades) || 0) * (Number(meses) || 0);
   }
   function metaPorPeriodo(custo, dataLimite) {
     const c = Number(custo) || 0;
@@ -468,7 +498,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 
   // ---------- Estado / persistência local (versionado) ----------
   const STORAGE_KEY = "airo.state";
-  const STORAGE_VERSION = 1;
+  const STORAGE_VERSION = 2;
   function defaultState() {
     return { v: STORAGE_VERSION, nome: "", renda: "", despesas: [], dividas: [], classify: {}, reserveMonths: "3",
       reservaGuardada: "", investRate: "10", meta: { nome: "", custo: "", data: "" }, weeks: {}, compromisso: { texto: "", data: "" } };
@@ -476,8 +506,16 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   function migrate(raw) {
     if (!raw || typeof raw !== "object") return defaultState();
     if (raw.v === STORAGE_VERSION) return raw;
-    // futuras migrações de versão entram aqui, por exemplo:
-    // if (!raw.v) { raw = migrateFromUnversioned(raw); }
+    // v1 -> v2: a classificação de despesas trocou de Proteger/Rever/Prever para
+    // Necessidades/Desejos/Futuro, para falar a mesma língua do 50/30/20.
+    if (!raw.v || raw.v === 1) {
+      const CAT_MIGRA = { Proteger: "Necessidades", Rever: "Desejos", Prever: "Futuro" };
+      if (raw.classify) {
+        const migrado = {};
+        Object.keys(raw.classify).forEach(k => { migrado[k] = CAT_MIGRA[raw.classify[k]] || raw.classify[k]; });
+        raw.classify = migrado;
+      }
+    }
     return Object.assign(defaultState(), raw, { v: STORAGE_VERSION });
   }
   function loadState() {
@@ -546,19 +584,20 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     save();
   });
 
-  let novaDividaFlags = { atraso: false, encargos: false };
+  let novaDividaFlags = { atraso: false, encargos: false, sazonal: false };
   document.getElementById("divAtraso").addEventListener("click", e => { novaDividaFlags.atraso = !novaDividaFlags.atraso; e.target.classList.toggle("on"); });
   document.getElementById("divEncargos").addEventListener("click", e => { novaDividaFlags.encargos = !novaDividaFlags.encargos; e.target.classList.toggle("on"); });
+  document.getElementById("divSazonal").addEventListener("click", e => { novaDividaFlags.sazonal = !novaDividaFlags.sazonal; e.target.classList.toggle("on"); });
   document.getElementById("addDivida").addEventListener("click", () => {
     const nome = document.getElementById("divNome").value.trim();
     const saldo = document.getElementById("divSaldo").value;
     const parcela = document.getElementById("divParcela").value;
     const parcelas = document.getElementById("divParcelasQtd").value;
     if (!nome || !saldo || !parcela || Number(saldo) < 0 || Number(parcela) < 0) return;
-    state.dividas.push({ id: "v" + Date.now(), nome, saldo, parcela, parcelas: parcelas || "", atraso: novaDividaFlags.atraso, encargos: novaDividaFlags.encargos });
+    state.dividas.push({ id: "v" + Date.now(), nome, saldo, parcela, parcelas: parcelas || "", atraso: novaDividaFlags.atraso, encargos: novaDividaFlags.encargos, sazonal: novaDividaFlags.sazonal });
     document.getElementById("divNome").value = ""; document.getElementById("divSaldo").value = ""; document.getElementById("divParcela").value = ""; document.getElementById("divParcelasQtd").value = "";
-    novaDividaFlags = { atraso: false, encargos: false };
-    document.getElementById("divAtraso").classList.remove("on"); document.getElementById("divEncargos").classList.remove("on");
+    novaDividaFlags = { atraso: false, encargos: false, sazonal: false };
+    document.getElementById("divAtraso").classList.remove("on"); document.getElementById("divEncargos").classList.remove("on"); document.getElementById("divSazonal").classList.remove("on");
     save();
   });
 
@@ -590,7 +629,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const el = document.getElementById("dividasList");
     el.innerHTML = state.dividas.map(d => `
       <div class="list-row">
-        <p class="grow">${d.nome} ${d.atraso ? '<span class="badge badge-warn">atraso</span>' : ""} ${d.encargos ? '<span class="badge badge-warn">encargos</span>' : ""}
+        <p class="grow">${d.nome} ${d.atraso ? '<span class="badge badge-warn">atraso</span>' : ""} ${d.encargos ? '<span class="badge badge-warn">encargos</span>' : ""} ${d.sazonal ? '<span class="badge badge-info">sazonal</span>' : ""}
           ${d.parcela ? `<span class="sub">${fmt(d.parcela)}/mês${d.parcelas ? " · " + d.parcelas + " parcelas restantes" : ""}</span>` : ""}</p>
         <p class="amt">${fmt(d.saldo)}</p>
         <button class="btn-danger" data-del-div="${d.id}">remover</button>
@@ -606,7 +645,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   }
 
   // ---------- Classificar ----------
-  const CATEGORIES = ["Proteger", "Rever", "Prever"];
+  const CATEGORIES = ["Necessidades", "Desejos", "Futuro"];
   function renderClassify() {
     const el = document.getElementById("classifyList");
     if (!state.despesas.length) { el.innerHTML = `<p class="muted">Cadastre despesas na aba Consciência primeiro.</p>`; document.getElementById("classifyTotals").style.display = "none"; return; }
@@ -618,7 +657,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     el.querySelectorAll("[data-classify]").forEach(btn => btn.addEventListener("click", () => {
       state.classify[btn.dataset.classify] = btn.dataset.cat; save();
     }));
-    const totals = { Proteger: 0, Rever: 0, Prever: 0 };
+    const totals = { Necessidades: 0, Desejos: 0, Futuro: 0 };
     state.despesas.forEach(d => { const c = state.classify[d.id]; if (c) totals[c] += Number(d.valor) || 0; });
     document.getElementById("classifyTotals").style.display = "block";
     document.getElementById("classifyTotalsBody").innerHTML = CATEGORIES.map(c => `
@@ -671,17 +710,17 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
         { text: "Definir uma meta com prazo para a sobra", tab: "planejamento" }
       ] };
     if (saldo === 0) return { cls: "st-zero", badge: "0", tag: "Zero",
-      title: "Tudo já tem destino.", desc: "Revisar gastos ajustáveis e planejar despesas sazonais.",
+      title: "Tudo já tem destino.", desc: "Revisar gastos ajustáveis e separar o Futuro antes de ele sumir no meio do mês.",
       actions: [
-        { text: "Revisar as despesas classificadas como Rever", tab: "classificar" },
-        { text: "Planejar despesas sazonais (Prever) com antecedência", tab: "classificar" },
+        { text: "Revisar as despesas classificadas como Desejos", tab: "classificar" },
+        { text: "Separar o \"Futuro\" (reserva e metas) assim que a renda cair", tab: "planejamento" },
         { text: "Evitar comprometer novas parcelas por enquanto", tab: "dividas" }
       ] };
     return { cls: "st-warn", badge: "−", tag: "Negativo",
-      title: "As saídas superam as entradas.", desc: "Proteger o essencial, rever despesas e buscar negociação ou orientação.",
+      title: "As saídas superam as entradas.", desc: "Priorizar o essencial, cortar o que der e buscar negociação ou orientação.",
       actions: [
         { text: "Parar de assumir novas dívidas ou parcelas", tab: "dividas" },
-        { text: "Revisar despesas classificadas como Rever primeiro", tab: "classificar" },
+        { text: "Revisar despesas classificadas como Desejos primeiro", tab: "classificar" },
         { text: "Negociar dívidas em atraso ou com encargos altos", tab: "dividas" }
       ] };
   }
@@ -722,17 +761,17 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const split = split503020(state.renda);
     const total = (Number(state.renda) || 0) || 1;
     document.getElementById("splitBar").innerHTML = [
-      ["necessidades", split.necessidades, "var(--ink)"],
-      ["desejos", split.desejos, "var(--warn)"],
-      ["futuro", split.futuro, "var(--ok)"]
+      ["necessidades", split.necessidades, "var(--ink-solid)"],
+      ["desejos", split.desejos, "var(--warn-solid)"],
+      ["futuro", split.futuro, "var(--ok-solid)"]
     ].map(([k, v, color]) => `<div class="split-seg" style="width:${(v / total) * 100}%;background:${color}">${Math.round((v / total) * 100)}%</div>`).join("");
     document.getElementById("splitBody").innerHTML =
       `Necessidades: <b>${fmt(split.necessidades)}</b> · Desejos: <b>${fmt(split.desejos)}</b> · Futuro: <b>${fmt(split.futuro)}</b>`;
 
-    const totals = { Proteger: 0 };
-    state.despesas.forEach(d => { if (state.classify[d.id] === "Proteger") totals.Proteger += Number(d.valor) || 0; });
+    const totals = { Necessidades: 0 };
+    state.despesas.forEach(d => { if (state.classify[d.id] === "Necessidades") totals.Necessidades += Number(d.valor) || 0; });
     document.getElementById("reserveMonths").value = state.reserveMonths;
-    const metaReserva = reservaMeta(totals.Proteger, state.reserveMonths);
+    const metaReserva = reservaMeta(totals.Necessidades, state.reserveMonths);
     document.getElementById("reserveTarget").textContent = fmt(metaReserva);
     document.getElementById("reservaGuardada").value = state.reservaGuardada;
     const rm = reservaModel(metaReserva, state.reservaGuardada, split.futuro);
@@ -750,7 +789,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const investBody = document.getElementById("investBody");
     const investChartWrap = document.getElementById("investChartWrap");
     if (!(Number(state.renda) > 0) || !metaReserva) {
-      investBody.textContent = "Preencha a renda e classifique despesas como \"Proteger\" para ver uma estimativa.";
+      investBody.textContent = "Preencha a renda e classifique despesas como \"Necessidades\" para ver uma estimativa.";
       investChartWrap.innerHTML = "";
     } else {
       const meses = mesesParaMeta(split.futuro, state.investRate, metaReserva);
@@ -1058,11 +1097,20 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       ensure(h + 15);
       const maxMes = series[series.length - 1].mes || 1;
       const maxV = Math.max(opts.goal || 0, ...series.map(p => p.v)) * 1.08 || 1;
-      const x0 = M, w = CW;
+      // Reserva uma coluna à esquerda para os valores de cada linha-guia — sem isso
+      // o gráfico só tinha os dois pontos extremos (início/fim), sem como ler
+      // nenhum valor intermediário.
+      const gutter = 16;
+      const x0 = M + gutter, w = CW - gutter;
       const X = m => x0 + (m / maxMes) * w;
       const Y = v => y + h - (v / maxV) * h;
       strokeC(LINE); doc.setLineWidth(0.2);
-      [0, 0.5, 1].forEach(f => { const gy = y + h - f * h; doc.line(x0, gy, x0 + w, gy); });
+      font("normal", 6.3); ink(MUTED);
+      [0, 0.5, 1].forEach(f => {
+        const gy = y + h - f * h;
+        doc.line(x0, gy, x0 + w, gy);
+        doc.text(pdfText("R$ " + Math.round(maxV * f).toLocaleString("pt-BR")), M, gy + 1.6);
+      });
       if (opts.goal) {
         strokeC(MUTED); doc.setLineWidth(0.3); doc.setLineDashPattern([1.2, 1.2], 0);
         doc.line(x0, Y(opts.goal), x0 + w, Y(opts.goal));
@@ -1104,7 +1152,9 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       const r = Number(renda) || 0;
       return r > 0 ? Math.round((Number(v) || 0) / r * 100) + "%" : "—";
     }
-    function subheading(text) { font("bold", 11); ink(INK); ensure(8); doc.text(pdfText(text), M, y); y += 7; }
+    // Sem uma margem própria aqui, o subtítulo herda só o espaço que sobrou do
+    // bloco anterior (para()/checklist() deixam só ~1-2mm) e cola no texto de cima.
+    function subheading(text) { y += 4; ensure(9); font("bold", 11); ink(INK); doc.text(pdfText(text), M, y); y += 7; }
 
     // ===================================================================
     // Capa
@@ -1131,8 +1181,8 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const sim = quitRes ? quitRes.sim : null;
     const extraMensal = quitRes ? quitRes.extraMensal : 0;
     const split = split503020(state.renda);
-    const totalProteger = state.despesas.reduce((s, d) => s + (state.classify[d.id] === "Proteger" ? (Number(d.valor) || 0) : 0), 0);
-    const metaReserva = reservaMeta(totalProteger, state.reserveMonths);
+    const totalNecessidades = state.despesas.reduce((s, d) => s + (state.classify[d.id] === "Necessidades" ? (Number(d.valor) || 0) : 0), 0);
+    const metaReserva = reservaMeta(totalNecessidades, state.reserveMonths);
     const rm = reservaModel(metaReserva, state.reservaGuardada, split.futuro);
     const mesesInvest = (Number(state.renda) > 0 && metaReserva) ? mesesParaMeta(split.futuro, state.investRate, metaReserva) : null;
 
@@ -1147,7 +1197,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     subheading("Sua jornada pelo Método C.A.P.");
     timeline([
       { when: "Passo 1 · C", t: "Enxergar a realidade", p: "Registrar renda, despesas e dívidas.", done: Number(state.renda) > 0 },
-      { when: "Passo 2 · C", t: "Descobrir os vazamentos", p: "Classificar despesas em Proteger, Rever ou Prever.", done: Object.keys(state.classify).length > 0 },
+      { when: "Passo 2 · C", t: "Descobrir os vazamentos", p: "Classificar despesas em Necessidades, Desejos ou Futuro.", done: Object.keys(state.classify).length > 0 },
       { when: "Passo 3 · A", t: "Organizar as dívidas", p: "Colocar as dívidas em ordem e saber quando cada uma termina.", done: !temDividas || ordenadas.length > 0 },
       { when: "Passo 4 · P", t: "Dar função ao dinheiro", p: "Dividir a renda em necessidades, desejos e futuro.", done: Number(state.renda) > 0 },
       { when: "Passo 5 · P", t: "Construir proteção", p: "Guardar uma reserva de emergência e pensar no longo prazo.", done: Number(state.reservaGuardada) > 0 }
@@ -1168,14 +1218,14 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     statusBox(statusInfo(saldo));
 
     if (state.despesas.length) {
-      const catTotais = { Proteger: 0, Rever: 0, Prever: 0 };
+      const catTotais = { Necessidades: 0, Desejos: 0, Futuro: 0 };
       state.despesas.forEach(d => { const c = state.classify[d.id]; if (c) catTotais[c] += Number(d.valor) || 0; });
       const totalDesp = state.despesas.reduce((s, d) => s + (Number(d.valor) || 0), 0) || 1;
       subheading("Como seus gastos se dividem");
-      stackedBar("Proteger (essencial) · Rever (ajustável) · Prever (sazonal)", [
-        { v: catTotais.Proteger, col: OK, label: catTotais.Proteger > 0 ? Math.round(catTotais.Proteger / totalDesp * 100) + "%" : "" },
-        { v: catTotais.Rever, col: WARN, label: catTotais.Rever > 0 ? Math.round(catTotais.Rever / totalDesp * 100) + "%" : "" },
-        { v: catTotais.Prever, col: ACCENT, label: catTotais.Prever > 0 ? Math.round(catTotais.Prever / totalDesp * 100) + "%" : "" }
+      stackedBar("Necessidades (essencial) · Desejos (ajustável) · Futuro (guardar)", [
+        { v: catTotais.Necessidades, col: INK, label: catTotais.Necessidades > 0 ? Math.round(catTotais.Necessidades / totalDesp * 100) + "%" : "" },
+        { v: catTotais.Desejos, col: WARN, label: catTotais.Desejos > 0 ? Math.round(catTotais.Desejos / totalDesp * 100) + "%" : "" },
+        { v: catTotais.Futuro, col: OK, label: catTotais.Futuro > 0 ? Math.round(catTotais.Futuro / totalDesp * 100) + "%" : "" }
       ], totalDesp);
 
       subheading("Todas as suas despesas");
@@ -1215,7 +1265,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
         subheading("Plano de ação: faça a conta fechar");
         steps([
           { n: 1, t: 'Negocie as dívidas marcadas "negocie primeiro"', v: "" },
-          { n: 2, t: "Reveja despesas classificadas como Rever para aumentar a sobra mensal", v: "" },
+          { n: 2, t: "Reveja despesas classificadas como Desejos para aumentar a sobra mensal", v: "" },
           { n: 3, t: "Considere uma renda extra temporária enquanto reorganiza as dívidas", v: "" }
         ], WARN);
       } else {
@@ -1293,7 +1343,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 
     subheading('Investir o "Futuro" para o longo prazo');
     if (!(Number(state.renda) > 0) || !metaReserva) {
-      para('Preencha a renda e classifique despesas como "Proteger" para ver uma estimativa de investimento.');
+      para('Preencha a renda e classifique despesas como "Necessidades" para ver uma estimativa de investimento.');
     } else {
       para(`Investindo os ${fmt(split.futuro)} do "Futuro" todo mês a ${Number(state.investRate) || 0}% ao ano, partindo do zero: ${isFinite(mesesInvest) ? "a meta de reserva (" + fmt(metaReserva) + ") seria alcançada em aproximadamente " + mesesInvest + " meses" : "não é possível alcançar nesse ritmo"}.`);
       if (isFinite(mesesInvest) && mesesInvest > 0) {
@@ -1359,7 +1409,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     [
       ["Renda líquida", "O que cai na sua conta depois dos descontos."],
       ["Consciência, Ação, Planejamento (C.A.P.)", "Os três movimentos do método: enxergar a realidade, agir sobre as dívidas e planejar o futuro."],
-      ["Proteger, Rever, Prever", "As três perguntas para cada despesa: é essencial (proteger), pode ser ajustada (rever) ou é sazonal (prever)?"],
+      ["Necessidades, Desejos, Futuro", "As mesmas três categorias do 50/30/20: o que é essencial, o que pode ser ajustado e o que vai para reserva, investimentos e metas."],
       ["Juros compostos", "Juros que rendem sobre juros: o rendimento de um mês passa a render no mês seguinte."],
       ["Reserva de emergência", "Dinheiro guardado só para imprevistos, com resgate rápido."],
       ["Liquidez", "Facilidade de transformar o investimento em dinheiro na conta."],
