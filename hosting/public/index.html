@@ -224,6 +224,12 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     <div class="field"><label>Meu primeiro passo será</label><input id="compromissoTexto" placeholder="Ex.: Anotar minha renda líquida"></div>
     <div class="field"><label>Até quando</label><input type="date" id="compromissoData"></div>
   </div>
+  <div class="card">
+    <h3>Levar tudo isso com você</h3>
+    <p class="muted">Gera um PDF com o diagnóstico, as dívidas em ordem, o 50/30/20, a meta e o plano de 30 dias — para imprimir ou guardar no celular.</p>
+    <button class="btn btn-primary" id="pdfBtn" style="width:100%;margin-top:10px">Gerar PDF</button>
+    <p class="muted" id="pdfStatus" style="margin-top:8px"></p>
+  </div>
 </section>
 
 </main>
@@ -492,10 +498,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       quitacaoCard.style.display = "none";
       return;
     }
-    const ordenadas = ordenarDividasPrioridade(state.dividas);
-    const saldoMensal = calcSaldoMensal(state.renda, state.despesas, state.dividas);
-    const extraMensal = Math.max(0, saldoMensal);
-    const sim = simularQuitacao(ordenadas, extraMensal);
+    const { ordenadas, sim, extraMensal } = quitacaoResumo();
     const porId = Object.fromEntries(sim.dividas.map(d => [d.id, d]));
 
     el.innerHTML = ordenadas.map(d => {
@@ -519,6 +522,22 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   }
 
   // ---------- Diagnóstico (Positivo / Zero / Negativo) ----------
+  // Função pura: usada tanto pela tela quanto pelo relatório em PDF.
+  function statusInfo(saldo) {
+    if (saldo > 0) return { cls: "st-ok", badge: "+", tag: "Positivo",
+      title: "Existe margem financeira.", desc: "Decidir quanto vai para prioridades, dívidas e objetivos." };
+    if (saldo === 0) return { cls: "st-zero", badge: "0", tag: "Zero",
+      title: "Tudo já tem destino.", desc: "Revisar gastos ajustáveis e planejar despesas sazonais." };
+    return { cls: "st-warn", badge: "−", tag: "Negativo",
+      title: "As saídas superam as entradas.", desc: "Proteger o essencial, rever despesas e buscar negociação ou orientação." };
+  }
+  // Função pura: dívidas ordenadas + simulação de quitação, reaproveitada no PDF.
+  function quitacaoResumo() {
+    const ordenadas = ordenarDividasPrioridade(state.dividas);
+    const extraMensal = Math.max(0, calcSaldoMensal(state.renda, state.despesas, state.dividas));
+    const sim = simularQuitacao(ordenadas, extraMensal);
+    return { ordenadas, sim, extraMensal };
+  }
   function renderStatusHero(saldo) {
     const hero = document.getElementById("statusHero");
     const temDados = state.renda !== "" || state.despesas.length || state.dividas.length;
@@ -530,25 +549,12 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       document.getElementById("statusDesc").textContent = "O diagnóstico aparece aqui assim que você preencher os números abaixo.";
       return;
     }
-    let cls, badge, tag, title, desc;
-    if (saldo > 0) {
-      cls = "st-ok"; badge = "+"; tag = "Positivo";
-      title = "Existe margem financeira.";
-      desc = "Decidir quanto vai para prioridades, dívidas e objetivos.";
-    } else if (saldo === 0) {
-      cls = "st-zero"; badge = "0"; tag = "Zero";
-      title = "Tudo já tem destino.";
-      desc = "Revisar gastos ajustáveis e planejar despesas sazonais.";
-    } else {
-      cls = "st-warn"; badge = "−"; tag = "Negativo";
-      title = "As saídas superam as entradas.";
-      desc = "Proteger o essencial, rever despesas e buscar negociação ou orientação.";
-    }
-    hero.className = "status-hero " + cls;
-    document.getElementById("statusBadge").textContent = badge;
-    document.getElementById("statusTag").textContent = tag;
-    document.getElementById("statusTitle").textContent = title;
-    document.getElementById("statusDesc").textContent = desc;
+    const s = statusInfo(saldo);
+    hero.className = "status-hero " + s.cls;
+    document.getElementById("statusBadge").textContent = s.badge;
+    document.getElementById("statusTag").textContent = s.tag;
+    document.getElementById("statusTitle").textContent = s.title;
+    document.getElementById("statusDesc").textContent = s.desc;
   }
 
   // ---------- Planejamento ----------
@@ -631,6 +637,230 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     renderHeader(); renderDespesas(); renderDividas();
     renderClassify(); renderPrioridade(); renderPlanejamento();
   }
+
+  // ---------- Relatório em PDF ----------
+  // A fonte padrão do jsPDF só cobre Latin-1: travessão, aspas curvas, seta,
+  // checkmark, menos tipográfico e espaço não quebrável (ambos vindos do
+  // Intl.NumberFormat) viram lixo visual se não forem trocados antes.
+  function pdfText(s) {
+    return String(s)
+      .replace(/[‒-―]/g, "-")
+      .replace(/…/g, "...")
+      .replace(/[‘’]/g, "'")
+      .replace(/[“”]/g, '"')
+      .replace(/→/g, "->")
+      .replace(/✓/g, "ok")
+      .replace(/×/g, "x")
+      .replace(/−/g, "-")
+      .replace(/ /g, " ");
+  }
+
+  function loadJsPDF(timeoutMs) {
+    return new Promise((resolve, reject) => {
+      if (window.jspdf && window.jspdf.jsPDF) return resolve(window.jspdf.jsPDF);
+      const s = document.createElement("script");
+      s.src = "vendor/jspdf.umd.min.js";
+      s.onerror = () => reject(new Error("load"));
+      document.head.appendChild(s);
+      const t0 = Date.now();
+      (function check() {
+        if (window.jspdf && window.jspdf.jsPDF) return resolve(window.jspdf.jsPDF);
+        if (Date.now() - t0 > timeoutMs) return reject(new Error("timeout"));
+        setTimeout(check, 120);
+      })();
+    });
+  }
+
+  function buildReportPdf(JsPDF) {
+    const INK = [20, 32, 52], ACCENT = [181, 138, 60], OK = [61, 111, 88], WARN = [126, 35, 59], MUTED = [107, 113, 128], LINE = [226, 221, 208];
+    const M = 18, PW = 210, PH = 297, CW = PW - M * 2, BOTTOM = PH - 20;
+    const doc = new JsPDF({ unit: "mm", format: "a4", compress: true });
+    let y = M;
+
+    function ink(c) { doc.setTextColor(c[0], c[1], c[2]); }
+    function fillC(c) { doc.setFillColor(c[0], c[1], c[2]); }
+    function strokeC(c) { doc.setDrawColor(c[0], c[1], c[2]); }
+    function font(style, size) { doc.setFont("helvetica", style); doc.setFontSize(size); }
+    function pageHeader() {
+      font("bold", 9); ink(ACCENT);
+      doc.text(pdfText("AIRO FINANÇAS PESSOAIS"), M, 13);
+      font("normal", 9); ink(MUTED);
+      doc.text(pdfText(new Date().toLocaleDateString("pt-BR")), PW - M, 13, { align: "right" });
+      strokeC(LINE); doc.setLineWidth(0.3); doc.line(M, 17, PW - M, 17);
+    }
+    function newPage() { doc.addPage(); pageHeader(); y = 24; }
+    // pageHeader() troca a fonte ativa (para o cabeçalho) — sem restaurar o
+    // estilo/tamanho de quem chamou, a próxima linha desenhada após a quebra
+    // de página sai no tamanho errado e vaza a margem.
+    function ensure(h) {
+      if (y + h > BOTTOM) {
+        const f = doc.getFont(), sz = doc.internal.getFontSize();
+        newPage();
+        doc.setFont(f.fontName, f.fontStyle);
+        doc.setFontSize(sz);
+      }
+    }
+    function heading(text) {
+      ensure(14);
+      font("bold", 13); ink(INK);
+      doc.text(pdfText(text), M, y);
+      y += 2; strokeC(ACCENT); doc.setLineWidth(0.6); doc.line(M, y, M + 22, y);
+      y += 7;
+    }
+    function para(text, size, color) {
+      font("normal", size || 10); ink(color || INK);
+      const lines = doc.splitTextToSize(pdfText(text), CW);
+      lines.forEach(l => { ensure(5.2); doc.text(l, M, y); y += 5.2; });
+      y += 1.5;
+    }
+    function row(label, value, opts) {
+      opts = opts || {};
+      ensure(7);
+      font("normal", 10); ink(opts.labelColor || INK);
+      doc.text(pdfText(label), M, y);
+      font("bold", 10); ink(opts.valueColor || INK);
+      doc.text(pdfText(value), PW - M, y, { align: "right" });
+      y += 6.4;
+    }
+    function divider() { ensure(3); strokeC(LINE); doc.setLineWidth(0.2); doc.line(M, y, PW - M, y); y += 4; }
+    function statusBox(s, extraLine) {
+      const h = extraLine ? 24 : 18;
+      ensure(h + 4);
+      const color = s.cls === "st-ok" ? OK : s.cls === "st-warn" ? WARN : INK;
+      fillC([245, 243, 237]); doc.roundedRect(M, y, CW, h, 2, 2, "F");
+      fillC(color); doc.circle(M + 9, y + h / 2, 4.2, "F");
+      font("bold", 11); doc.setTextColor(255, 255, 255);
+      doc.text(s.badge, M + 9, y + h / 2 + 1.3, { align: "center" });
+      font("bold", 10.5); ink(INK);
+      doc.text(pdfText(s.title), M + 18, y + 7.5);
+      font("normal", 9); ink(MUTED);
+      doc.text(doc.splitTextToSize(pdfText(s.desc), CW - 22), M + 18, y + 13);
+      if (extraLine) doc.text(pdfText(extraLine), M + 18, y + 19.5);
+      y += h + 6;
+    }
+    function table(headers, rows, widths) {
+      ensure(9);
+      font("bold", 8.5);
+      fillC(INK); doc.rect(M, y, CW, 7, "F");
+      doc.setTextColor(255, 255, 255);
+      let x = M + 2;
+      headers.forEach((h, i) => { doc.text(pdfText(h), x, y + 4.8); x += widths[i]; });
+      y += 7;
+      font("normal", 9);
+      rows.forEach((r, ri) => {
+        ensure(7);
+        if (ri % 2 === 1) { fillC([245, 243, 237]); doc.rect(M, y, CW, 6.6, "F"); }
+        ink(INK);
+        let xx = M + 2;
+        r.forEach((cell, i) => { doc.text(pdfText(String(cell)), xx, y + 4.6); xx += widths[i]; });
+        y += 6.6;
+      });
+      y += 4;
+    }
+
+    pageHeader(); y = 24;
+    font("bold", 20); ink(INK);
+    doc.text(pdfText("Meu plano financeiro"), M, y); y += 7;
+    font("normal", 11); ink(MUTED);
+    doc.text(pdfText("Método C.A.P. — Consciência, Ação, Planejamento"), M, y); y += 12;
+
+    const saldo = calcSaldoMensal(state.renda, state.despesas, state.dividas);
+    heading("1. Consciência");
+    row("Renda líquida mensal", fmt(state.renda));
+    row("Total de despesas", fmt(state.despesas.reduce((s, d) => s + (Number(d.valor) || 0), 0)));
+    row("Total de parcelas de dívidas", fmt(state.dividas.reduce((s, d) => s + (Number(d.parcela) || 0), 0)));
+    divider();
+    row("Saldo mensal", fmt(saldo), { labelColor: INK, valueColor: saldo < 0 ? WARN : OK });
+    y += 2;
+    statusBox(statusInfo(saldo));
+
+    if (state.despesas.length) {
+      heading("Despesas classificadas");
+      table(["Despesa", "Categoria", "Valor"],
+        state.despesas.map(d => [d.nome, state.classify[d.id] || "sem classificar", fmt(d.valor)]),
+        [95, 45, 34]);
+      y += 2;
+    }
+
+    if (state.dividas.length) {
+      heading("2. Ação — dívidas em ordem");
+      const { ordenadas, sim, extraMensal } = quitacaoResumo();
+      const porId = Object.fromEntries(sim.dividas.map(d => [d.id, d]));
+      table(["#", "Dívida", "Situação", "Quitação", "Saldo"],
+        ordenadas.map(d => {
+          const s = porId[d.id];
+          return [d.ordem + "º", d.nome, d.urgente ? "negocie primeiro" : "menor saldo primeiro",
+            s && s.quitadoMes != null ? s.quitadoMes + "º mês" : "sem previsão", fmt(d.saldo)];
+        }), [10, 55, 48, 30, 31]);
+      para(sim.travado
+        ? `Com a sobra atual (${fmt(extraMensal)}/mês), pelo menos uma dívida não tem previsão de quitação. Priorize negociar as dívidas marcadas "negocie primeiro".`
+        : `Usando a sobra atual do orçamento (${fmt(extraMensal)}/mês), a quitação total das dívidas acontece no ${sim.meses}º mês, com um custo estimado de ${fmt(sim.jurosTotal)} em juros.`);
+    }
+
+    heading("3. Planejamento — 50/30/20");
+    const split = split503020(state.renda);
+    row("Necessidades (50%)", fmt(split.necessidades));
+    row("Desejos (30%)", fmt(split.desejos));
+    row("Futuro (20%)", fmt(split.futuro));
+    y += 2;
+    const totalProteger = state.despesas.reduce((s, d) => s + (state.classify[d.id] === "Proteger" ? (Number(d.valor) || 0) : 0), 0);
+    const metaReserva = reservaMeta(totalProteger, state.reserveMonths);
+    para(`Reserva de emergência: meta de ${fmt(metaReserva)} (${state.reserveMonths} meses de despesas essenciais).`);
+    if (Number(state.renda) > 0 && metaReserva) {
+      const meses = mesesParaMeta(split.futuro, state.investRate, metaReserva);
+      para(`Investindo os ${fmt(split.futuro)} do "Futuro" todo mês a ${Number(state.investRate) || 0}% ao ano: ${isFinite(meses) ? "meta alcançada em aproximadamente " + meses + " meses" : "não é possível alcançar nesse ritmo"}.`);
+    }
+
+    if (state.meta.nome || state.meta.custo) {
+      heading("Minha meta");
+      row("Objetivo", state.meta.nome || "—");
+      row("Custo", fmt(state.meta.custo));
+      const porMes = metaPorPeriodo(state.meta.custo, state.meta.data);
+      row("Separar por mês", porMes ? fmt(porMes) : "—");
+    }
+
+    heading("4. Plano de 30 dias");
+    const semanas = [
+      "Semana 1 — Enxergar: registrei renda, despesas e dívidas",
+      "Semana 2 — Escolher: classifiquei minhas despesas",
+      "Semana 3 — Agir: organizei a ordem das minhas dívidas",
+      "Semana 4 — Planejar: defini meu 50/30/20 e minha meta"
+    ];
+    semanas.forEach((s, i) => {
+      ensure(7);
+      strokeC(LINE); doc.setLineWidth(0.3); doc.rect(M, y - 3.2, 4, 4);
+      if (state.weeks[String(i + 1)]) { font("bold", 8); ink(OK); doc.text("X", M + 0.9, y - 0.4); }
+      font("normal", 9.5); ink(INK);
+      doc.text(pdfText(s), M + 7, y); y += 6.6;
+    });
+    y += 2;
+    if (state.compromisso.texto) {
+      para(`Compromisso de 24h: ${state.compromisso.texto}${state.compromisso.data ? " (até " + new Date(state.compromisso.data).toLocaleDateString("pt-BR") + ")" : ""}.`);
+    }
+
+    ensure(20);
+    y += 4; strokeC(LINE); doc.setLineWidth(0.2); doc.line(M, y, PW - M, y); y += 5;
+    para("Conteúdo educativo, gerado a partir dos números que você mesmo informou. Não substitui orientação financeira profissional. Seus dados nunca saem deste celular.", 7.5, MUTED);
+
+    return doc;
+  }
+
+  const pdfBtn = document.getElementById("pdfBtn"), pdfStatus = document.getElementById("pdfStatus");
+  pdfBtn.addEventListener("click", () => {
+    pdfBtn.disabled = true; pdfBtn.textContent = "Gerando…";
+    pdfStatus.textContent = "Montando o seu relatório…";
+    loadJsPDF(10000).then(JsPDF => {
+      const doc = buildReportPdf(JsPDF);
+      const d = new Date(), stamp = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+      doc.save("meu-plano-financeiro-" + stamp + ".pdf");
+      pdfStatus.textContent = "Relatório baixado.";
+      toast("Relatório salvo.");
+    }).catch(() => {
+      pdfStatus.textContent = "Não foi possível gerar o PDF agora. Verifique sua internet (o gerador só precisa carregar uma vez) e tente de novo.";
+    }).finally(() => {
+      pdfBtn.disabled = false; pdfBtn.textContent = "Gerar PDF";
+    });
+  });
 
   wireValidation(["renda", "despValor", "divSaldo", "divParcela", "divTaxa", "metaCusto", "investRate"]);
   syncInputsFromState();
