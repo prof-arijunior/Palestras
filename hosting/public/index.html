@@ -8,7 +8,10 @@
 <style>
 :root{
   --ink:#142034;--ink-soft:#4A5263;--bg:#F8F6F1;--surface:#FFFFFF;--surface-2:#EFEBE2;
-  --line:#E2DDD2;--accent:#CDA254;--ok:#2F5D47;--ok-bg:#E1EBE4;--warn:#7E233B;--warn-bg:#F3E3E7;
+  --line:#E2DDD2;--accent:#CDA254;
+  --ok:#3D6F58;--ok-bg:#E1EBE4;
+  --warn:#7E233B;--warn-bg:#F3E3E7;
+  --zero-bg:#EFEBE2;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",system-ui,Arial,sans-serif}
@@ -29,6 +32,8 @@ section.tab.on{display:flex}
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;min-width:0}
 .field label{font-size:13px;font-weight:600;color:var(--ink-soft)}
 .field input,.field select{all:unset;box-sizing:border-box;width:100%;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:16px;color:var(--ink)}
+.field input.invalid{border-color:var(--warn)}
+.field .err{font-size:12.5px;color:var(--warn)}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
 .row .field{flex:1 1 120px;min-width:0;margin-bottom:0}
 .row .btn{flex:none}
@@ -39,6 +44,7 @@ section.tab.on{display:flex}
 .list-row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .list-row:last-child{border-bottom:0}
 .list-row .grow{flex:1;min-width:0}
+.list-row .sub{font-size:12.5px;color:var(--ink-soft);display:block;margin-top:2px}
 .list-row .amt{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
 .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .chip{all:unset;box-sizing:border-box;min-height:36px;padding:7px 13px;border:1.5px solid var(--line);border-radius:999px;font-size:13px;font-weight:600;color:var(--ink);background:var(--surface);cursor:pointer}
@@ -53,11 +59,29 @@ section.tab.on{display:flex}
 .checklist label{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
 .checklist label:last-child{border-bottom:0}
 .checklist input{width:20px;height:20px}
+.status-hero{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:14px}
+.status-hero.st-ok{background:var(--ok-bg)}
+.status-hero.st-zero{background:var(--zero-bg)}
+.status-hero.st-warn{background:var(--warn-bg)}
+.status-badge{flex:none;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;color:#fff}
+.status-hero.st-ok .status-badge{background:var(--ok)}
+.status-hero.st-zero .status-badge{background:var(--ink);color:var(--accent)}
+.status-hero.st-warn .status-badge{background:var(--warn)}
+.status-hero .tag{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.status-hero.st-ok .tag{color:var(--ok)}
+.status-hero.st-zero .tag{color:var(--accent)}
+.status-hero.st-warn .tag{color:var(--warn)}
+.status-hero h3{font-size:17px;margin:3px 0 4px}
+.status-hero p.desc{font-size:14px;color:var(--ink-soft);line-height:1.4}
 nav.bottom{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px env(safe-area-inset-bottom)}
 nav.bottom button{all:unset;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:10px;font-size:11px;font-weight:700;color:var(--ink-soft);cursor:pointer}
 nav.bottom button .ico{font-size:18px;line-height:1}
 nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
-.privacy{font-size:12px;color:var(--ink-soft);text-align:center;padding:4px 0 16px}
+.footer-area{display:flex;flex-direction:column;align-items:center;gap:8px;padding:4px 18px 16px}
+.privacy{font-size:12px;color:var(--ink-soft);text-align:center}
+#toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(14px);opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;background:var(--ink);color:#fff;padding:12px 16px;border-radius:12px;display:flex;align-items:center;gap:16px;font-size:13.5px;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:20}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+#toast button{all:unset;color:var(--accent);font-weight:700;cursor:pointer;white-space:nowrap;font-size:13.5px}
 </style>
 </head>
 <body>
@@ -82,6 +106,15 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     </div>
   </div>
 
+  <div class="status-hero st-zero" id="statusHero">
+    <div class="status-badge" id="statusBadge">0</div>
+    <div>
+      <p class="tag" id="statusTag">Zero</p>
+      <h3 id="statusTitle">Cadastre sua renda e despesas</h3>
+      <p class="desc" id="statusDesc">O diagnóstico aparece aqui assim que você preencher os números abaixo.</p>
+    </div>
+  </div>
+
   <div class="card">
     <h3>Despesas</h3>
     <div id="despesasList"></div>
@@ -99,6 +132,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     <div class="row">
       <div class="field"><label>Saldo restante</label><input type="number" inputmode="decimal" id="divSaldo" placeholder="0,00"></div>
       <div class="field"><label>Parcela mensal</label><input type="number" inputmode="decimal" id="divParcela" placeholder="0,00"></div>
+      <div class="field"><label>Juros (% ao mês)</label><input type="number" inputmode="decimal" id="divTaxa" placeholder="opcional"></div>
     </div>
     <div class="chip-row">
       <button class="chip" id="divAtraso" data-flag="atraso">Em atraso</button>
@@ -128,6 +162,11 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     <p class="muted">Dívidas em atraso ou com encargos altos aparecem primeiro — negocie essas antes de seguir a ordem pelo menor saldo.</p>
   </div>
   <div class="card" id="prioridadeList"><p class="muted">Cadastre dívidas na aba Consciência primeiro.</p></div>
+  <div class="card" id="quitacaoCard" style="display:none">
+    <h3>Quando eu fico livre das dívidas?</h3>
+    <div id="quitacaoBody" class="muted"></div>
+    <p class="muted" style="margin-top:10px;font-size:12.5px">Estimativa simplificada: segue a ordem acima, usa a sobra atual do seu orçamento todo mês e reaplica a parcela de cada dívida quitada na próxima. Não considera renegociação nem mudanças na renda.</p>
+  </div>
 </section>
 
 <section class="tab" data-tab="planejamento">
@@ -148,6 +187,15 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       </select>
     </div>
     <p class="muted">Meta de reserva: <b id="reserveTarget">—</b> (baseada nas despesas marcadas como "Proteger")</p>
+  </div>
+  <div class="card">
+    <h3>Investir o "Futuro" (20%)</h3>
+    <div class="field">
+      <label>Taxa de juros esperada (% ao ano)</label>
+      <input type="number" inputmode="decimal" id="investRate" placeholder="Ex.: 10">
+    </div>
+    <p class="muted" id="investBody">Preencha a renda e a taxa para ver uma estimativa.</p>
+    <p class="muted" style="margin-top:6px;font-size:12.5px">Estimativa simples de juros compostos, sem descontar impostos ou taxas. Não é recomendação de investimento.</p>
   </div>
   <div class="card">
     <h3>Minha meta</h3>
@@ -180,7 +228,10 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 
 </main>
 
-<p class="privacy">Seus dados ficam só neste celular. Nada é enviado a nenhum servidor.</p>
+<div class="footer-area">
+  <p class="privacy">Seus dados ficam só neste celular. Nada é enviado a nenhum servidor.</p>
+  <button class="btn btn-danger" id="wipeData">Apagar meus dados</button>
+</div>
 
 <nav class="bottom">
   <button data-tab="consciencia" class="on"><span class="ico">①</span>Consciência</button>
@@ -189,6 +240,8 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   <button data-tab="planejamento"><span class="ico">④</span>Planejar</button>
   <button data-tab="plano"><span class="ico">⑤</span>Plano</button>
 </nav>
+
+<div id="toast"><span id="toastMsg"></span><button id="toastAction" hidden>Desfazer</button></div>
 
 <script>
 (function(){
@@ -207,6 +260,39 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       .sort((a, b) => (Number(a.saldo) || 0) - (Number(b.saldo) || 0));
     return urgentes.concat(normais).map((d, i) => ({ ...d, urgente: !!(d.atraso || d.encargos), ordem: i + 1 }));
   }
+  // Simula a quitação mês a mês, na ordem de prioridade já definida: aplica juros,
+  // paga a parcela mínima de cada dívida aberta e usa a sobra do orçamento (+ parcelas
+  // já liberadas por dívidas quitadas) na primeira dívida aberta da lista.
+  function simularQuitacao(dividasOrdenadas, extraMensal) {
+    const MAX_MESES = 600;
+    const w = dividasOrdenadas.map(d => ({
+      id: d.id, saldo: Number(d.saldo) || 0, parcela: Number(d.parcela) || 0,
+      taxa: (Number(d.taxa) || 0) / 100, quitadoMes: null
+    }));
+    function restante() { return w.reduce((s, d) => s + Math.max(0, d.saldo), 0); }
+    let mes = 0, jurosTotal = 0;
+    while (restante() > 0.5 && mes < MAX_MESES) {
+      mes++;
+      w.forEach(d => { if (d.saldo > 0.005) { const j = d.saldo * d.taxa; d.saldo += j; jurosTotal += j; } });
+      let liberado = 0;
+      w.forEach(d => {
+        if (d.saldo > 0.005) {
+          d.saldo -= Math.min(d.parcela, d.saldo);
+          if (d.saldo <= 0.005 && d.quitadoMes == null) d.quitadoMes = mes;
+        } else if (d.quitadoMes != null && d.quitadoMes < mes) { liberado += d.parcela; }
+      });
+      let extra = extraMensal + liberado;
+      for (const d of w) {
+        if (extra <= 0.01) break;
+        if (d.saldo > 0.005) {
+          const q = Math.min(extra, d.saldo);
+          d.saldo -= q; extra -= q;
+          if (d.saldo <= 0.005 && d.quitadoMes == null) d.quitadoMes = mes;
+        }
+      }
+    }
+    return { meses: mes, jurosTotal, travado: restante() > 0.5, dividas: w };
+  }
   function split503020(renda) {
     const r = Number(renda) || 0;
     return { necessidades: r * 0.5, desejos: r * 0.3, futuro: r * 0.2 };
@@ -221,22 +307,81 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const meses = Math.max(1, Math.round((limite - hoje) / (1000 * 60 * 60 * 24 * 30)));
     return c / meses;
   }
+  // Meses até acumular `meta`, aportando `contribuicaoMensal` a `taxaAnualPct% a.a.` (juros compostos).
+  function mesesParaMeta(contribuicaoMensal, taxaAnualPct, meta) {
+    if (meta <= 0) return 0;
+    if (contribuicaoMensal <= 0) return Infinity;
+    const r = Math.pow(1 + (Number(taxaAnualPct) || 0) / 100, 1 / 12) - 1;
+    let saldo = 0, mes = 0;
+    while (saldo < meta && mes < 1200) { saldo = saldo * (1 + r) + contribuicaoMensal; mes++; }
+    return saldo >= meta ? mes : Infinity;
+  }
 
   // ---------- Formatação ----------
   const fmt = v => (Number(v) || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  function fmtMeses(n) {
+    if (!isFinite(n)) return "não é possível alcançar nesse ritmo";
+    if (n === 0) return "já alcançada";
+    if (n < 12) return n + (n === 1 ? " mês" : " meses");
+    const anos = Math.floor(n / 12), meses = n % 12;
+    return n + " meses (~" + anos + (meses ? " anos e " + meses + " meses" : (anos === 1 ? " ano" : " anos")) + ")";
+  }
 
-  // ---------- Estado / persistência local ----------
-  const STORAGE_KEY = "airo.v1";
+  // ---------- Estado / persistência local (versionado) ----------
+  const STORAGE_KEY = "airo.state";
+  const STORAGE_VERSION = 1;
+  function defaultState() {
+    return { v: STORAGE_VERSION, renda: "", despesas: [], dividas: [], classify: {}, reserveMonths: "3",
+      investRate: "10", meta: { nome: "", custo: "", data: "" }, weeks: {}, compromisso: { texto: "", data: "" } };
+  }
+  function migrate(raw) {
+    if (!raw || typeof raw !== "object") return defaultState();
+    if (raw.v === STORAGE_VERSION) return raw;
+    // futuras migrações de versão entram aqui, por exemplo:
+    // if (!raw.v) { raw = migrateFromUnversioned(raw); }
+    return Object.assign(defaultState(), raw, { v: STORAGE_VERSION });
+  }
   function loadState() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultState(); }
+    try { return migrate(JSON.parse(localStorage.getItem(STORAGE_KEY))); }
     catch (e) { return defaultState(); }
   }
-  function defaultState() {
-    return { renda: "", despesas: [], dividas: [], classify: {}, reserveMonths: "3",
-      meta: { nome: "", custo: "", data: "" }, weeks: {}, compromisso: { texto: "", data: "" } };
-  }
   let state = loadState();
-  function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); renderAll(); }
+  let persistTimer = null;
+  function persist() {
+    clearTimeout(persistTimer);
+    persistTimer = setTimeout(() => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {} }, 400);
+  }
+  function save() { persist(); renderAll(); }
+
+  // ---------- Toast (com desfazer) ----------
+  const toastEl = document.getElementById("toast"), toastMsg = document.getElementById("toastMsg"), toastAction = document.getElementById("toastAction");
+  let toastTimer = null, toastFn = null;
+  function toast(msg, actionLabel, fn) {
+    toastMsg.textContent = msg; toastFn = fn || null;
+    toastAction.hidden = !fn; if (fn) toastAction.textContent = actionLabel || "Desfazer";
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toastEl.classList.remove("show"); toastFn = null; }, fn ? 6000 : 3200);
+  }
+  toastAction.addEventListener("click", () => { const fn = toastFn; toastFn = null; toastEl.classList.remove("show"); if (fn) fn(); });
+
+  // ---------- Validação inline ----------
+  function validateNumberField(input) {
+    const bad = input.value !== "" && (!isFinite(parseFloat(input.value)) || parseFloat(input.value) < 0);
+    input.classList.toggle("invalid", bad);
+    input.setAttribute("aria-invalid", bad ? "true" : "false");
+    const field = input.closest(".field");
+    if (!field) return;
+    let err = field.querySelector(".err");
+    if (bad && !err) { err = document.createElement("span"); err.className = "err"; field.appendChild(err); }
+    if (err) { err.textContent = bad ? "Use um valor igual ou maior que zero." : ""; }
+  }
+  function wireValidation(ids) {
+    ids.forEach(id => {
+      const input = document.getElementById(id);
+      input.addEventListener("input", () => validateNumberField(input));
+    });
+  }
 
   // ---------- Navegação por abas ----------
   document.querySelectorAll("nav.bottom button").forEach(btn => {
@@ -248,13 +393,12 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 
   // ---------- Consciência ----------
   const rendaInput = document.getElementById("renda");
-  rendaInput.value = state.renda;
   rendaInput.addEventListener("input", () => { state.renda = rendaInput.value; save(); });
 
   document.getElementById("addDespesa").addEventListener("click", () => {
     const nome = document.getElementById("despNome").value.trim();
     const valor = document.getElementById("despValor").value;
-    if (!nome || !valor) return;
+    if (!nome || !valor || Number(valor) < 0) return;
     state.despesas.push({ id: "d" + Date.now(), nome, valor });
     document.getElementById("despNome").value = ""; document.getElementById("despValor").value = "";
     save();
@@ -267,9 +411,10 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const nome = document.getElementById("divNome").value.trim();
     const saldo = document.getElementById("divSaldo").value;
     const parcela = document.getElementById("divParcela").value;
-    if (!nome || !saldo || !parcela) return;
-    state.dividas.push({ id: "v" + Date.now(), nome, saldo, parcela, atraso: novaDividaFlags.atraso, encargos: novaDividaFlags.encargos });
-    document.getElementById("divNome").value = ""; document.getElementById("divSaldo").value = ""; document.getElementById("divParcela").value = "";
+    const taxa = document.getElementById("divTaxa").value;
+    if (!nome || !saldo || !parcela || Number(saldo) < 0 || Number(parcela) < 0) return;
+    state.dividas.push({ id: "v" + Date.now(), nome, saldo, parcela, taxa: taxa || "0", atraso: novaDividaFlags.atraso, encargos: novaDividaFlags.encargos });
+    document.getElementById("divNome").value = ""; document.getElementById("divSaldo").value = ""; document.getElementById("divParcela").value = ""; document.getElementById("divTaxa").value = "";
     novaDividaFlags = { atraso: false, encargos: false };
     document.getElementById("divAtraso").classList.remove("on"); document.getElementById("divEncargos").classList.remove("on");
     save();
@@ -284,9 +429,18 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
         <button class="btn-danger" data-del-desp="${d.id}">remover</button>
       </div>`).join("") || `<p class="muted">Nenhuma despesa cadastrada ainda.</p>`;
     el.querySelectorAll("[data-del-desp]").forEach(b => b.addEventListener("click", () => {
-      state.despesas = state.despesas.filter(d => d.id !== b.dataset.delDesp);
-      delete state.classify[b.dataset.delDesp];
+      const id = b.dataset.delDesp;
+      const idx = state.despesas.findIndex(d => d.id === id);
+      const removed = state.despesas[idx];
+      const removedCat = state.classify[id];
+      state.despesas.splice(idx, 1);
+      delete state.classify[id];
       save();
+      toast(`"${removed.nome}" removida.`, "Desfazer", () => {
+        state.despesas.splice(idx, 0, removed);
+        if (removedCat) state.classify[removed.id] = removedCat;
+        save();
+      });
     }));
   }
 
@@ -294,13 +448,18 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const el = document.getElementById("dividasList");
     el.innerHTML = state.dividas.map(d => `
       <div class="list-row">
-        <p class="grow">${d.nome} ${d.atraso ? '<span class="badge badge-warn">atraso</span>' : ""} ${d.encargos ? '<span class="badge badge-warn">encargos</span>' : ""}</p>
+        <p class="grow">${d.nome} ${d.atraso ? '<span class="badge badge-warn">atraso</span>' : ""} ${d.encargos ? '<span class="badge badge-warn">encargos</span>' : ""}
+          ${Number(d.taxa) > 0 ? `<span class="sub">${d.taxa}% ao mês</span>` : ""}</p>
         <p class="amt">${fmt(d.saldo)}</p>
         <button class="btn-danger" data-del-div="${d.id}">remover</button>
       </div>`).join("") || `<p class="muted">Nenhuma dívida cadastrada ainda.</p>`;
     el.querySelectorAll("[data-del-div]").forEach(b => b.addEventListener("click", () => {
-      state.dividas = state.dividas.filter(d => d.id !== b.dataset.delDiv);
+      const id = b.dataset.delDiv;
+      const idx = state.dividas.findIndex(d => d.id === id);
+      const removed = state.dividas[idx];
+      state.dividas.splice(idx, 1);
       save();
+      toast(`"${removed.nome}" removida.`, "Desfazer", () => { state.dividas.splice(idx, 0, removed); save(); });
     }));
   }
 
@@ -324,16 +483,72 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       <div class="list-row"><p class="grow">${c}</p><p class="amt">${fmt(totals[c])}</p></div>`).join("");
   }
 
-  // ---------- Dívidas / prioridade ----------
+  // ---------- Dívidas / prioridade / simulação de quitação ----------
   function renderPrioridade() {
     const el = document.getElementById("prioridadeList");
-    if (!state.dividas.length) { el.innerHTML = `<p class="muted">Cadastre dívidas na aba Consciência primeiro.</p>`; return; }
+    const quitacaoCard = document.getElementById("quitacaoCard");
+    if (!state.dividas.length) {
+      el.innerHTML = `<p class="muted">Cadastre dívidas na aba Consciência primeiro.</p>`;
+      quitacaoCard.style.display = "none";
+      return;
+    }
     const ordenadas = ordenarDividasPrioridade(state.dividas);
-    el.innerHTML = ordenadas.map(d => `
+    const saldoMensal = calcSaldoMensal(state.renda, state.despesas, state.dividas);
+    const extraMensal = Math.max(0, saldoMensal);
+    const sim = simularQuitacao(ordenadas, extraMensal);
+    const porId = Object.fromEntries(sim.dividas.map(d => [d.id, d]));
+
+    el.innerHTML = ordenadas.map(d => {
+      const s = porId[d.id];
+      const quitacaoTxt = s && s.quitadoMes != null ? `quita em ${s.quitadoMes}º mês` : "sem previsão de quitação";
+      return `
       <div class="list-row">
-        <p class="grow"><b>${d.ordem}º</b> · ${d.nome} ${d.urgente ? '<span class="badge badge-warn">negocie primeiro</span>' : '<span class="badge badge-ok">menor saldo primeiro</span>'}</p>
+        <p class="grow"><b>${d.ordem}º</b> · ${d.nome} ${d.urgente ? '<span class="badge badge-warn">negocie primeiro</span>' : '<span class="badge badge-ok">menor saldo primeiro</span>'}
+          <span class="sub">${quitacaoTxt}</span></p>
         <p class="amt">${fmt(d.saldo)}</p>
-      </div>`).join("");
+      </div>`;
+    }).join("");
+
+    quitacaoCard.style.display = "block";
+    const body = document.getElementById("quitacaoBody");
+    if (sim.travado) {
+      body.innerHTML = `<p>Com a sobra atual (${fmt(extraMensal)}/mês), pelo menos uma dívida não tem previsão de quitação — os juros estão subindo mais rápido do que você consegue pagar. Priorize negociar as dívidas marcadas acima antes de seguir o restante do plano.</p>`;
+    } else {
+      body.innerHTML = `<p>Usando a sobra atual do seu orçamento (<b>${fmt(extraMensal)}/mês</b>), você fica livre de todas as dívidas em <b>${sim.meses}º mês</b>, com um custo estimado de <b>${fmt(sim.jurosTotal)}</b> em juros.</p>`;
+    }
+  }
+
+  // ---------- Diagnóstico (Positivo / Zero / Negativo) ----------
+  function renderStatusHero(saldo) {
+    const hero = document.getElementById("statusHero");
+    const temDados = state.renda !== "" || state.despesas.length || state.dividas.length;
+    if (!temDados) {
+      hero.className = "status-hero st-zero";
+      document.getElementById("statusBadge").textContent = "0";
+      document.getElementById("statusTag").textContent = "Zero";
+      document.getElementById("statusTitle").textContent = "Cadastre sua renda e despesas";
+      document.getElementById("statusDesc").textContent = "O diagnóstico aparece aqui assim que você preencher os números abaixo.";
+      return;
+    }
+    let cls, badge, tag, title, desc;
+    if (saldo > 0) {
+      cls = "st-ok"; badge = "+"; tag = "Positivo";
+      title = "Existe margem financeira.";
+      desc = "Decidir quanto vai para prioridades, dívidas e objetivos.";
+    } else if (saldo === 0) {
+      cls = "st-zero"; badge = "0"; tag = "Zero";
+      title = "Tudo já tem destino.";
+      desc = "Revisar gastos ajustáveis e planejar despesas sazonais.";
+    } else {
+      cls = "st-warn"; badge = "−"; tag = "Negativo";
+      title = "As saídas superam as entradas.";
+      desc = "Proteger o essencial, rever despesas e buscar negociação ou orientação.";
+    }
+    hero.className = "status-hero " + cls;
+    document.getElementById("statusBadge").textContent = badge;
+    document.getElementById("statusTag").textContent = tag;
+    document.getElementById("statusTitle").textContent = title;
+    document.getElementById("statusDesc").textContent = desc;
   }
 
   // ---------- Planejamento ----------
@@ -341,9 +556,9 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const split = split503020(state.renda);
     const total = (Number(state.renda) || 0) || 1;
     document.getElementById("splitBar").innerHTML = [
-      ["necessidades", split.necessidades, "#142034"],
-      ["desejos", split.desejos, "#7E233B"],
-      ["futuro", split.futuro, "#3D6F58"]
+      ["necessidades", split.necessidades, "var(--ink)"],
+      ["desejos", split.desejos, "var(--warn)"],
+      ["futuro", split.futuro, "var(--ok)"]
     ].map(([k, v, color]) => `<div class="split-seg" style="width:${(v / total) * 100}%;background:${color}">${Math.round((v / total) * 100)}%</div>`).join("");
     document.getElementById("splitBody").innerHTML =
       `Necessidades: <b>${fmt(split.necessidades)}</b> · Desejos: <b>${fmt(split.desejos)}</b> · Futuro: <b>${fmt(split.futuro)}</b>`;
@@ -351,7 +566,17 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const totals = { Proteger: 0 };
     state.despesas.forEach(d => { if (state.classify[d.id] === "Proteger") totals.Proteger += Number(d.valor) || 0; });
     document.getElementById("reserveMonths").value = state.reserveMonths;
-    document.getElementById("reserveTarget").textContent = fmt(reservaMeta(totals.Proteger, state.reserveMonths));
+    const metaReserva = reservaMeta(totals.Proteger, state.reserveMonths);
+    document.getElementById("reserveTarget").textContent = fmt(metaReserva);
+
+    document.getElementById("investRate").value = state.investRate;
+    const investBody = document.getElementById("investBody");
+    if (!(Number(state.renda) > 0) || !metaReserva) {
+      investBody.textContent = "Preencha a renda e classifique despesas como \"Proteger\" para ver uma estimativa.";
+    } else {
+      const meses = mesesParaMeta(split.futuro, state.investRate, metaReserva);
+      investBody.innerHTML = `Investindo os <b>${fmt(split.futuro)}</b> do "Futuro" todo mês a <b>${Number(state.investRate) || 0}% ao ano</b>, você chega à meta de reserva (${fmt(metaReserva)}) em <b>${fmtMeses(meses)}</b>.`;
+    }
 
     document.getElementById("metaNome").value = state.meta.nome;
     document.getElementById("metaCusto").value = state.meta.custo;
@@ -360,6 +585,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     document.getElementById("metaPorMes").textContent = porMes ? fmt(porMes) : "—";
   }
   document.getElementById("reserveMonths").addEventListener("change", e => { state.reserveMonths = e.target.value; save(); });
+  document.getElementById("investRate").addEventListener("input", e => { state.investRate = e.target.value; save(); });
   ["metaNome", "metaCusto", "metaData"].forEach(id => {
     document.getElementById(id).addEventListener("input", e => {
       const key = id.replace("meta", "").toLowerCase();
@@ -369,13 +595,28 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 
   // ---------- Plano de 30 dias ----------
   document.querySelectorAll('[data-week]').forEach(cb => {
-    cb.checked = !!state.weeks[cb.dataset.week];
     cb.addEventListener("change", () => { state.weeks[cb.dataset.week] = cb.checked; save(); });
   });
-  document.getElementById("compromissoTexto").value = state.compromisso.texto;
-  document.getElementById("compromissoData").value = state.compromisso.data;
   document.getElementById("compromissoTexto").addEventListener("input", e => { state.compromisso.texto = e.target.value; save(); });
   document.getElementById("compromissoData").addEventListener("input", e => { state.compromisso.data = e.target.value; save(); });
+
+  // ---------- Apagar meus dados ----------
+  document.getElementById("wipeData").addEventListener("click", () => {
+    if (!confirm("Apagar todos os seus dados deste celular? Essa ação não pode ser desfeita.")) return;
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    state = defaultState();
+    syncInputsFromState();
+    save();
+    toast("Seus dados foram apagados.");
+  });
+
+  // ---------- Sincroniza campos que não são recriados a cada render ----------
+  function syncInputsFromState() {
+    rendaInput.value = state.renda;
+    document.getElementById("compromissoTexto").value = state.compromisso.texto;
+    document.getElementById("compromissoData").value = state.compromisso.data;
+    document.querySelectorAll('[data-week]').forEach(cb => { cb.checked = !!state.weeks[cb.dataset.week]; });
+  }
 
   // ---------- Cabeçalho ----------
   function renderHeader() {
@@ -383,12 +624,16 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const el = document.getElementById("hdrSaldo");
     el.textContent = fmt(saldo);
     el.style.color = saldo < 0 ? "#F3B6C2" : "#CDA254";
+    renderStatusHero(saldo);
   }
 
   function renderAll() {
     renderHeader(); renderDespesas(); renderDividas();
     renderClassify(); renderPrioridade(); renderPlanejamento();
   }
+
+  wireValidation(["renda", "despValor", "divSaldo", "divParcela", "divTaxa", "metaCusto", "investRate"]);
+  syncInputsFromState();
   renderAll();
 })();
 </script>
