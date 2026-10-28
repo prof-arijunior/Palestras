@@ -32,6 +32,20 @@ body:hover #hud,#hud:focus-within{opacity:1}
 #notes.show{display:block}
 #help{position:fixed;left:16px;top:12px;font:13px Inter,Arial,sans-serif;color:#9AA4B8;opacity:.0;transition:opacity .3s}
 body:hover #help{opacity:1}
+#chapterLabel{position:fixed;left:16px;bottom:12px;display:flex;gap:10px;align-items:center;font:500 13px Inter,Arial,sans-serif;color:#9AA4B8;opacity:.0;transition:opacity .3s}
+body:hover #chapterLabel,#chapterLabel:focus-within{opacity:1}
+#chapterLabel .segs{display:flex;gap:4px}
+#chapterLabel .seg{width:26px;height:4px;border-radius:2px;background:#2A3B5C;overflow:hidden}
+#chapterLabel .seg i{display:block;height:100%;width:0%;background:#CDA254;transition:width .3s}
+#idx{position:fixed;inset:0;background:rgba(10,16,28,.96);z-index:50;display:none;overflow:auto;padding:56px 64px}
+#idx.show{display:block}
+#idx h2{color:#F8F6F1;font:600 32px Inter,Arial,sans-serif;margin-bottom:28px}
+#idx .idxChapter{color:#CDA254;font:700 13px Inter,Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;margin:28px 0 12px}
+#idx .idxGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+#idx button.idxItem{all:unset;box-sizing:border-box;display:flex;gap:12px;align-items:center;background:#15233B;border:1px solid #2A3B5C;border-radius:10px;padding:12px 14px;color:#F8F6F1;font:14px Inter,Arial,sans-serif;cursor:pointer}
+#idx button.idxItem:hover{background:#1E2E4A;border-color:#CDA254}
+#idx button.idxItem .n{flex:none;color:#9AA4B8;font-variant-numeric:tabular-nums;font-weight:700}
+#idx button.idxClose{all:unset;position:fixed;top:24px;right:32px;color:#9AA4B8;font:13px Inter,Arial,sans-serif;cursor:pointer;background:#1E2E4A;padding:8px 14px;border-radius:8px}
 .poll{display:flex;gap:40px;align-items:center}
 .poll-qr-wrap{flex:none;width:260px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .poll-qr{width:220px;height:220px;background:#fff;border-radius:16px;padding:14px}
@@ -57,7 +71,7 @@ body:hover #help{opacity:1}
 </head>
 <body>
 <div id="stage">
-<section id="cover" data-i="0" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:space-between">
+<section id="cover" data-chapter="0" data-i="0" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:space-between">
 <svg aria-label="Ilustração: carteira aberta com poucas notas, recibos e uma calculadora sobre a mesa" width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" style="position:absolute;right:112px;top:220px;width:600px;height:600px">
 <circle cx="300" cy="290" r="280" fill="#1B2A43"/>
 <circle cx="300" cy="290" r="190" fill="#213250"/>
@@ -112,7 +126,7 @@ Transição: “Para entender como isso acontece, vamos conhecer a história de 
 
 Lembrete: Nick é um personagem fictício; os números do exemplo são didáticos.</aside>
 </section>
-<section id="conheca" data-i="1" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;gap:96px;align-items:center">
+<section id="conheca" data-chapter="0" data-i="1" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;gap:96px;align-items:center">
 <svg aria-label="Ilustração: retrato de Nick, homem de 37 anos, cabelo curto escuro e barba curta, de camisa verde" width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" style="width:600px;height:600px;flex:none">
 <circle cx="300" cy="300" r="290" fill="#142034"/>
 <circle cx="300" cy="300" r="210" fill="#1E2E4A"/>
@@ -153,7 +167,7 @@ Lembrete: Nick é um personagem fictício; os números do exemplo são didático
 
 Objetivo: criar identificação antes de qualquer conteúdo técnico. Nick é um personagem fictício; os valores da história são didáticos.</aside>
 </section>
-<section id="dia5" data-i="2" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:64px">
+<section id="dia5" data-chapter="0" data-i="2" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:64px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Dia 20 do mês</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Nick recebeu. Pagou as contas. E agora?</h2>
@@ -205,7 +219,7 @@ Objetivo: criar identificação antes de qualquer conteúdo técnico. Nick é um
 
 Interação: “Quem já passou por uma situação parecida?” Dê alguns segundos para as pessoas reagirem. Não peça que revelem valores, dívidas ou detalhes pessoais.</aside>
 </section>
-<section id="misterio" data-i="3" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:space-between">
+<section id="misterio" data-chapter="0" data-i="3" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:space-between">
 <svg aria-label="Ilustração: moedas saem de uma carteira e se transformam em pequenos recibos que se espalham em várias direções" width="560" height="520" viewBox="0 0 560 520" xmlns="http://www.w3.org/2000/svg" style="position:absolute;right:112px;top:300px;width:560px;height:520px">
 <path d="M90 430 C 200 380, 260 300, 300 200 S 420 60, 520 40" fill="none" stroke="#CDA254" stroke-width="3" stroke-dasharray="4 14" stroke-linecap="round" opacity="0.7"/>
 <path d="M90 430 C 220 420, 330 380, 400 300 S 500 220, 540 230" fill="none" stroke="#CDA254" stroke-width="3" stroke-dasharray="4 14" stroke-linecap="round" opacity="0.5"/>
@@ -245,7 +259,7 @@ Interação: “Quem já passou por uma situação parecida?” Dê alguns segun
 
 Objetivo didático: mostrar que a memória não substitui o registro financeiro.</aside>
 </section>
-<section id="dados" data-i="4" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<section id="dados" data-chapter="0" data-i="4" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">A história de Nick é comum?</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">O endividamento faz parte da realidade de muitas famílias</h2>
@@ -279,7 +293,7 @@ Objetivo didático: mostrar que a memória não substitui o registro financeiro.
 
 Cuidado: conferir os dados e a fonte oficial (CNC/Peic) novamente antes de reapresentar a palestra em outra data.</aside>
 </section>
-<section id="perspectiva" data-i="5" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<section id="perspectiva" data-chapter="0" data-i="5" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">A primeira mudança de perspectiva</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Educação financeira não é parar de viver. É escolher melhor.</h2>
@@ -308,7 +322,7 @@ Cuidado: conferir os dados e a fonte oficial (CNC/Peic) novamente antes de reapr
 
 Transição para o segundo ato: “Mas, antes de decidir o que cortar, Nick precisa descobrir o que realmente está acontecendo.”</aside>
 </section>
-<section id="investigar" data-i="6" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:center;gap:40px">
+<section id="investigar" data-chapter="1" data-i="6" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:center;gap:40px">
 <svg aria-label="Ilustração: caderno de orçamento aberto, uma caneta e um celular sobre a mesa" width="560" height="480" viewBox="0 0 560 480" xmlns="http://www.w3.org/2000/svg" style="position:absolute;right:112px;top:300px;width:560px;height:480px">
 <circle cx="290" cy="230" r="220" fill="#1B2A43"/>
 <rect x="40" y="380" width="480" height="5" rx="2.5" fill="#CDA254" opacity="0.55"/>
@@ -342,7 +356,7 @@ Transição para o segundo ato: “Mas, antes de decidir o que cortar, Nick prec
 
 Aqui começa o Ato 2 (Interesse). Duração sugerida do ato: 12–15 minutos.</aside>
 </section>
-<section id="metodo" data-i="7" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<section id="metodo" data-chapter="1" data-i="7" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">O Método C.A.P.</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Três movimentos para assumir o controle</h2>
@@ -380,7 +394,7 @@ Aqui começa o Ato 2 (Interesse). Duração sugerida do ato: 12–15 minutos.</a
 
 Os cinco passos: 1. Enxergar a realidade · 2. Descobrir os vazamentos · 3. Organizar as dívidas · 4. Dar uma função ao dinheiro · 5. Construir proteção para o futuro.</aside>
 </section>
-<section id="passo1" data-i="8" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
+<section id="passo1" data-chapter="1" data-i="8" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Passo 1 · C · Enxergar a realidade</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Quanto entra? Quanto sai? Quanto já está comprometido?</h2>
@@ -423,7 +437,7 @@ Os cinco passos: 1. Enxergar a realidade · 2. Descobrir os vazamentos · 3. Org
 
 Orientação prática: considerar também despesas que não aparecem todo mês, como IPVA, material escolar, manutenção da casa e seguros.</aside>
 </section>
-<section id="contraponto" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<section id="contraponto" data-chapter="1" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">Capítulo C · Mesma renda, resultado diferente</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Nick não é o único com R$ 3.000 por mês</h2>
@@ -448,7 +462,7 @@ Orientação prática: considerar também despesas que não aparecem todo mês, 
 
 Objetivo didático: separar renda de consciência financeira antes de ensinar a classificação de gastos (próximo slide). Dani é um personagem fictício, assim como Nick.</aside>
 </section>
-<section id="passo2" data-i="9" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<section id="passo2" data-chapter="1" data-i="9" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Passo 2 · C · Descobrir os vazamentos</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Nem todo gasto é um problema. Mas todo gasto precisa ser compreendido.</h2>
@@ -491,7 +505,7 @@ Objetivo didático: separar renda de consciência financeira antes de ensinar a 
 </div>
 <aside>Fala: “Nick percebe que existem despesas necessárias, outras que podem ser revistas e algumas que não são mensais, mas deveriam estar previstas. O objetivo não é classificar lazer como algo errado. É reconhecer o que pode ser ajustado sem comprometer as necessidades da família.”</aside>
 </section>
-<section id="classificar" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<section id="classificar" data-chapter="1" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">Atividade ao vivo · Capítulo C</p>
 <h2 style="font-size:58px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Classifique os gastos do Nick: Proteger, Rever ou Prever?</h2>
@@ -514,7 +528,7 @@ Mecânica: o QR code abre uma página simples no celular, uma pergunta por vez, 
 
 Gabarito sugerido, não é absoluto: aluguel, mercado e transporte → Proteger. Celular, lazer e assinaturas → Rever. IPVA → Prever.</aside>
 </section>
-<section id="aposta" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:center">
+<section id="aposta" data-chapter="1" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:center">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">Atividade ao vivo · Capítulo C</p>
 <h2 style="font-size:58px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Antes de ver a planilha: qual gasto pesa mais no orçamento do Nick?</h2>
@@ -530,7 +544,7 @@ Gabarito sugerido, não é absoluto: aluguel, mercado e transporte → Proteger.
 
 Não revele a resposta ainda — ela aparece naturalmente no próximo slide, quando a planilha completa é mostrada.</aside>
 </section>
-<section id="dinamica1" data-i="10" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
+<section id="dinamica1" data-chapter="1" data-i="10" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Dinâmica 1 · Em duplas · 1 minuto</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Vamos descobrir por que a conta não fecha?</h2>
@@ -572,7 +586,7 @@ Conclusão didática: o Nick não está atrasando as contas — ele está cobrin
 
 Nota: os R$ 550 de parcelas são a soma das três dívidas que aparecem no inventário (R$ 100 + R$ 200 + R$ 250). Na análise real, é preciso detalhar saldos devedores e vencimentos.</aside>
 </section>
-<section id="saldo" data-i="11" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<section id="saldo" data-chapter="1" data-i="11" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Interpretar o diagnóstico</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">O que o saldo está dizendo?</h2>
@@ -609,7 +623,7 @@ Nota: os R$ 550 de parcelas são a soma das três dívidas que aparecem no inven
 
 Conexão com a história: o saldo do Nick é negativo — faltam R$ 200 todo mês, cobertos pelo cheque especial. A partir daqui, o Método C.A.P. vai ajudá-lo a sair do vermelho.</aside>
 </section>
-<section id="acao" data-i="12" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<section id="acao" data-chapter="2" data-i="12" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">A · Ação para sair das dívidas</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Antes de acelerar, pare de aumentar o problema</h2>
@@ -643,7 +657,7 @@ Conexão com a história: o saldo do Nick é negativo — faltam R$ 200 todo mê
 
 No caso do Nick: o primeiro problema não é uma dívida específica, é o déficit de R$ 200 por mês. Enquanto ele existir, o cheque especial continua crescendo.</aside>
 </section>
-<section id="passo3" data-i="13" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<section id="passo3" data-chapter="2" data-i="13" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Passo 3 · A · Organizar as dívidas</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Quando tudo está misturado, fica difícil decidir</h2>
@@ -676,7 +690,7 @@ No caso do Nick: o primeiro problema não é uma dívida específica, é o défi
 
 Cuidado: o destaque no menor saldo não significa que ele deva ser priorizado em qualquer circunstância.</aside>
 </section>
-<section id="negociar" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<section id="negociar" data-chapter="2" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Capítulo A · Quando negociar antes de seguir o plano</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Nem toda dívida espera a fila da estratégia</h2>
@@ -701,7 +715,7 @@ Cuidado: o destaque no menor saldo não significa que ele deva ser priorizado em
 </div>
 <aside>Fala: “A estratégia da menor dívida primeiro é um bom ponto de partida, mas não é absoluta. Se uma dívida já está atrasada, tem encargos muito altos ou risco de negativação, negocie essa primeiro — depois volte à ordem pelo saldo restante.”</aside>
 </section>
-<section id="estrategia" data-i="14" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<section id="estrategia" data-chapter="2" data-i="14" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">A · Estratégia da menor dívida primeiro</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Uma dívida de cada vez. Um plano de cada vez.</h2>
@@ -743,7 +757,7 @@ Cuidado: o destaque no menor saldo não significa que ele deva ser priorizado em
 
 Mensagem central: o método ajuda a organizar a ação; não substitui a análise das condições reais de cada dívida.</aside>
 </section>
-<section id="dinamica2" data-i="15" data-transition="fade" style="background:#7E233B;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<section id="dinamica2" data-chapter="2" data-i="15" data-transition="fade" style="background:#7E233B;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#F3D9DF">Dinâmica 2 · 1 minuto</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Você está no lugar de Nick. Qual é sua decisão?</h2>
@@ -783,7 +797,7 @@ Fechamento da dinâmica: a compra parcelada é a menor dívida pelo saldo restan
 
 Cuidado: se já houver saldo acumulado no cheque especial, ele costuma ter encargos altos e pode exigir prioridade ou renegociação antes. Não é possível afirmar um prazo exato de quitação sem conhecer as condições contratuais.</aside>
 </section>
-<section id="prioridadepoll" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:center">
+<section id="prioridadepoll" data-chapter="2" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:center">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">Atividade ao vivo · Capítulo A</p>
 <h2 style="font-size:58px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Você está no lugar do Nick. Qual dívida você prioriza?</h2>
@@ -799,7 +813,7 @@ Cuidado: se já houver saldo acumulado no cheque especial, ele costuma ter encar
 
 Fechamento: a compra parcelada é a menor dívida pelo saldo restante — a recomendação do método.</aside>
 </section>
-<section id="termometro" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:center">
+<section id="termometro" data-chapter="2" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:center">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">Atividade ao vivo · Capítulo A</p>
 <h2 style="font-size:58px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Sem citar valores: a quantos passos você está do Nick hoje?</h2>
@@ -815,7 +829,7 @@ Fechamento: a compra parcelada é a menor dívida pelo saldo restante — a reco
 
 Objetivo: mostrar que a situação do Nick é comum na própria sala, sem expor ninguém.</aside>
 </section>
-<section id="simulacao" data-i="16" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
+<section id="simulacao" data-chapter="2" data-i="16" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">A simulação completa · Saindo do vermelho</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">O que mudou no orçamento de Nick?</h2>
@@ -856,7 +870,7 @@ Detalhe dos cortes: lazer e delivery de R$ 380 para R$ 200; assinaturas e outros
 
 Transição: “E é aqui que a história começa a mudar. Nick deixa de apenas reagir às contas e passa a fazer escolhas com intenção.”</aside>
 </section>
-<section id="plano" data-i="17" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<section id="plano" data-chapter="3" data-i="17" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
 <svg aria-label="Ilustração: mesa organizada com caderno de orçamento preenchido, metas marcadas e uma pequena planta" width="520" height="520" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" style="position:absolute;right:112px;top:260px;width:520px;height:520px">
 <circle cx="270" cy="250" r="240" fill="#1B2A43"/>
 <rect x="40" y="420" width="460" height="5" rx="2.5" fill="#CDA254" opacity="0.55"/>
@@ -898,7 +912,7 @@ Fala: “Perceba que a transformação não é instantânea. O Nick não ficou r
 
 Pergunta para despertar o desejo: “O que mudaria na sua vida se você soubesse exatamente para onde seu dinheiro vai e tivesse um plano para os próximos meses?”</aside>
 </section>
-<section id="passo4" data-i="18" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<section id="passo4" data-chapter="3" data-i="18" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Passo 4 · P · Dar uma função ao dinheiro</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">O dinheiro precisa de um destino</h2>
@@ -941,7 +955,7 @@ Pergunta para despertar o desejo: “O que mudaria na sua vida se você soubesse
 </div>
 <aside>Fala: “Nick aprende a distribuir sua renda de acordo com prioridades. O modelo 50/30/20 é uma referência, não uma regra que todas as famílias conseguem seguir imediatamente. Se as necessidades já consomem mais de 50% da renda, é preciso adaptar o orçamento à realidade.”</aside>
 </section>
-<section id="exemplo" data-i="19" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<section id="exemplo" data-chapter="3" data-i="19" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Exemplo com o modelo 50/30/20</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Como ficaria uma renda de R$ 3.000?</h2>
@@ -982,7 +996,7 @@ Cuidado didático: não conte duas vezes a mesma parcela. No orçamento pessoal,
 
 Conexão com a história: no orçamento do Nick, só moradia, mercado, transporte e celular já somam R$ 2.030 — mais que os R$ 1.500 do modelo. Por isso o 50/30/20 é uma bússola, não uma regra: ele adapta as proporções à realidade de quem mora sozinho e paga aluguel.</aside>
 </section>
-<section id="passo5" data-i="20" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<section id="passo5" data-chapter="3" data-i="20" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Passo 5 · P · Construir proteção para o futuro</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Uma reserva pode impedir que um imprevisto vire dívida</h2>
@@ -1016,7 +1030,7 @@ Conexão com a história: no orçamento do Nick, só moradia, mercado, transport
 
 Cuidado: a referência de 3 a 6 meses de despesas essenciais é um horizonte de longo prazo, não uma exigência inicial.</aside>
 </section>
-<section id="reservatermometro" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:center">
+<section id="reservatermometro" data-chapter="3" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:center">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">Atividade ao vivo · Capítulo P</p>
 <h2 style="font-size:58px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Quantos meses de reserva de emergência você tem hoje?</h2>
@@ -1032,7 +1046,7 @@ Cuidado: a referência de 3 a 6 meses de despesas essenciais é um horizonte de 
 
 Conexão: o resultado real da sala costuma mostrar que a maioria está começando do zero — exatamente o ponto de partida do Nick neste passo.</aside>
 </section>
-<section id="metas" data-i="21" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<section id="metas" data-chapter="3" data-i="21" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:96px 128px 160px;display:flex;flex-direction:column;gap:32px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Transformar desejos em metas</p>
 <h2 style="font-size:52px;font-weight:700;line-height:1.15;letter-spacing:-1px;color:#142034">De “um dia eu quero” para “estou me organizando para”</h2>
@@ -1075,7 +1089,7 @@ Conexão: o resultado real da sala costuma mostrar que a maioria está começand
 
 “A partir de agora, essas três perguntas vocês podem responder para a própria vida, não a do Nick — no app Airo Finanças Pessoais. O QR code vai ficar disponível de novo no final.”</aside>
 </section>
-<section id="trintadias" data-i="22" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<section id="trintadias" data-chapter="4" data-i="22" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">O plano de 30 dias</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Não tente mudar tudo hoje. Comece por etapas.</h2>
@@ -1112,7 +1126,7 @@ Conexão: o resultado real da sala costuma mostrar que a maioria está começand
 </div>
 <aside>Fala: “Planejamento financeiro não é uma atividade que fazemos uma vez e esquecemos. É um processo de acompanhamento. Reserve dez minutos por semana para revisar o que aconteceu e ajustar o próximo passo.”</aside>
 </section>
-<section id="compromisso" data-i="23" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<section id="compromisso" data-chapter="4" data-i="23" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Dinâmica final · Meu compromisso de 24 horas</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Agora é a sua vez</h2>
@@ -1154,7 +1168,7 @@ Dê 30 a 45 segundos para que cada pessoa registre sua decisão. A ficha pode se
 
 Se houver tempo, convide duas ou três pessoas a compartilhar apenas a ação escolhida, sem expor valores ou detalhes financeiros.</aside>
 </section>
-<section id="encerramento" data-i="24" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:28px">
+<section id="encerramento" data-chapter="4" data-i="24" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:28px">
 <svg aria-label="Ilustração: Nick caminha por uma estrada organizada em direção a um horizonte iluminado" width="1920" height="380" viewBox="0 0 1920 380" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:0px;bottom:0px;width:1920px;height:380px">
 <defs>
 <radialGradient id="glow" cx="50%" cy="10%" r="60%">
@@ -1191,7 +1205,7 @@ Se houver tempo, convide duas ou três pessoas a compartilhar apenas a ação es
 
 “Qual será o seu primeiro passo?”</aside>
 </section>
-<section id="referencias" data-i="25" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<section id="referencias" data-chapter="4" data-i="25" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Referências</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Informação é o primeiro passo para boas decisões</h2>
@@ -1226,30 +1240,67 @@ Se houver tempo, convide duas ou três pessoas a compartilhar apenas a ação es
 </section>
 </div>
 <div id="bar"></div>
-<p id="help">← → navegar · F tela cheia · N notas do palestrante</p>
-<div id="hud"><button id="prev" aria-label="Slide anterior">←</button><span id="count"></span><button id="next" aria-label="Próximo slide">→</button><button id="nb">Notas</button><button id="fs">Tela cheia</button><button id="newSession" title="Zera as enquetes ao vivo e inicia uma sessão nova">Nova sessão</button></div>
+<p id="help">← → navegar · F tela cheia · N notas do palestrante · I índice</p>
+<div id="chapterLabel"><span id="chapterText"></span><div class="segs" id="chapterSegs"></div></div>
+<div id="hud"><button id="prev" aria-label="Slide anterior">←</button><span id="count"></span><button id="next" aria-label="Próximo slide">→</button><button id="idxBtn" title="Índice de slides (I)">Índice</button><button id="nb">Notas</button><button id="fs">Tela cheia</button><button id="newSession" title="Zera as enquetes ao vivo e inicia uma sessão nova">Nova sessão</button></div>
+<div id="idx"><button class="idxClose" id="idxClose">Fechar (Esc)</button><h2>Índice da apresentação</h2><div id="idxBody"></div></div>
 <div id="notes" aria-live="polite"></div>
 <script>
 (function(){
 var S=[].slice.call(document.querySelectorAll('#stage>section')),n=S.length,i=0,stage=document.getElementById('stage'),notes=document.getElementById('notes');
 function fit(){var k=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform='scale('+k+') translate(-50%,-50%)';}
+
+var TITLES=["Capa","Conheça o Nick","Dia 20 do mês","O mistério do dinheiro","Dados: endividamento no Brasil","Educação financeira é escolher melhor","Nick decide investigar","O Método C.A.P.","Passo 1 · Enxergar a realidade","Nick e Dani: mesma renda","Passo 2 · Descobrir os vazamentos","Atividade · Classificar os gastos","Atividade · Aposta no maior gasto","Orçamento do Nick","Interpretar o diagnóstico","Ação para sair das dívidas","Passo 3 · Inventário de dívidas","Quando negociar antes do plano","Estratégia da menor dívida","Dinâmica 2 · Qual é sua decisão?","Atividade · Prioridade ao vivo","Atividade · Termômetro Nick","Simulação completa","Nick saiu do vermelho","Passo 4 · O modelo 50/30/20","Exemplo com renda de R$ 3.000","Passo 5 · Construir proteção","Atividade · Reserva de emergência","Transformar desejos em metas","O plano de 30 dias","Meu compromisso de 24h","Encerramento","Referências"];
+var CHAPTER_NAMES=["Ato 1 · O problema","Capítulo C · Consciência","Capítulo A · Ação","Capítulo P · Planejamento","Fechamento"];
+var CHAPTERS=(function(){
+var map={};
+S.forEach(function(s,k){var c=+s.dataset.chapter||0;(map[c]=map[c]||[]).push(k);});
+return Object.keys(map).sort(function(a,b){return a-b}).map(function(c){return {idx:+c,name:CHAPTER_NAMES[+c]||('Capítulo '+c),members:map[c]};});
+})();
+var chapterTextEl=document.getElementById('chapterText'),chapterSegsEl=document.getElementById('chapterSegs');
+function updateChapterUI(){
+var ch=+S[i].dataset.chapter||0,chap=CHAPTERS[ch],pos=chap.members.indexOf(i)+1;
+chapterTextEl.textContent=chap.name+' · '+pos+'/'+chap.members.length;
+chapterSegsEl.innerHTML=CHAPTERS.map(function(c){
+var p=c.idx<ch?1:c.idx>ch?0:(chap.members.indexOf(i)+1)/chap.members.length;
+return '<div class="seg"><i style="width:'+(p*100)+'%"></i></div>';
+}).join('');
+}
+var idxEl=document.getElementById('idx'),idxBody=document.getElementById('idxBody'),idxBtn=document.getElementById('idxBtn'),idxClose=document.getElementById('idxClose');
+function buildIndex(){
+idxBody.innerHTML=CHAPTERS.map(function(c){
+return '<p class="idxChapter">'+c.name+'</p><div class="idxGrid">'+c.members.map(function(k){
+return '<button class="idxItem" data-go="'+k+'"><span class="n">'+(k+1)+'</span><span>'+TITLES[k]+'</span></button>';
+}).join('')+'</div>';
+}).join('');
+idxBody.querySelectorAll('[data-go]').forEach(function(b){b.addEventListener('click',function(){show(+b.dataset.go);closeIdx();});});
+}
+function openIdx(){buildIndex();idxEl.classList.add('show');}
+function closeIdx(){idxEl.classList.remove('show');}
+
 function show(j){i=Math.max(0,Math.min(n-1,j));S.forEach(function(s,k){s.classList.toggle('on',k===i)});
 document.getElementById('count').textContent=(i+1)+' / '+n;document.getElementById('bar').style.width=((i+1)/n*100)+'%';
 var a=S[i].querySelector('aside');notes.textContent=a?a.textContent.trim():'(sem notas)';
-if(location.hash!=='#'+(i+1))history.replaceState(null,'','#'+(i+1));}
+if(location.hash!=='#'+(i+1))history.replaceState(null,'','#'+(i+1));
+updateChapterUI();}
 function go(d){show(i+d)}
 function fsT(){if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();}
 addEventListener('resize',fit);
 addEventListener('keydown',function(e){var k=e.key;
+if(idxEl.classList.contains('show')){if(k==='Escape'){e.preventDefault();closeIdx();}return;}
 if(k==='ArrowRight'||k==='PageDown'||k===' '||k==='Enter'){e.preventDefault();go(1)}
 else if(k==='ArrowLeft'||k==='PageUp'||k==='Backspace'){e.preventDefault();go(-1)}
 else if(k==='Home')show(0);else if(k==='End')show(n-1);
-else if(k==='f'||k==='F')fsT();else if(k==='n'||k==='N')notes.classList.toggle('show');});
+else if(k==='f'||k==='F')fsT();else if(k==='n'||k==='N')notes.classList.toggle('show');
+else if(k==='i'||k==='I')openIdx();});
 document.getElementById('prev').onclick=function(e){e.stopPropagation();go(-1)};
 document.getElementById('next').onclick=function(e){e.stopPropagation();go(1)};
 document.getElementById('nb').onclick=function(e){e.stopPropagation();notes.classList.toggle('show')};
 document.getElementById('fs').onclick=function(e){e.stopPropagation();fsT()};
-document.addEventListener('click',function(e){if(e.target.closest('#hud,#notes,a'))return;go(e.clientX<innerWidth/3?-1:1)});
+idxBtn.onclick=function(e){e.stopPropagation();openIdx();};
+idxClose.onclick=function(e){e.stopPropagation();closeIdx();};
+idxEl.addEventListener('click',function(e){if(e.target===idxEl)closeIdx();});
+document.addEventListener('click',function(e){if(e.target.closest('#hud,#notes,#idx,#chapterLabel,a'))return;go(e.clientX<innerWidth/3?-1:1)});
 var x0=null;addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
 addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(dx<0?1:-1);x0=null});
 addEventListener('hashchange',function(){var h=parseInt(location.hash.slice(1),10);if(h)show(h-1)});
