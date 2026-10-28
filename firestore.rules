@@ -1,0 +1,55 @@
+rules_version = '2';
+
+// Modelo de dados das enquetes ao vivo da palestra "O salário sumiu. E agora?":
+//   sessions/{sessionId}
+//   sessions/{sessionId}/activities/{activityId}
+//   sessions/{sessionId}/activities/{activityId}/responses/{uid}
+//
+// Participantes entram com autenticação anônima (sem e-mail, sem nome).
+// Cada resposta é um "create" único por uid: não existe "allow update",
+// então uma segunda tentativa de voto do mesmo uid é classificada como
+// update pelo Firestore e é automaticamente negada por esta regra.
+//
+// Limitação conhecida (aceita para a primeira edição, 29/10/2026):
+// qualquer usuário autenticado anonimamente pode criar sessions/activities,
+// não só o apresentador. Não há dano possível aos dados existentes
+// (sem update/delete), só poluição com sessões extras — risco baixo
+// para uma palestra única e aceitável dado o prazo.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /sessions/{sessionId} {
+      allow read: if true;
+      allow create, update: if request.auth != null
+        && request.resource.data.keys().hasOnly(['label', 'createdAt'])
+        && request.resource.data.label is string
+        && request.resource.data.label.size() < 120;
+      allow delete: if false;
+
+      match /activities/{activityId} {
+        allow read: if true;
+        allow create, update: if request.auth != null
+          && request.resource.data.keys().hasOnly(['question', 'type', 'options', 'status', 'createdAt'])
+          && request.resource.data.question is string
+          && request.resource.data.question.size() < 240
+          && request.resource.data.type in ['choice', 'scale', 'classify']
+          && request.resource.data.status in ['open', 'closed'];
+        allow delete: if false;
+
+        match /responses/{uid} {
+          allow read: if true;
+          allow create: if request.auth != null
+            && request.auth.uid == uid
+            && request.resource.data.keys().hasOnly(['value', 'ts'])
+            && (request.resource.data.value is string
+                || request.resource.data.value is number
+                || request.resource.data.value is map)
+            && (request.resource.data.value is number
+                || (request.resource.data.value is string && request.resource.data.value.size() < 200)
+                || (request.resource.data.value is map && request.resource.data.value.size() < 20));
+          allow update, delete: if false;
+        }
+      }
+    }
+  }
+}
