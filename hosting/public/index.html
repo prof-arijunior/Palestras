@@ -178,7 +178,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     <div class="row">
       <div class="field"><label>Saldo restante</label><input type="number" inputmode="decimal" id="divSaldo" placeholder="0,00"></div>
       <div class="field"><label>Parcela mensal</label><input type="number" inputmode="decimal" id="divParcela" placeholder="0,00"></div>
-      <div class="field"><label>Juros (% ao mês)</label><input type="number" inputmode="decimal" id="divTaxa" placeholder="opcional"></div>
+      <div class="field"><label>Quantidade de parcelas restantes</label><input type="number" inputmode="numeric" step="1" id="divParcelasQtd" placeholder="Ex.: 5"></div>
     </div>
     <div class="chip-row">
       <button class="chip" id="divAtraso" data-flag="atraso">Em atraso</button>
@@ -314,21 +314,20 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       .sort((a, b) => (Number(a.saldo) || 0) - (Number(b.saldo) || 0));
     return urgentes.concat(normais).map((d, i) => ({ ...d, urgente: !!(d.atraso || d.encargos), ordem: i + 1 }));
   }
-  // Simula a quitação mês a mês, na ordem de prioridade já definida: aplica juros,
-  // paga a parcela mínima de cada dívida aberta e usa a sobra do orçamento (+ parcelas
-  // já liberadas por dívidas quitadas) na primeira dívida aberta da lista.
+  // Simula a quitação mês a mês, na ordem de prioridade já definida: paga a parcela
+  // mínima de cada dívida aberta e usa a sobra do orçamento (+ parcelas já liberadas
+  // por dívidas quitadas) para acelerar a primeira dívida aberta da lista. Sem juros —
+  // o saldo restante e o número de parcelas já informados são o ponto de partida.
   function simularQuitacao(dividasOrdenadas, extraMensal) {
     const MAX_MESES = 600;
     const w = dividasOrdenadas.map(d => ({
-      id: d.id, saldo: Number(d.saldo) || 0, parcela: Number(d.parcela) || 0,
-      taxa: (Number(d.taxa) || 0) / 100, quitadoMes: null
+      id: d.id, saldo: Number(d.saldo) || 0, parcela: Number(d.parcela) || 0, quitadoMes: null
     }));
     function restante() { return w.reduce((s, d) => s + Math.max(0, d.saldo), 0); }
-    let mes = 0, jurosTotal = 0;
+    let mes = 0;
     const historico = [{ mes: 0, total: restante() }];
     while (restante() > 0.5 && mes < MAX_MESES) {
       mes++;
-      w.forEach(d => { if (d.saldo > 0.005) { const j = d.saldo * d.taxa; d.saldo += j; jurosTotal += j; } });
       let liberado = 0;
       w.forEach(d => {
         if (d.saldo > 0.005) {
@@ -347,7 +346,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       }
       historico.push({ mes, total: Math.max(0, restante()) });
     }
-    return { meses: mes, jurosTotal, travado: restante() > 0.5, dividas: w, historico };
+    return { meses: mes, travado: restante() > 0.5, dividas: w, historico };
   }
   function split503020(renda) {
     const r = Number(renda) || 0;
@@ -525,10 +524,10 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const nome = document.getElementById("divNome").value.trim();
     const saldo = document.getElementById("divSaldo").value;
     const parcela = document.getElementById("divParcela").value;
-    const taxa = document.getElementById("divTaxa").value;
+    const parcelas = document.getElementById("divParcelasQtd").value;
     if (!nome || !saldo || !parcela || Number(saldo) < 0 || Number(parcela) < 0) return;
-    state.dividas.push({ id: "v" + Date.now(), nome, saldo, parcela, taxa: taxa || "0", atraso: novaDividaFlags.atraso, encargos: novaDividaFlags.encargos });
-    document.getElementById("divNome").value = ""; document.getElementById("divSaldo").value = ""; document.getElementById("divParcela").value = ""; document.getElementById("divTaxa").value = "";
+    state.dividas.push({ id: "v" + Date.now(), nome, saldo, parcela, parcelas: parcelas || "", atraso: novaDividaFlags.atraso, encargos: novaDividaFlags.encargos });
+    document.getElementById("divNome").value = ""; document.getElementById("divSaldo").value = ""; document.getElementById("divParcela").value = ""; document.getElementById("divParcelasQtd").value = "";
     novaDividaFlags = { atraso: false, encargos: false };
     document.getElementById("divAtraso").classList.remove("on"); document.getElementById("divEncargos").classList.remove("on");
     save();
@@ -563,7 +562,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     el.innerHTML = state.dividas.map(d => `
       <div class="list-row">
         <p class="grow">${d.nome} ${d.atraso ? '<span class="badge badge-warn">atraso</span>' : ""} ${d.encargos ? '<span class="badge badge-warn">encargos</span>' : ""}
-          ${Number(d.taxa) > 0 ? `<span class="sub">${d.taxa}% ao mês</span>` : ""}</p>
+          ${d.parcela ? `<span class="sub">${fmt(d.parcela)}/mês${d.parcelas ? " · " + d.parcelas + " parcelas restantes" : ""}</span>` : ""}</p>
         <p class="amt">${fmt(d.saldo)}</p>
         <button class="btn-danger" data-del-div="${d.id}">remover</button>
       </div>`).join("") || `<p class="muted">Nenhuma dívida cadastrada ainda.</p>`;
@@ -623,9 +622,9 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     quitacaoCard.style.display = "block";
     const body = document.getElementById("quitacaoBody");
     if (sim.travado) {
-      body.innerHTML = `<p>Com a sobra atual (${fmt(extraMensal)}/mês), pelo menos uma dívida não tem previsão de quitação — os juros estão subindo mais rápido do que você consegue pagar. Priorize negociar as dívidas marcadas acima antes de seguir o restante do plano.</p>`;
+      body.innerHTML = `<p>Com a sobra atual (${fmt(extraMensal)}/mês), a quitação total passaria de 50 anos. Priorize negociar as dívidas marcadas acima ou aumentar a sobra mensal.</p>`;
     } else {
-      body.innerHTML = `<p>Usando a sobra atual do seu orçamento (<b>${fmt(extraMensal)}/mês</b>), você fica livre de todas as dívidas em <b>${sim.meses}º mês</b>, com um custo estimado de <b>${fmt(sim.jurosTotal)}</b> em juros.</p>`;
+      body.innerHTML = `<p>Usando a sobra atual do seu orçamento (<b>${fmt(extraMensal)}/mês</b>), você fica livre de todas as dívidas em <b>${sim.meses}º mês</b>.</p>`;
     }
     renderLineChart(document.getElementById("quitacaoChartWrap"),
       sim.historico.map(h => ({ mes: h.mes, v: h.total })),
@@ -841,13 +840,6 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
         doc.setFontSize(sz);
       }
     }
-    function heading(text) {
-      ensure(14);
-      font("bold", 13); ink(INK);
-      doc.text(pdfText(text), M, y);
-      y += 2; strokeC(ACCENT); doc.setLineWidth(0.6); doc.line(M, y, M + 22, y);
-      y += 7;
-    }
     function para(text, size, color) {
       font("normal", size || 10); ink(color || INK);
       const lines = doc.splitTextToSize(pdfText(text), CW);
@@ -879,13 +871,17 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       if (extraLine) doc.text(pdfText(extraLine), M + 18, y + 19.5);
       y += h + 6;
     }
-    function table(headers, rows, widths) {
+    function table(headers, rows, widths, aligns) {
       ensure(9);
       font("bold", 8.5);
       fillC(INK); doc.rect(M, y, CW, 7, "F");
       doc.setTextColor(255, 255, 255);
       let x = M + 2;
-      headers.forEach((h, i) => { doc.text(pdfText(h), x, y + 4.8); x += widths[i]; });
+      headers.forEach((h, i) => {
+        const al = aligns && aligns[i] === "right";
+        doc.text(pdfText(h), al ? x + widths[i] - 4 : x, y + 4.8, al ? { align: "right" } : undefined);
+        x += widths[i];
+      });
       y += 7;
       font("normal", 9);
       rows.forEach((r, ri) => {
@@ -893,87 +889,202 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
         if (ri % 2 === 1) { fillC([245, 243, 237]); doc.rect(M, y, CW, 6.6, "F"); }
         ink(INK);
         let xx = M + 2;
-        r.forEach((cell, i) => { doc.text(pdfText(String(cell)), xx, y + 4.6); xx += widths[i]; });
+        r.forEach((cell, i) => {
+          const al = aligns && aligns[i] === "right";
+          doc.text(pdfText(String(cell)), al ? xx + widths[i] - 4 : xx, y + 4.6, al ? { align: "right" } : undefined);
+          xx += widths[i];
+        });
         y += 6.6;
       });
       y += 4;
+    }
+    // Badge quadrado numerado + título — marca cada bloco do Método C.A.P. (como as
+    // seções numeradas do relatório de referência que inspirou este layout).
+    function section(numTxt, text, col) {
+      ensure(16);
+      fillC(col); doc.roundedRect(M, y - 1, 8, 8, 2, 2, "F");
+      font("bold", 9.5); doc.setTextColor(255, 255, 255);
+      doc.text(String(numTxt), M + 4, y + 4.7, { align: "center" });
+      font("bold", 14); ink(INK);
+      doc.text(pdfText(text), M + 12, y + 5.2);
+      y += 12;
+    }
+    // Mini-cards lado a lado para 2-3 métricas rápidas.
+    function statBoxes(items) {
+      const n = items.length, g = 3, w = (CW - g * (n - 1)) / n, h = 20;
+      ensure(h + 4);
+      items.forEach((it, i) => {
+        const x = M + i * (w + g);
+        fillC([245, 243, 237]); doc.roundedRect(x, y, w, h, 2.5, 2.5, "F");
+        if (it.col) { fillC(it.col); doc.rect(x, y + 3, 1.2, h - 6, "F"); }
+        font("normal", 7.5); ink(MUTED);
+        doc.text(pdfText(it.label), x + 4, y + 6);
+        font("bold", 11.5); ink(it.vcol || INK);
+        doc.text(pdfText(it.value), x + 4, y + 13);
+        if (it.note) { font("normal", 7); ink(MUTED); doc.text(pdfText(it.note), x + 4, y + 17.5); }
+      });
+      y += h + 5;
+    }
+    // Lista numerada com badge circular — para a ordem de prioridade das dívidas.
+    function steps(list, col) {
+      list.forEach((s, i) => {
+        ensure(14);
+        fillC(col || ACCENT); doc.roundedRect(M, y - 1, 6, 6, 1.5, 1.5, "F");
+        font("bold", 8); doc.setTextColor(255, 255, 255);
+        doc.text(String(s.n != null ? s.n : i + 1), M + 3, y + 3.2, { align: "center" });
+        font("bold", 9.8); ink(INK);
+        doc.text(pdfText(s.t), M + 10, y + 3.6);
+        font("bold", 9.8); ink(INK);
+        doc.text(pdfText(s.v), PW - M, y + 3.6, { align: "right" });
+        y += 7;
+        if (s.sub) { font("normal", 8.3); ink(MUTED); doc.text(pdfText(s.sub), M + 10, y); y += 4.8; }
+        if (s.badge) { font("bold", 7.6); ink(s.badgeColor || WARN); doc.text(pdfText(s.badge), M + 10, y); y += 4.8; }
+        y += 2.5;
+      });
+    }
+    // Checklist com caixa de marcação — para o plano de 30 dias.
+    function checklist(items) {
+      items.forEach(it => {
+        ensure(7);
+        if (it.checked) { fillC(OK); doc.roundedRect(M, y - 3.4, 4.2, 4.2, 0.8, 0.8, "F"); font("bold", 6.5); doc.setTextColor(255, 255, 255); doc.text("X", M + 2.1, y - 0.5, { align: "center" }); }
+        else { strokeC(LINE); doc.setLineWidth(0.5); doc.roundedRect(M, y - 3.4, 4.2, 4.2, 0.8, 0.8, "S"); }
+        font("normal", 9.6); ink(INK);
+        doc.text(pdfText(it.text), M + 8, y);
+        y += 6.4;
+      });
+      y += 1;
+    }
+    // Barra empilhada de verdade (não só texto) — para o 50/30/20.
+    function stackedBar(label, segs, scaleMax) {
+      ensure(16);
+      font("bold", 9); ink(INK); doc.text(pdfText(label), M, y + 3); y += 6;
+      const h = 7;
+      fillC([245, 243, 237]); doc.roundedRect(M, y, CW, h, 1.5, 1.5, "F");
+      let x = M;
+      segs.forEach(s => {
+        const w = CW * (s.v / scaleMax);
+        if (w <= 0.3) { return; }
+        fillC(s.col); doc.rect(x, y, Math.max(0, w - 0.6), h, "F");
+        if (w > 14 && s.label) { font("bold", 7); doc.setTextColor(255, 255, 255); doc.text(pdfText(s.label), x + w / 2, y + 4.8, { align: "center" }); }
+        x += w;
+      });
+      y += h + 6;
+    }
+    // Gráfico de linha de verdade (não imagem) — mesmos dados do gráfico da tela.
+    function lineChart(series, opts) {
+      opts = opts || {};
+      const h = opts.h || 36;
+      ensure(h + 15);
+      const maxMes = series[series.length - 1].mes || 1;
+      const maxV = Math.max(opts.goal || 0, ...series.map(p => p.v)) * 1.08 || 1;
+      const x0 = M, w = CW;
+      const X = m => x0 + (m / maxMes) * w;
+      const Y = v => y + h - (v / maxV) * h;
+      strokeC(LINE); doc.setLineWidth(0.2);
+      [0, 0.5, 1].forEach(f => { const gy = y + h - f * h; doc.line(x0, gy, x0 + w, gy); });
+      if (opts.goal) {
+        strokeC(MUTED); doc.setLineWidth(0.3); doc.setLineDashPattern([1.2, 1.2], 0);
+        doc.line(x0, Y(opts.goal), x0 + w, Y(opts.goal));
+        doc.setLineDashPattern([], 0);
+      }
+      strokeC(opts.color || ACCENT); doc.setLineWidth(0.9);
+      for (let i = 1; i < series.length; i++) doc.line(X(series[i - 1].mes), Y(series[i - 1].v), X(series[i].mes), Y(series[i].v));
+      const last = series[series.length - 1];
+      fillC(opts.color || ACCENT); doc.circle(X(last.mes), Y(last.v), 1.3, "F");
+      y += h + 3;
+      font("normal", 7.5); ink(MUTED);
+      doc.text(pdfText(opts.captionLeft || ""), x0, y);
+      doc.text(pdfText(opts.captionRight || ""), x0 + w, y, { align: "right" });
+      y += 7;
     }
 
     pageHeader(); y = 24;
     font("bold", 20); ink(INK);
     doc.text(pdfText("Meu plano financeiro"), M, y); y += 7;
     font("normal", 11); ink(MUTED);
-    doc.text(pdfText("Método C.A.P. — Consciência, Ação, Planejamento"), M, y); y += 12;
+    doc.text(pdfText("Método C.A.P. — Consciência, Ação, Planejamento"), M, y); y += 14;
 
     const saldo = calcSaldoMensal(state.renda, state.despesas, state.dividas);
-    heading("1. Consciência");
-    row("Renda líquida mensal", fmt(state.renda));
-    row("Total de despesas", fmt(state.despesas.reduce((s, d) => s + (Number(d.valor) || 0), 0)));
-    row("Total de parcelas de dívidas", fmt(state.dividas.reduce((s, d) => s + (Number(d.parcela) || 0), 0)));
-    divider();
-    row("Saldo mensal", fmt(saldo), { labelColor: INK, valueColor: saldo < 0 ? WARN : OK });
-    y += 2;
+    const totalDespesas = state.despesas.reduce((s, d) => s + (Number(d.valor) || 0), 0);
+    const totalParcelas = state.dividas.reduce((s, d) => s + (Number(d.parcela) || 0), 0);
+    section(1, "Consciência", ACCENT);
+    statBoxes([
+      { label: "Renda líquida", value: fmt(state.renda) },
+      { label: "Despesas + parcelas", value: fmt(totalDespesas + totalParcelas) },
+      { label: "Saldo mensal", value: fmt(saldo), vcol: saldo < 0 ? WARN : OK, col: saldo < 0 ? WARN : OK }
+    ]);
     statusBox(statusInfo(saldo));
 
     if (state.despesas.length) {
-      heading("Despesas classificadas");
+      font("bold", 11); ink(INK); ensure(8); doc.text(pdfText("Despesas classificadas"), M, y); y += 7;
       table(["Despesa", "Categoria", "Valor"],
         state.despesas.map(d => [d.nome, state.classify[d.id] || "sem classificar", fmt(d.valor)]),
-        [95, 45, 34]);
-      y += 2;
+        [95, 45, 34], [null, null, "right"]);
     }
 
     if (state.dividas.length) {
-      heading("2. Ação — dívidas em ordem");
+      section(2, "Ação — dívidas em ordem", WARN);
       const { ordenadas, sim, extraMensal } = quitacaoResumo();
       const porId = Object.fromEntries(sim.dividas.map(d => [d.id, d]));
-      table(["#", "Dívida", "Situação", "Quitação", "Saldo"],
-        ordenadas.map(d => {
-          const s = porId[d.id];
-          return [d.ordem + "º", d.nome, d.urgente ? "negocie primeiro" : "menor saldo primeiro",
-            s && s.quitadoMes != null ? s.quitadoMes + "º mês" : "sem previsão", fmt(d.saldo)];
-        }), [10, 55, 48, 30, 31]);
+      steps(ordenadas.map(d => {
+        const s = porId[d.id];
+        const quitacaoTxt = s && s.quitadoMes != null ? "quita no " + s.quitadoMes + "º mês" : "sem previsão";
+        const parcelasTxt = d.parcelas ? d.parcelas + " parcelas de " + fmt(d.parcela) + " restantes" : "parcela de " + fmt(d.parcela);
+        return { n: d.ordem, t: d.nome, v: fmt(d.saldo), sub: parcelasTxt + " · " + quitacaoTxt,
+          badge: d.urgente ? "negocie primeiro" : "menor saldo primeiro", badgeColor: d.urgente ? WARN : OK };
+      }), WARN);
       para(sim.travado
-        ? `Com a sobra atual (${fmt(extraMensal)}/mês), pelo menos uma dívida não tem previsão de quitação. Priorize negociar as dívidas marcadas "negocie primeiro".`
-        : `Usando a sobra atual do orçamento (${fmt(extraMensal)}/mês), a quitação total das dívidas acontece no ${sim.meses}º mês, com um custo estimado de ${fmt(sim.jurosTotal)} em juros.`);
+        ? `Com a sobra atual (${fmt(extraMensal)}/mês), a quitação total passaria de 50 anos. Priorize negociar as dívidas marcadas "negocie primeiro" ou aumentar a sobra mensal.`
+        : `Usando a sobra atual do orçamento (${fmt(extraMensal)}/mês), a quitação total das dívidas acontece no ${sim.meses}º mês.`);
+      if (sim.historico.length > 1) {
+        lineChart(sim.historico.map(h2 => ({ mes: h2.mes, v: h2.total })), { color: WARN,
+          captionLeft: "Hoje: " + fmt(sim.historico[0].total),
+          captionRight: "Mês " + sim.historico[sim.historico.length - 1].mes + ": " + fmt(sim.historico[sim.historico.length - 1].total) });
+      }
     }
 
-    heading("3. Planejamento — 50/30/20");
+    section(3, "Planejamento — 50/30/20", OK);
     const split = split503020(state.renda);
-    row("Necessidades (50%)", fmt(split.necessidades));
-    row("Desejos (30%)", fmt(split.desejos));
-    row("Futuro (20%)", fmt(split.futuro));
-    y += 2;
+    const totalSplit = (Number(state.renda) || 0) || 1;
+    stackedBar("Como a renda se divide", [
+      { v: split.necessidades, col: INK, label: "50%" },
+      { v: split.desejos, col: WARN, label: "30%" },
+      { v: split.futuro, col: OK, label: "20%" }
+    ], totalSplit);
+    statBoxes([
+      { label: "Necessidades", value: fmt(split.necessidades), col: INK },
+      { label: "Desejos", value: fmt(split.desejos), col: WARN },
+      { label: "Futuro", value: fmt(split.futuro), col: OK }
+    ]);
     const totalProteger = state.despesas.reduce((s, d) => s + (state.classify[d.id] === "Proteger" ? (Number(d.valor) || 0) : 0), 0);
     const metaReserva = reservaMeta(totalProteger, state.reserveMonths);
     para(`Reserva de emergência: meta de ${fmt(metaReserva)} (${state.reserveMonths} meses de despesas essenciais).`);
     if (Number(state.renda) > 0 && metaReserva) {
-      const meses = mesesParaMeta(split.futuro, state.investRate, metaReserva);
-      para(`Investindo os ${fmt(split.futuro)} do "Futuro" todo mês a ${Number(state.investRate) || 0}% ao ano: ${isFinite(meses) ? "meta alcançada em aproximadamente " + meses + " meses" : "não é possível alcançar nesse ritmo"}.`);
+      const mesesInv = mesesParaMeta(split.futuro, state.investRate, metaReserva);
+      para(`Investindo os ${fmt(split.futuro)} do "Futuro" todo mês a ${Number(state.investRate) || 0}% ao ano: ${isFinite(mesesInv) ? "meta alcançada em aproximadamente " + mesesInv + " meses" : "não é possível alcançar nesse ritmo"}.`);
+      if (isFinite(mesesInv) && mesesInv > 0) {
+        const serieInv = investirSerie(split.futuro, state.investRate, mesesInv);
+        lineChart(serieInv.map(p => ({ mes: p.mes, v: p.saldo })), { color: OK, goal: metaReserva,
+          captionLeft: "Mês 0", captionRight: "Mês " + mesesInv + ": " + fmt(serieInv[serieInv.length - 1].saldo) });
+      }
     }
 
     if (state.meta.nome || state.meta.custo) {
-      heading("Minha meta");
+      font("bold", 11); ink(INK); ensure(8); doc.text(pdfText("Minha meta"), M, y); y += 7;
       row("Objetivo", state.meta.nome || "—");
       row("Custo", fmt(state.meta.custo));
       const porMes = metaPorPeriodo(state.meta.custo, state.meta.data);
       row("Separar por mês", porMes ? fmt(porMes) : "—");
+      y += 2;
     }
 
-    heading("4. Plano de 30 dias");
-    const semanas = [
-      "Semana 1 — Enxergar: registrei renda, despesas e dívidas",
-      "Semana 2 — Escolher: classifiquei minhas despesas",
-      "Semana 3 — Agir: organizei a ordem das minhas dívidas",
-      "Semana 4 — Planejar: defini meu 50/30/20 e minha meta"
-    ];
-    semanas.forEach((s, i) => {
-      ensure(7);
-      strokeC(LINE); doc.setLineWidth(0.3); doc.rect(M, y - 3.2, 4, 4);
-      if (state.weeks[String(i + 1)]) { font("bold", 8); ink(OK); doc.text("X", M + 0.9, y - 0.4); }
-      font("normal", 9.5); ink(INK);
-      doc.text(pdfText(s), M + 7, y); y += 6.6;
-    });
+    section(4, "Plano de 30 dias", ACCENT);
+    checklist([
+      { checked: !!state.weeks["1"], text: "Semana 1 — Enxergar: registrei renda, despesas e dívidas" },
+      { checked: !!state.weeks["2"], text: "Semana 2 — Escolher: classifiquei minhas despesas" },
+      { checked: !!state.weeks["3"], text: "Semana 3 — Agir: organizei a ordem das minhas dívidas" },
+      { checked: !!state.weeks["4"], text: "Semana 4 — Planejar: defini meu 50/30/20 e minha meta" }
+    ]);
     y += 2;
     if (state.compromisso.texto) {
       para(`Compromisso de 24h: ${state.compromisso.texto}${state.compromisso.data ? " (até " + new Date(state.compromisso.data).toLocaleDateString("pt-BR") + ")" : ""}.`);
@@ -1042,7 +1153,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   });
   document.addEventListener("fullscreenchange", updateFsIcon);
 
-  wireValidation(["renda", "despValor", "divSaldo", "divParcela", "divTaxa", "metaCusto", "investRate"]);
+  wireValidation(["renda", "despValor", "divSaldo", "divParcela", "divParcelasQtd", "metaCusto", "investRate"]);
   syncInputsFromState();
   renderAll();
 })();
