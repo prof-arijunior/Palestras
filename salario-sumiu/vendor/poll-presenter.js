@@ -37,7 +37,7 @@ const ACTIVITIES = [
     id: "classificar",
     question: "Classifique os gastos do Nick",
     type: "classify",
-    categories: ["Proteger", "Rever", "Prever"],
+    categories: ["Necessidades", "Desejos", "Futuro"],
     items: [
       { id: "aluguel", label: "Aluguel" },
       { id: "mercado", label: "Mercado" },
@@ -47,10 +47,13 @@ const ACTIVITIES = [
       { id: "assinaturas", label: "Assinaturas e outros" },
       { id: "ipva", label: "IPVA (uma vez por ano)" }
     ],
+    // IPVA é o item de propósito: nenhum gasto do Nick é realmente "Futuro" (Futuro
+    // não é despesa, é o que sobra), e boa parte da plateia ainda associa um gasto
+    // sazonal a "guardar para depois" em vez de reconhecê-lo como Necessidade.
     example: {
       aluguel: [92, 6, 2], mercado: [88, 9, 3], transporte: [74, 20, 6],
       celular: [18, 76, 6], lazer: [4, 93, 3], assinaturas: [9, 85, 6],
-      ipva: [12, 16, 72]
+      ipva: [55, 20, 25]
     }
   },
   {
