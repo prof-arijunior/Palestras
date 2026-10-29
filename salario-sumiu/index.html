@@ -46,26 +46,32 @@ body:hover #chapterLabel,#chapterLabel:focus-within{opacity:1}
 #idx button.idxItem:hover{background:#1E2E4A;border-color:#CDA254}
 #idx button.idxItem .n{flex:none;color:#9AA4B8;font-variant-numeric:tabular-nums;font-weight:700}
 #idx button.idxClose{all:unset;position:fixed;top:24px;right:32px;color:#9AA4B8;font:13px Inter,Arial,sans-serif;cursor:pointer;background:#1E2E4A;padding:8px 14px;border-radius:8px}
-.poll{display:flex;gap:40px;align-items:center}
-.poll-qr-wrap{flex:none;width:260px;display:flex;flex-direction:column;align-items:center;gap:12px}
-.poll-qr{width:220px;height:220px;background:#fff;border-radius:16px;padding:14px}
+.poll{display:flex;gap:48px;align-items:center}
+.poll-qr-wrap{flex:none;width:300px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.poll-qr{width:260px;height:260px;background:#fff;border-radius:18px;padding:16px}
 .poll-caption{font-size:20px;text-align:center;opacity:.75}
-.poll-results-wrap{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.poll-results-wrap{flex:1;display:flex;flex-direction:column;gap:18px;min-width:0}
 .poll-example-note{display:none;font-size:18px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#CDA254;margin-bottom:4px}
 .poll.poll-example .poll-example-note{display:block}
 .poll-bar-row{display:flex;align-items:center;gap:16px}
 .poll-bar-label{flex:0 0 380px;font-size:26px}
-.poll-bar-track{flex:1;height:28px;background:rgba(127,127,127,.25);border-radius:8px;overflow:hidden}
-.poll-bar-fill{height:100%;background:#CDA254;border-radius:8px;transition:width .4s ease}
+.poll-bar-track{flex:1;height:38px;background:rgba(127,127,127,.25);border-radius:10px;overflow:hidden}
+.poll-bar-fill{height:100%;background:#CDA254;border-radius:10px;transition:width .4s ease}
 .poll-bar-pct{flex:0 0 70px;text-align:right;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
 .poll-bar-total{font-size:18px;opacity:.65;margin-top:4px}
 .poll-classify-row{display:flex;align-items:center;gap:16px}
-.poll-classify-label{flex:0 0 340px;font-size:24px}
-.poll-classify-track{flex:1;height:26px;border-radius:8px;overflow:hidden;display:flex;background:rgba(127,127,127,.2)}
+.poll-classify-label{flex:0 0 300px;font-size:24px}
+.poll-classify-track{flex:1;height:36px;border-radius:10px;overflow:hidden;display:flex;background:rgba(127,127,127,.2)}
 .poll-seg{height:100%}
-.poll-seg-0{background:#3D6F58}
+/* Mesmas cores dos pills de categoria acima do gráfico — Necessidades/Desejos/
+   Futuro precisam bater visualmente entre o rótulo e a barra. */
+.poll-seg-0{background:#F8F6F1}
 .poll-seg-1{background:#7E233B}
-.poll-seg-2{background:#CDA254}
+.poll-seg-2{background:#3D6F58}
+.poll-classify-pcts{flex:0 0 230px;display:flex;gap:10px;justify-content:flex-end;font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
+.poll-classify-pcts .c0{color:#F8F6F1}
+.poll-classify-pcts .c1{color:#F3B6C2}
+.poll-classify-pcts .c2{color:#5BC2A0}
 @media print{.poll{display:none}html,body{overflow:visible;background:#fff}#stage{position:static;transform:none!important}section{position:relative;opacity:1;visibility:visible;page-break-after:always}#bar,#hud,#notes,#help{display:none}@page{size:1920px 1080px;margin:0}}
 </style>
 </head>
@@ -219,6 +225,40 @@ Objetivo: criar identificação antes de qualquer conteúdo técnico. Nick é um
 
 Interação: “Quem já passou por uma situação parecida?” Dê alguns segundos para as pessoas reagirem. Não peça que revelem valores, dívidas ou detalhes pessoais.</aside>
 </section>
+<section id="dados" data-chapter="0" data-i="4" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">A história de Nick é comum?</p>
+<h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">O endividamento faz parte da realidade de muitas famílias</h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:48px">
+<div style="display:flex;gap:64px;align-items:center">
+<p style="width:420px;font-family:'Fraunces', Georgia, serif;font-size:140px;font-weight:600;line-height:1;color:#7E233B">82%</p>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="width:1180px;height:32px;background:#E4DFD4;border-radius:16px">
+<div style="width:968px;height:32px;background:#7E233B;border-radius:16px"></div>
+</div>
+<p style="font-size:32px;color:#142034">das famílias brasileiras estavam <b>endividadas</b> em julho de 2026.</p>
+</div>
+</div>
+<div style="display:flex;gap:64px;align-items:center">
+<p style="width:420px;font-family:'Fraunces', Georgia, serif;font-size:140px;font-weight:600;line-height:1;color:#142034">29,8%</p>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="width:1180px;height:32px;background:#E4DFD4;border-radius:16px">
+<div style="width:352px;height:32px;background:#142034;border-radius:16px"></div>
+</div>
+<p style="font-size:32px;color:#142034">tinham <b>contas em atraso</b> no mesmo período.</p>
+</div>
+</div>
+</div>
+<p style="font-size:28px;color:#4A5263;padding:20px 28px;background:#EFEBE2;border-radius:16px">Endividada não é o mesmo que inadimplente: uma família pode ter parcelas e pagá-las em dia.</p>
+<div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#6B7180">Fonte: CNC, Peic, julho de 2026, divulgada pela Agência Brasil em 06/08/2026.</p>
+<p style="font-size:24px;color:#6B7180">04</p>
+</div>
+<aside>Fala: “Esses números mostram a dimensão do desafio. É importante lembrar que estar endividado não é a mesma coisa que estar inadimplente: uma família pode ter parcelas e pagá-las em dia. Nosso objetivo não é julgar quem tem dívidas, mas compreender como organizar compromissos e evitar que eles tirem a capacidade de escolha.”
+
+Cuidado: conferir os dados e a fonte oficial (CNC/Peic) novamente antes de reapresentar a palestra em outra data.</aside>
+</section>
 <section id="misterio" data-chapter="0" data-i="3" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:space-between">
 <svg aria-label="Ilustração: moedas saem de uma carteira e se transformam em pequenos recibos que se espalham em várias direções" width="560" height="520" viewBox="0 0 560 520" xmlns="http://www.w3.org/2000/svg" style="position:absolute;right:112px;top:300px;width:560px;height:520px">
 <path d="M90 430 C 200 380, 260 300, 300 200 S 420 60, 520 40" fill="none" stroke="#CDA254" stroke-width="3" stroke-dasharray="4 14" stroke-linecap="round" opacity="0.7"/>
@@ -253,45 +293,11 @@ Interação: “Quem já passou por uma situação parecida?” Dê alguns segun
 <p style="font-size:40px;font-weight:600;color:#CDA254">Você saberia responder sem consultar nada?</p>
 <div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
 <p style="font-size:24px;color:#9AA4B8">Ato 1 · O problema</p>
-<p style="font-size:24px;color:#9AA4B8">04</p>
+<p style="font-size:24px;color:#9AA4B8">05</p>
 </div>
 <aside>Fala: “Talvez o dinheiro não tenha desaparecido. Talvez ele tenha sido destinado a muitas coisas sem que tivéssemos uma visão do conjunto. Pequenos gastos parecem inofensivos quando olhamos um por vez. O problema é quando não sabemos quanto representam todos juntos.”
 
 Objetivo didático: mostrar que a memória não substitui o registro financeiro.</aside>
-</section>
-<section id="dados" data-chapter="0" data-i="4" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
-<div style="display:flex;flex-direction:column;gap:16px">
-<p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">A história de Nick é comum?</p>
-<h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">O endividamento faz parte da realidade de muitas famílias</h2>
-</div>
-<div style="display:flex;flex-direction:column;gap:48px">
-<div style="display:flex;gap:64px;align-items:center">
-<p style="width:420px;font-family:'Fraunces', Georgia, serif;font-size:140px;font-weight:600;line-height:1;color:#7E233B">82%</p>
-<div style="flex:1;display:flex;flex-direction:column;gap:20px">
-<div style="width:1180px;height:32px;background:#E4DFD4;border-radius:16px">
-<div style="width:968px;height:32px;background:#7E233B;border-radius:16px"></div>
-</div>
-<p style="font-size:32px;color:#142034">das famílias brasileiras estavam <b>endividadas</b> em julho de 2026.</p>
-</div>
-</div>
-<div style="display:flex;gap:64px;align-items:center">
-<p style="width:420px;font-family:'Fraunces', Georgia, serif;font-size:140px;font-weight:600;line-height:1;color:#142034">29,8%</p>
-<div style="flex:1;display:flex;flex-direction:column;gap:20px">
-<div style="width:1180px;height:32px;background:#E4DFD4;border-radius:16px">
-<div style="width:352px;height:32px;background:#142034;border-radius:16px"></div>
-</div>
-<p style="font-size:32px;color:#142034">tinham <b>contas em atraso</b> no mesmo período.</p>
-</div>
-</div>
-</div>
-<p style="font-size:28px;color:#4A5263;padding:20px 28px;background:#EFEBE2;border-radius:16px">Endividada não é o mesmo que inadimplente: uma família pode ter parcelas e pagá-las em dia.</p>
-<div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
-<p style="font-size:24px;color:#6B7180">Fonte: CNC, Peic, julho de 2026, divulgada pela Agência Brasil em 06/08/2026.</p>
-<p style="font-size:24px;color:#6B7180">05</p>
-</div>
-<aside>Fala: “Esses números mostram a dimensão do desafio. É importante lembrar que estar endividado não é a mesma coisa que estar inadimplente: uma família pode ter parcelas e pagá-las em dia. Nosso objetivo não é julgar quem tem dívidas, mas compreender como organizar compromissos e evitar que eles tirem a capacidade de escolha.”
-
-Cuidado: conferir os dados e a fonte oficial (CNC/Peic) novamente antes de reapresentar a palestra em outra data.</aside>
 </section>
 <section id="perspectiva" data-chapter="0" data-i="5" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;flex-direction:column;gap:16px">
@@ -394,6 +400,31 @@ Aqui começa o Ato 2 (Interesse). Duração sugerida do ato: 12–15 minutos.</a
 
 Os cinco passos: 1. Enxergar a realidade · 2. Descobrir os vazamentos · 3. Organizar as dívidas · 4. Dar uma função ao dinheiro · 5. Construir proteção para o futuro.</aside>
 </section>
+<section id="contraponto" data-chapter="1" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">Capítulo C · Mesma renda, resultado diferente</p>
+<h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Nick não é o único com R$ 3.000 por mês</h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:#1E2E4A;padding:40px;border-radius:24px;border-top:8px solid #7E233B">
+<p style="font-size:24px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#F3D9DF">Nick, 37 anos</p>
+<p style="font-size:30px;line-height:1.4;color:#F8F6F1">Mesma renda líquida de R$ 3.000. Paga as contas sem anotar nada — confia na memória para saber quanto ainda pode gastar.</p>
+<p style="font-family:'Fraunces', Georgia, serif;font-size:34px;font-style:italic;color:#F3D9DF">Termina o mês no cheque especial.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:#1E2E4A;padding:40px;border-radius:24px;border-top:8px solid #3D6F58">
+<p style="font-size:24px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#DDEDE4">Dani, 34 anos</p>
+<p style="font-size:30px;line-height:1.4;color:#F8F6F1">Mesma renda líquida de R$ 3.000. Anota os gastos desde o início do mês e sabe, no dia 20, quanto ainda tem disponível.</p>
+<p style="font-family:'Fraunces', Georgia, serif;font-size:34px;font-style:italic;color:#DDEDE4">Termina o mês com folga de R$ 150.</p>
+</div>
+</div>
+<p style="font-family:'Fraunces', Georgia, serif;font-size:40px;font-style:italic;font-weight:500;line-height:1.25;color:#CDA254">A diferença não é o quanto ganham. É o quanto conseguem ver.</p>
+<div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#9AA4B8">Capítulo C · Dani é um personagem fictício, assim como Nick</p>
+</div>
+<aside>Fala: “Nick não é o único com essa renda. A Dani também ganha R$ 3.000 líquidos por mês — mas, desde o início do mês, ela sabe exatamente quanto já gastou e quanto ainda pode gastar. Ela termina o mês com uma folga de R$ 150, não porque ganha mais, mas porque consegue ver.”
+
+Objetivo didático: separar renda de consciência financeira antes de ensinar a classificação de gastos (próximo slide). Dani é um personagem fictício, assim como Nick.</aside>
+</section>
 <section id="passo1" data-chapter="1" data-i="8" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Passo 1 · C · Enxergar a realidade</p>
@@ -436,31 +467,6 @@ Os cinco passos: 1. Enxergar a realidade · 2. Descobrir os vazamentos · 3. Org
 <aside>Fala: “Nick começa anotando os valores reais. Ele pode usar papel, caderno, planilha ou aplicativo. Não precisa de uma ferramenta sofisticada; precisa de uma ferramenta que consiga manter atualizada.”
 
 Orientação prática: considerar também despesas que não aparecem todo mês, como IPVA, material escolar, manutenção da casa e seguros.</aside>
-</section>
-<section id="contraponto" data-chapter="1" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
-<div style="display:flex;flex-direction:column;gap:16px">
-<p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">Capítulo C · Mesma renda, resultado diferente</p>
-<h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Nick não é o único com R$ 3.000 por mês</h2>
-</div>
-<div style="display:flex;gap:40px">
-<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:#1E2E4A;padding:40px;border-radius:24px;border-top:8px solid #7E233B">
-<p style="font-size:24px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#F3D9DF">Nick, 37 anos</p>
-<p style="font-size:30px;line-height:1.4;color:#F8F6F1">Mesma renda líquida de R$ 3.000. Paga as contas sem anotar nada — confia na memória para saber quanto ainda pode gastar.</p>
-<p style="font-family:'Fraunces', Georgia, serif;font-size:34px;font-style:italic;color:#F3D9DF">Termina o mês no cheque especial.</p>
-</div>
-<div style="flex:1;display:flex;flex-direction:column;gap:20px;background:#1E2E4A;padding:40px;border-radius:24px;border-top:8px solid #3D6F58">
-<p style="font-size:24px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#DDEDE4">Dani, 34 anos</p>
-<p style="font-size:30px;line-height:1.4;color:#F8F6F1">Mesma renda líquida de R$ 3.000. Anota os gastos desde o início do mês e sabe, no dia 20, quanto ainda tem disponível.</p>
-<p style="font-family:'Fraunces', Georgia, serif;font-size:34px;font-style:italic;color:#DDEDE4">Termina o mês com folga de R$ 150.</p>
-</div>
-</div>
-<p style="font-family:'Fraunces', Georgia, serif;font-size:40px;font-style:italic;font-weight:500;line-height:1.25;color:#CDA254">A diferença não é o quanto ganham. É o quanto conseguem ver.</p>
-<div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
-<p style="font-size:24px;color:#9AA4B8">Capítulo C · Dani é um personagem fictício, assim como Nick</p>
-</div>
-<aside>Fala: “Nick não é o único com essa renda. A Dani também ganha R$ 3.000 líquidos por mês — mas, desde o início do mês, ela sabe exatamente quanto já gastou e quanto ainda pode gastar. Ela termina o mês com uma folga de R$ 150, não porque ganha mais, mas porque consegue ver.”
-
-Objetivo didático: separar renda de consciência financeira antes de ensinar a classificação de gastos (próximo slide). Dani é um personagem fictício, assim como Nick.</aside>
 </section>
 <section id="passo2" data-chapter="1" data-i="9" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
@@ -531,7 +537,7 @@ Gabarito sugerido, não é absoluto: aluguel, mercado e transporte → Necessida
 <section id="aposta" data-chapter="1" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:center">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">Atividade ao vivo · Capítulo C</p>
-<h2 style="font-size:58px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Antes de ver a planilha: qual gasto pesa mais no orçamento do Nick?</h2>
+<h2 style="font-size:58px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Antes de ver a planilha: qual desses gastos pesa mais (sem contar moradia)?</h2>
 </div>
 <div class="poll" data-poll="aposta">
 <div class="poll-qr-wrap"><div class="poll-qr"></div><p class="poll-caption">Aponte a câmera do celular e responda</p></div>
@@ -540,9 +546,9 @@ Gabarito sugerido, não é absoluto: aluguel, mercado e transporte → Necessida
 <div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
 <p style="font-size:24px;color:#9AA4B8">Capítulo C</p>
 </div>
-<aside>Fala: “Antes de eu mostrar a planilha completa do Nick, quero que vocês apostem: qual categoria vocês acham que pesa mais no orçamento dele?”
+<aside>Fala: “Antes de eu mostrar a planilha completa do Nick, quero que vocês apostem: entre esses quatro gastos, qual pesa mais? Moradia eu já tirei da jogada — ela não vale a aposta.”
 
-Não revele a resposta ainda — ela aparece naturalmente no próximo slide, quando a planilha completa é mostrada.</aside>
+Não revele a resposta ainda — ela aparece naturalmente no próximo slide, quando a planilha completa é mostrada. O gancho é justamente moradia voltar e disparar na frente de todo mundo.</aside>
 </section>
 <section id="dinamica1" data-chapter="1" data-i="10" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:44px">
 <div style="display:flex;flex-direction:column;gap:16px">
@@ -551,7 +557,7 @@ Não revele a resposta ainda — ela aparece naturalmente no próximo slide, qua
 </div>
 <div style="display:flex;gap:80px;align-items:start">
 <div style="flex:1;display:flex;flex-direction:column;gap:16px">
-<div style="display:flex;align-items:center;gap:24px"><p style="width:340px;font-size:28px">Moradia e contas</p><div style="width:486px"><div style="width:480px;height:28px;background:#142034;border-radius:6px"></div></div><p style="width:140px;font-size:28px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums">R$ 1.150</p></div>
+<div style="display:flex;align-items:center;gap:24px"><p style="width:340px;font-size:28px">Moradia</p><div style="width:486px"><div style="width:480px;height:28px;background:#142034;border-radius:6px"></div></div><p style="width:140px;font-size:28px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums">R$ 1.150</p></div>
 <div style="display:flex;align-items:center;gap:24px"><p style="width:340px;font-size:28px">Alimentação e mercado</p><div style="width:486px"><div style="width:230px;height:28px;background:#142034;border-radius:6px"></div></div><p style="width:140px;font-size:28px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums">R$ 550</p></div>
 <div style="display:flex;align-items:center;gap:24px"><p style="width:340px;font-size:28px">Transporte</p><div style="width:486px"><div style="width:125px;height:28px;background:#142034;border-radius:6px"></div></div><p style="width:140px;font-size:28px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums">R$ 300</p></div>
 <div style="display:flex;align-items:center;gap:24px"><p style="width:340px;font-size:28px">Celular e internet</p><div style="width:486px"><div style="width:50px;height:28px;background:#142034;border-radius:6px"></div></div><p style="width:140px;font-size:28px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums">R$ 120</p></div>
@@ -577,6 +583,8 @@ Não revele a resposta ainda — ela aparece naturalmente no próximo slide, qua
 <p style="font-size:24px;color:#6B7180">11</p>
 </div>
 <aside>Fala: “Conversem em duplas por um minuto. Não existe uma única resposta para todas as pessoas, mas quero que identifiquem onde pode haver margem para uma mudança.”
+
+Antes de abrir a conversa, comente o resultado da aposta: moradia nem era opção, e ainda assim pesa mais que o dobro de qualquer um dos quatro gastos que a plateia escolheu.
 
 Perguntas completas: Quanto falta para Nick? Quais despesas poderiam ser revistas? Que informações ainda faltam para um diagnóstico completo?
 
@@ -665,19 +673,23 @@ No caso do Nick: o primeiro problema não é uma dívida específica, é o défi
 <div style="display:flex;gap:64px;align-items:start">
 <div style="flex:1;display:flex;flex-direction:column;gap:20px">
 <p style="font-size:24px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#4A5263">Inventário de Nick · exemplo fictício</p>
-<table style="font-size:30px;color:#142034;background:#F8F6F1;border-radius:16px">
+<table style="font-size:27px;color:#142034;background:#F8F6F1;border-radius:16px">
 <tr style="background:#142034"><th style="width:34%;color:#F8F6F1">Compromisso</th><th style="width:24%;text-align:right;color:#F8F6F1">Saldo restante</th><th style="width:24%;text-align:right;color:#F8F6F1">Parcela</th><th style="width:18%;color:#F8F6F1">Situação</th></tr>
-<tr style="background:#F1E3C6"><td>Compra parcelada</td><td style="text-align:right">R$ 400</td><td style="text-align:right">R$ 100</td><td>Em dia</td></tr>
-<tr style="background:#F8F6F1"><td>Eletrodoméstico</td><td style="text-align:right">R$ 1.000</td><td style="text-align:right">R$ 200</td><td>Em dia</td></tr>
-<tr style="background:#F8F6F1"><td>Empréstimo</td><td style="text-align:right">R$ 2.000</td><td style="text-align:right">R$ 250</td><td>Em dia</td></tr>
+<tr style="background:#F1E3C6"><td>Cartão de crédito</td><td style="text-align:right">R$ 300</td><td style="text-align:right">R$ 80</td><td>Em dia</td></tr>
+<tr style="background:#F8F6F1"><td>Celular parcelado</td><td style="text-align:right">R$ 400</td><td style="text-align:right">R$ 100</td><td>Em dia</td></tr>
+<tr style="background:#F1E3C6"><td>Sofá novo</td><td style="text-align:right">R$ 600</td><td style="text-align:right">R$ 120</td><td>Em dia</td></tr>
+<tr style="background:#F8F6F1"><td>Curso online</td><td style="text-align:right">R$ 600</td><td style="text-align:right">R$ 100</td><td>Em dia</td></tr>
+<tr style="background:#F1E3C6"><td>Empréstimo pessoal</td><td style="text-align:right">R$ 1.500</td><td style="text-align:right">R$ 150</td><td>Em dia</td></tr>
 </table>
-<p style="font-size:24px;line-height:1.4;color:#4A5263">Em destaque: o menor saldo restante. Saldo e parcela são informações diferentes, e ambas importam.</p>
+<p style="font-size:24px;line-height:1.4;color:#4A5263">Em destaque: o menor saldo restante. Saldo e parcela são informações diferentes, e ambas importam — e cinco dívidas pequenas pesam tanto quanto poucas grandes.</p>
 </div>
 <div style="width:480px;display:flex;flex-direction:column;gap:24px;background:#F8F6F1;padding:40px;border-radius:24px">
 <p style="font-size:24px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#7E233B">Registre também</p>
-<div style="display:flex;gap:20px;align-items:start"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:#142034;width:36px;height:36px"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/></svg><p style="font-size:28px;line-height:1.35;color:#142034">Vencimento e parcelas restantes</p></div>
-<div style="display:flex;gap:20px;align-items:start"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:#142034;width:36px;height:36px"><path d="M12 3 2 21h20L12 3z"/><path d="M12 10v5"/><path d="M12 18h.01"/></svg><p style="font-size:28px;line-height:1.35;color:#142034">Existência de atrasos</p></div>
-<div style="display:flex;gap:20px;align-items:start"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:#142034;width:36px;height:36px"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 20 3"/><path d="m16 7 3 3"/></svg><p style="font-size:28px;line-height:1.35;color:#142034">Condições de quitação antecipada ou negociação</p></div>
+<ul style="display:flex;flex-direction:column;gap:20px;font-size:28px;line-height:1.35;color:#142034;list-style:disc;padding-left:34px">
+<li>Vencimento e parcelas restantes</li>
+<li>Existência de atrasos</li>
+<li>Condições de quitação antecipada ou negociação</li>
+</ul>
 </div>
 </div>
 <div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
@@ -689,6 +701,58 @@ No caso do Nick: o primeiro problema não é uma dívida específica, é o défi
 “Na vida real, é necessário conferir as condições de quitação antecipada. Para esta palestra, vamos trabalhar com valores fixos e conhecidos, sem entrar em cálculos de juros.”
 
 Cuidado: o destaque no menor saldo não significa que ele deva ser priorizado em qualquer circunstância.</aside>
+</section>
+<section id="estrategia" data-chapter="2" data-i="14" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">A · Estratégia da menor dívida primeiro</p>
+<h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Uma dívida de cada vez. Um plano de cada vez.</h2>
+</div>
+<div style="display:flex;gap:80px;align-items:start">
+<div style="flex:1;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;gap:24px;align-items:center"><div style="width:56px;height:56px;border-radius:50%;background:#142034;display:flex;align-items:center;justify-content:center"><p style="font-size:26px;font-weight:700;color:#F8F6F1">1</p></div><p style="flex:1;font-size:30px;line-height:1.35;color:#142034">Mantenha os pagamentos acordados das demais dívidas.</p></div>
+<div style="display:flex;gap:24px;align-items:center"><div style="width:56px;height:56px;border-radius:50%;background:#142034;display:flex;align-items:center;justify-content:center"><p style="font-size:26px;font-weight:700;color:#F8F6F1">2</p></div><p style="flex:1;font-size:30px;line-height:1.35;color:#142034">Identifique a menor dívida pelo saldo restante.</p></div>
+<div style="display:flex;gap:24px;align-items:center"><div style="width:56px;height:56px;border-radius:50%;background:#142034;display:flex;align-items:center;justify-content:center"><p style="font-size:26px;font-weight:700;color:#F8F6F1">3</p></div><p style="flex:1;font-size:30px;line-height:1.35;color:#142034">Verifique as condições para quitar antecipadamente.</p></div>
+<div style="display:flex;gap:24px;align-items:center"><div style="width:56px;height:56px;border-radius:50%;background:#142034;display:flex;align-items:center;justify-content:center"><p style="font-size:26px;font-weight:700;color:#F8F6F1">4</p></div><p style="flex:1;font-size:30px;line-height:1.35;color:#142034">Use apenas o dinheiro extra realmente disponível.</p></div>
+<div style="display:flex;gap:24px;align-items:center"><div style="width:56px;height:56px;border-radius:50%;background:#3D6F58;display:flex;align-items:center;justify-content:center"><p style="font-size:26px;font-weight:700;color:#F8F6F1">5</p></div><p style="flex:1;font-size:30px;line-height:1.35;color:#142034">Quando uma parcela for liberada, redirecione-a à próxima prioridade.</p></div>
+</div>
+<div style="width:820px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;gap:20px;align-items:end;height:380px;border-bottom:3px solid #142034">
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;align-items:center">
+<p style="font-size:22px;font-weight:700;color:#7E233B">1º alvo</p>
+<p style="font-size:22px;font-weight:700;color:#142034">R$ 300</p>
+<div style="width:120px;height:48px;background:#CDA254;border-radius:10px 10px 0 0"></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;align-items:center">
+<p style="font-size:22px;font-weight:700;color:#4A5263">2º</p>
+<p style="font-size:22px;font-weight:700;color:#142034">R$ 400</p>
+<div style="width:120px;height:64px;background:#9BAAC4;border-radius:10px 10px 0 0"></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;align-items:center">
+<p style="font-size:22px;font-weight:700;color:#4A5263">3º</p>
+<p style="font-size:22px;font-weight:700;color:#142034">R$ 600</p>
+<div style="width:120px;height:96px;background:#6B7FA3;border-radius:10px 10px 0 0"></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;align-items:center">
+<p style="font-size:22px;font-weight:700;color:#4A5263">4º</p>
+<p style="font-size:22px;font-weight:700;color:#142034">R$ 600</p>
+<div style="width:120px;height:96px;background:#44567A;border-radius:10px 10px 0 0"></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;align-items:center">
+<p style="font-size:22px;font-weight:700;color:#4A5263">5º</p>
+<p style="font-size:22px;font-weight:700;color:#142034">R$ 1.500</p>
+<div style="width:120px;height:240px;background:#142034;border-radius:10px 10px 0 0"></div>
+</div>
+</div>
+<p style="font-size:24px;line-height:1.4;color:#7E233B;padding:20px 24px;border:2px solid #7E233B;border-radius:16px">Não vale para todos os casos: dívidas com encargos altos, atrasos ou consequências importantes podem exigir outra prioridade.</p>
+</div>
+</div>
+<div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#6B7180">Capítulo A · alturas ilustrativas, ordenadas pelo saldo restante</p>
+<p style="font-size:24px;color:#6B7180">15</p>
+</div>
+<aside>Fala: “Essa estratégia pode ajudar porque permite enxergar uma primeira conquista e liberar uma parcela para a próxima etapa. Mas ela não é a melhor escolha em todos os casos. Dívidas com encargos elevados, atrasos ou consequências importantes podem exigir outra prioridade.”
+
+Mensagem central: o método ajuda a organizar a ação; não substitui a análise das condições reais de cada dívida.</aside>
 </section>
 <section id="negociar" data-chapter="2" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
@@ -715,70 +779,23 @@ Cuidado: o destaque no menor saldo não significa que ele deva ser priorizado em
 </div>
 <aside>Fala: “A estratégia da menor dívida primeiro é um bom ponto de partida, mas não é absoluta. Se uma dívida já está atrasada, tem encargos muito altos ou risco de negativação, negocie essa primeiro — depois volte à ordem pelo saldo restante.”</aside>
 </section>
-<section id="estrategia" data-chapter="2" data-i="14" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
-<div style="display:flex;flex-direction:column;gap:16px">
-<p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">A · Estratégia da menor dívida primeiro</p>
-<h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Uma dívida de cada vez. Um plano de cada vez.</h2>
-</div>
-<div style="display:flex;gap:80px;align-items:start">
-<div style="flex:1;display:flex;flex-direction:column;gap:18px">
-<div style="display:flex;gap:24px;align-items:center"><div style="width:56px;height:56px;border-radius:50%;background:#142034;display:flex;align-items:center;justify-content:center"><p style="font-size:26px;font-weight:700;color:#F8F6F1">1</p></div><p style="flex:1;font-size:30px;line-height:1.35;color:#142034">Mantenha os pagamentos acordados das demais dívidas.</p></div>
-<div style="display:flex;gap:24px;align-items:center"><div style="width:56px;height:56px;border-radius:50%;background:#142034;display:flex;align-items:center;justify-content:center"><p style="font-size:26px;font-weight:700;color:#F8F6F1">2</p></div><p style="flex:1;font-size:30px;line-height:1.35;color:#142034">Identifique a menor dívida pelo saldo restante.</p></div>
-<div style="display:flex;gap:24px;align-items:center"><div style="width:56px;height:56px;border-radius:50%;background:#142034;display:flex;align-items:center;justify-content:center"><p style="font-size:26px;font-weight:700;color:#F8F6F1">3</p></div><p style="flex:1;font-size:30px;line-height:1.35;color:#142034">Verifique as condições para quitar antecipadamente.</p></div>
-<div style="display:flex;gap:24px;align-items:center"><div style="width:56px;height:56px;border-radius:50%;background:#142034;display:flex;align-items:center;justify-content:center"><p style="font-size:26px;font-weight:700;color:#F8F6F1">4</p></div><p style="flex:1;font-size:30px;line-height:1.35;color:#142034">Use apenas o dinheiro extra realmente disponível.</p></div>
-<div style="display:flex;gap:24px;align-items:center"><div style="width:56px;height:56px;border-radius:50%;background:#3D6F58;display:flex;align-items:center;justify-content:center"><p style="font-size:26px;font-weight:700;color:#F8F6F1">5</p></div><p style="flex:1;font-size:30px;line-height:1.35;color:#142034">Quando uma parcela for liberada, redirecione-a à próxima prioridade.</p></div>
-</div>
-<div style="width:600px;display:flex;flex-direction:column;gap:28px">
-<div style="display:flex;gap:28px;align-items:end;height:380px;border-bottom:3px solid #142034">
-<div style="flex:1;display:flex;flex-direction:column;gap:12px;align-items:center">
-<p style="font-size:24px;font-weight:700;color:#7E233B">1º alvo</p>
-<p style="font-size:26px;font-weight:700;color:#142034">R$ 400</p>
-<div style="width:150px;height:60px;background:#CDA254;border-radius:10px 10px 0 0"></div>
-</div>
-<div style="flex:1;display:flex;flex-direction:column;gap:12px;align-items:center">
-<p style="font-size:24px;font-weight:700;color:#4A5263">2º</p>
-<p style="font-size:26px;font-weight:700;color:#142034">R$ 1.000</p>
-<div style="width:150px;height:150px;background:#44567A;border-radius:10px 10px 0 0"></div>
-</div>
-<div style="flex:1;display:flex;flex-direction:column;gap:12px;align-items:center">
-<p style="font-size:24px;font-weight:700;color:#4A5263">3º</p>
-<p style="font-size:26px;font-weight:700;color:#142034">R$ 2.000</p>
-<div style="width:150px;height:240px;background:#142034;border-radius:10px 10px 0 0"></div>
-</div>
-</div>
-<p style="font-size:24px;line-height:1.4;color:#7E233B;padding:20px 24px;border:2px solid #7E233B;border-radius:16px">Não vale para todos os casos: dívidas com encargos altos, atrasos ou consequências importantes podem exigir outra prioridade.</p>
-</div>
-</div>
-<div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
-<p style="font-size:24px;color:#6B7180">Capítulo A · alturas ilustrativas, ordenadas pelo saldo restante</p>
-<p style="font-size:24px;color:#6B7180">15</p>
-</div>
-<aside>Fala: “Essa estratégia pode ajudar porque permite enxergar uma primeira conquista e liberar uma parcela para a próxima etapa. Mas ela não é a melhor escolha em todos os casos. Dívidas com encargos elevados, atrasos ou consequências importantes podem exigir outra prioridade.”
-
-Mensagem central: o método ajuda a organizar a ação; não substitui a análise das condições reais de cada dívida.</aside>
-</section>
 <section id="dinamica2" data-chapter="2" data-i="15" data-transition="fade" style="background:#7E233B;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#F3D9DF">Dinâmica 2 · 1 minuto</p>
 <h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Você está no lugar de Nick. Qual é sua decisão?</h2>
 </div>
-<div style="display:flex;gap:28px;align-items:stretch">
-<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#F8F6F1;padding:40px;border-radius:24px">
-<p style="font-size:24px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7E233B">Compra parcelada</p>
-<p style="font-family:'Fraunces', Georgia, serif;font-size:64px;font-weight:600;line-height:1.1;color:#142034">R$ 400</p>
-<p style="font-size:26px;color:#4A5263">saldo restante · parcela de R$ 100</p>
+<div style="display:flex;gap:40px;align-items:stretch">
+<div style="flex:1.2;display:flex;flex-direction:column;justify-content:center">
+<table style="font-size:25px;color:#142034;background:#F8F6F1;border-radius:16px">
+<tr style="background:#142034"><th style="color:#F8F6F1">Compromisso</th><th style="text-align:right;color:#F8F6F1">Saldo</th><th style="text-align:right;color:#F8F6F1">Parcela</th></tr>
+<tr style="background:#F1E3C6"><td>Cartão de crédito</td><td style="text-align:right">R$ 300</td><td style="text-align:right">R$ 80</td></tr>
+<tr style="background:#F8F6F1"><td>Celular parcelado</td><td style="text-align:right">R$ 400</td><td style="text-align:right">R$ 100</td></tr>
+<tr style="background:#F1E3C6"><td>Sofá novo</td><td style="text-align:right">R$ 600</td><td style="text-align:right">R$ 120</td></tr>
+<tr style="background:#F8F6F1"><td>Curso online</td><td style="text-align:right">R$ 600</td><td style="text-align:right">R$ 100</td></tr>
+<tr style="background:#F1E3C6"><td>Empréstimo pessoal</td><td style="text-align:right">R$ 1.500</td><td style="text-align:right">R$ 150</td></tr>
+</table>
 </div>
-<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#F8F6F1;padding:40px;border-radius:24px">
-<p style="font-size:24px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7E233B">Eletrodoméstico</p>
-<p style="font-family:'Fraunces', Georgia, serif;font-size:64px;font-weight:600;line-height:1.1;color:#142034">R$ 1.000</p>
-<p style="font-size:26px;color:#4A5263">saldo restante · parcela de R$ 200</p>
-</div>
-<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#F8F6F1;padding:40px;border-radius:24px">
-<p style="font-size:24px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7E233B">Empréstimo</p>
-<p style="font-family:'Fraunces', Georgia, serif;font-size:64px;font-weight:600;line-height:1.1;color:#142034">R$ 2.000</p>
-<p style="font-size:26px;color:#4A5263">saldo restante · parcela de R$ 250</p>
-</div>
-<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#CDA254;padding:40px;border-radius:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#CDA254;padding:40px;border-radius:24px;justify-content:center">
 <p style="font-size:24px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#142034">Sobra por mês</p>
 <p style="font-family:'Fraunces', Georgia, serif;font-size:64px;font-weight:600;line-height:1.1;color:#142034">+ R$ 150</p>
 <p style="font-size:26px;color:#142034">após cortar R$ 350 em gastos ajustáveis e sair do negativo</p>
@@ -793,7 +810,7 @@ Mensagem central: o método ajuda a organizar a ação; não substitui a anális
 
 Fala: “Conversem por um minuto e escolham uma estratégia. Depois, vamos comparar as respostas.”
 
-Fechamento da dinâmica: a compra parcelada é a menor dívida pelo saldo restante. Nick pode avaliar direcionar os R$ 150 extras para essa dívida, mantendo as demais parcelas em dia e verificando o valor e as condições de quitação.
+Fechamento da dinâmica: o cartão de crédito é a menor dívida pelo saldo restante. Nick pode avaliar direcionar os R$ 150 extras para essa dívida, mantendo as demais parcelas em dia e verificando o valor e as condições de quitação.
 
 Cuidado: se já houver saldo acumulado no cheque especial, ele costuma ter encargos altos e pode exigir prioridade ou renegociação antes. Não é possível afirmar um prazo exato de quitação sem conhecer as condições contratuais.</aside>
 </section>
@@ -811,12 +828,12 @@ Cuidado: se já houver saldo acumulado no cheque especial, ele costuma ter encar
 </div>
 <aside>Fala: “Agora é a sua vez de decidir. Pelo celular, escolham qual das três dívidas do Nick vocês priorizariam primeiro, mantendo as demais em dia.”
 
-Fechamento: a compra parcelada é a menor dívida pelo saldo restante — a recomendação do método.</aside>
+Fechamento: o cartão de crédito é a menor dívida pelo saldo restante — a recomendação do método.</aside>
 </section>
 <section id="termometro" data-chapter="2" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:center">
 <div style="display:flex;flex-direction:column;gap:16px">
 <p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#CDA254">Atividade ao vivo · Capítulo A</p>
-<h2 style="font-size:58px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Sem citar valores: a quantos passos você está do Nick hoje?</h2>
+<h2 style="font-size:58px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Sem citar valores: quão parecida é sua situação financeira com a do Nick?</h2>
 </div>
 <div class="poll" data-poll="termometro-nick">
 <div class="poll-qr-wrap"><div class="poll-qr"></div><p class="poll-caption">Aponte a câmera do celular e responda</p></div>
@@ -1074,11 +1091,11 @@ Conexão: o resultado real da sala costuma mostrar que a maioria está começand
 <p style="font-size:24px;color:#142034;padding:10px 20px;border:2px solid #142034;border-radius:999px">Até quando?</p>
 <p style="font-size:24px;color:#142034;padding:10px 20px;border:2px solid #142034;border-radius:999px">Quanto separo por período?</p>
 </div>
-<div style="display:flex;gap:32px;align-items:center;background:#142034;padding:24px 40px;border-radius:20px">
-<div data-qr-static="https://airo-financas-pessoais.web.app" style="flex:none;width:92px;height:92px;background:#fff;border-radius:12px;padding:8px"></div>
-<div style="display:flex;flex-direction:column;gap:4px">
-<p style="font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#CDA254">A partir de agora</p>
-<p style="font-size:28px;font-weight:700;line-height:1.3;color:#F8F6F1">Essas três perguntas, você responde para a sua própria vida no app Airo Finanças Pessoais.</p>
+<div style="display:flex;gap:36px;align-items:center;background:#142034;padding:36px 44px;border-radius:24px">
+<div data-qr-static="https://airo-financas-pessoais.web.app" style="flex:none;width:160px;height:160px;background:#fff;border-radius:14px;padding:10px"></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<p style="font-size:22px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#CDA254">A partir de agora</p>
+<p style="font-size:32px;font-weight:700;line-height:1.3;color:#F8F6F1">Essas três perguntas, você responde para a sua própria vida no app Airo Finanças Pessoais.</p>
 </div>
 </div>
 <div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
@@ -1128,82 +1145,61 @@ Conexão: o resultado real da sala costuma mostrar que a maioria está começand
 </section>
 <section id="compromisso" data-chapter="4" data-i="23" data-transition="fade" style="background:#EFEBE2;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
-<p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Dinâmica final · Meu compromisso de 24 horas</p>
-<h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Agora é a sua vez</h2>
+<p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#7E233B">Dinâmica final · Comece agora</p>
+<h2 style="font-size:64px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:#142034">Agora é a sua vez de aplicar o Método C.A.P.</h2>
 </div>
-<div style="display:flex;gap:80px;align-items:start">
+<div style="display:flex;gap:80px;align-items:center">
 <div style="flex:1;display:flex;flex-direction:column;gap:22px">
-<p style="font-size:32px;font-weight:600;line-height:1.35;color:#142034">Escolha uma ação que você consegue realizar nas próximas 24 horas.</p>
-<div style="display:flex;gap:20px;align-items:center"><div style="width:36px;height:36px;border:3px solid #142034;border-radius:6px"></div><p style="font-size:30px;color:#142034">Anotar minha renda líquida.</p></div>
-<div style="display:flex;gap:20px;align-items:center"><div style="width:36px;height:36px;border:3px solid #142034;border-radius:6px"></div><p style="font-size:30px;color:#142034">Listar despesas e parcelas.</p></div>
-<div style="display:flex;gap:20px;align-items:center"><div style="width:36px;height:36px;border:3px solid #142034;border-radius:6px"></div><p style="font-size:30px;color:#142034">Conferir vencimentos e saldos das dívidas.</p></div>
-<div style="display:flex;gap:20px;align-items:center"><div style="width:36px;height:36px;border:3px solid #142034;border-radius:6px"></div><p style="font-size:30px;color:#142034">Identificar um gasto ajustável.</p></div>
-<div style="display:flex;gap:20px;align-items:center"><div style="width:36px;height:36px;border:3px solid #142034;border-radius:6px"></div><p style="font-size:30px;color:#142034">Conversar com a família sobre uma meta financeira.</p></div>
+<p style="font-size:28px;font-weight:600;line-height:1.35;color:#142034">O que vimos hoje, em cinco passos — na mesma ordem dentro do app:</p>
+<div style="display:flex;gap:20px;align-items:start"><div style="flex:none;width:44px;height:44px;border-radius:10px;background:#CDA254;display:flex;align-items:center;justify-content:center"><p style="font-size:22px;font-weight:700;color:#142034">C</p></div><p style="font-size:27px;line-height:1.35;color:#142034"><b>Enxergar a realidade</b> — registrar renda, despesas e dívidas.</p></div>
+<div style="display:flex;gap:20px;align-items:start"><div style="flex:none;width:44px;height:44px;border-radius:10px;background:#CDA254;display:flex;align-items:center;justify-content:center"><p style="font-size:22px;font-weight:700;color:#142034">C</p></div><p style="font-size:27px;line-height:1.35;color:#142034"><b>Descobrir os vazamentos</b> — classificar em Necessidades, Desejos ou Futuro.</p></div>
+<div style="display:flex;gap:20px;align-items:start"><div style="flex:none;width:44px;height:44px;border-radius:10px;background:#7E233B;display:flex;align-items:center;justify-content:center"><p style="font-size:22px;font-weight:700;color:#F8F6F1">A</p></div><p style="font-size:27px;line-height:1.35;color:#142034"><b>Organizar as dívidas</b> — ordem de prioridade e quando cada uma termina.</p></div>
+<div style="display:flex;gap:20px;align-items:start"><div style="flex:none;width:44px;height:44px;border-radius:10px;background:#3D6F58;display:flex;align-items:center;justify-content:center"><p style="font-size:22px;font-weight:700;color:#F8F6F1">P</p></div><p style="font-size:27px;line-height:1.35;color:#142034"><b>Dar função ao dinheiro</b> — dividir a renda com o 50/30/20.</p></div>
+<div style="display:flex;gap:20px;align-items:start"><div style="flex:none;width:44px;height:44px;border-radius:10px;background:#3D6F58;display:flex;align-items:center;justify-content:center"><p style="font-size:22px;font-weight:700;color:#F8F6F1">P</p></div><p style="font-size:27px;line-height:1.35;color:#142034"><b>Construir proteção</b> — reserva de emergência e metas com prazo.</p></div>
 </div>
-<div style="width:640px;display:flex;flex-direction:column;gap:28px;background:#F8F6F1;padding:56px;border-radius:24px;box-shadow:0 12px 40px rgba(20,32,52,0.12)">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<p style="font-size:24px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#7E233B">Ficha de compromisso</p>
-<p style="font-size:24px;font-weight:700;color:#142034;background:#CDA254;padding:8px 18px;border-radius:999px">24 h</p>
-</div>
-<p style="font-family:'Fraunces', Georgia, serif;font-size:44px;font-weight:600;line-height:1.15;color:#142034">Meu primeiro passo será:</p>
-<div style="height:56px;border-bottom:2px solid #8A8F9A"></div>
-<div style="height:56px;border-bottom:2px solid #8A8F9A"></div>
-<div style="display:flex;gap:16px;align-items:end;padding-top:12px">
-<p style="font-size:26px;color:#4A5263">Até:</p>
-<div style="flex:1;height:40px;border-bottom:2px solid #8A8F9A"></div>
-</div>
-<div style="display:flex;gap:20px;align-items:center;padding-top:16px;border-top:2px dashed #D3CCBE">
-<div data-qr-static="https://airo-financas-pessoais.web.app" style="flex:none;width:96px;height:96px;background:#fff;border-radius:10px;padding:8px;border:1px solid #D3CCBE"></div>
-<p style="font-size:22px;line-height:1.35;color:#4A5263">Prefere o celular? Escaneie e registre esse compromisso no app <b style="color:#142034">Airo Finanças Pessoais</b>.</p>
-</div>
+<div style="width:620px;flex:none;display:flex;flex-direction:column;align-items:center;gap:26px;background:#142034;padding:52px;border-radius:24px">
+<p style="font-size:22px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#CDA254">Comece agora, no seu celular</p>
+<div data-qr-static="https://airo-financas-pessoais.web.app" style="width:300px;height:300px;background:#fff;border-radius:18px;padding:18px"></div>
+<p style="font-size:25px;line-height:1.4;text-align:center;color:#F8F6F1">Aponte a câmera e abra o <b>Airo Finanças Pessoais</b> — grátis, sem cadastro, os dados ficam só no seu celular.</p>
 </div>
 </div>
 <div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
-<p style="font-size:24px;color:#6B7180">Ato 3 · A transformação · 30 a 45 segundos para registrar</p>
+<p style="font-size:24px;color:#6B7180">Ato 3 · A transformação · leve o método com você</p>
 <p style="font-size:24px;color:#6B7180">24</p>
 </div>
-<aside>Fala: “Não quero que vocês saiam daqui tentando mudar tudo ao mesmo tempo. Quero que saiam com uma decisão concreta. Escolham uma ação que consigam realizar nas próximas 24 horas.”
+<aside>Fala: “Tudo que vimos hoje cabe no seu celular. O app Airo Finanças Pessoais segue o mesmo Método C.A.P., na mesma ordem: Consciência, Ação, Planejamento. Abram agora e preencham pelo menos o primeiro passo ainda aqui, comigo.”
 
-Dê 30 a 45 segundos para que cada pessoa registre sua decisão. A ficha pode ser impressa e entregue a cada participante.
+Mecânica: dê um a dois minutos para a plateia escanear e abrir o app. Incentive a preencher ao menos a renda e uma despesa antes de a palestra terminar — aumenta muito a chance de uso depois.
 
-Se houver tempo, convide duas ou três pessoas a compartilhar apenas a ação escolhida, sem expor valores ou detalhes financeiros.</aside>
+Reforce para quem tiver receio: os dados ficam só no celular da pessoa, nada é enviado a servidor algum.</aside>
 </section>
-<section id="encerramento" data-chapter="4" data-i="24" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:28px">
-<svg aria-label="Ilustração: Nick caminha por uma estrada organizada em direção a um horizonte iluminado" width="1920" height="380" viewBox="0 0 1920 380" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:0px;bottom:0px;width:1920px;height:380px">
-<defs>
-<radialGradient id="glow" cx="50%" cy="10%" r="60%">
-<stop offset="0%" stop-color="#CDA254" stop-opacity="0.45"/>
-<stop offset="100%" stop-color="#CDA254" stop-opacity="0"/>
-</radialGradient>
-</defs>
-<rect x="0" y="0" width="1920" height="380" fill="url(#glow)"/>
-<rect x="0" y="60" width="1920" height="320" fill="#172640"/>
-<rect x="0" y="58" width="1920" height="3" fill="#CDA254" opacity="0.7"/>
-<path d="M930 60 L 990 60 L 1520 380 L 400 380 Z" fill="#22324E"/>
-<path d="M956 76 L 964 76 L 966 96 L 954 96 Z" fill="#CDA254" opacity="0.8"/>
-<path d="M952 124 L 968 124 L 972 160 L 948 160 Z" fill="#CDA254" opacity="0.8"/>
-<path d="M944 200 L 976 200 L 982 256 L 938 256 Z" fill="#CDA254" opacity="0.8"/>
-<path d="M932 310 L 988 310 L 998 380 L 922 380 Z" fill="#CDA254" opacity="0.8"/>
-<circle cx="1052" cy="176" r="11" fill="#F8F6F1"/>
-<rect x="1042" y="190" width="21" height="44" rx="10" fill="#7E233B"/>
-<rect x="1044" y="228" width="7" height="30" rx="3.5" fill="#F8F6F1" transform="rotate(8 1047 228)"/>
-<rect x="1055" y="228" width="7" height="30" rx="3.5" fill="#F8F6F1" transform="rotate(-10 1058 228)"/>
-</svg>
+<section id="encerramento" data-chapter="4" data-i="24" data-transition="fade" style="background:#142034;color:#F8F6F1;font-family:Inter, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px;justify-content:center;overflow:hidden">
+<div style="position:absolute;right:-140px;top:-160px;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle, rgba(205,162,84,.24), rgba(205,162,84,0) 70%)"></div>
+<div style="position:absolute;right:220px;bottom:-200px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle, rgba(205,162,84,.16), rgba(205,162,84,0) 70%)"></div>
 <h1 style="width:1500px;font-family:'Fraunces', Georgia, serif;font-size:88px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#F8F6F1">Você não precisa resolver sua vida financeira hoje.</h1>
 <h1 style="font-family:'Fraunces', Georgia, serif;font-size:88px;font-weight:500;font-style:italic;line-height:1.1;letter-spacing:-1px;color:#CDA254">Precisa começar a conduzi-la.</h1>
-<div style="display:flex;gap:48px;padding-top:24px">
-<p style="font-size:30px;color:#C9CFDA"><b>C</b>onsciência para enxergar.</p>
-<p style="font-size:30px;color:#C9CFDA"><b>A</b>ção para mudar.</p>
-<p style="font-size:30px;color:#C9CFDA"><b>P</b>lanejamento para avançar.</p>
+<div style="display:flex;gap:48px;padding-top:8px">
+<p style="font-size:30px;color:#C9CFDA"><b style="color:#F8F6F1">C</b>onsciência para enxergar.</p>
+<p style="font-size:30px;color:#C9CFDA"><b style="color:#F8F6F1">A</b>ção para mudar.</p>
+<p style="font-size:30px;color:#C9CFDA"><b style="color:#F8F6F1">P</b>lanejamento para avançar.</p>
 </div>
-<p style="font-size:32px;font-weight:600;color:#F8F6F1">Qual será o seu primeiro passo nas próximas 24 horas?</p>
+<div style="display:flex;gap:28px;align-items:center;background:rgba(248,246,241,.06);border:1px solid rgba(248,246,241,.18);padding:28px 40px;border-radius:20px;width:fit-content">
+<div style="display:flex;flex-direction:column;gap:4px">
+<p style="font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#F3B6C2">Nick, no dia 5</p>
+<p style="font-family:'Fraunces', Georgia, serif;font-size:48px;font-weight:600;color:#F8F6F1">−R$ 200</p>
+</div>
+<div class="arrow" style="background:#CDA254;width:56px;height:28px"></div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<p style="font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8FD4B5">Nick, com o método</p>
+<p style="font-family:'Fraunces', Georgia, serif;font-size:48px;font-weight:600;color:#F8F6F1">+R$ 150</p>
+</div>
+</div>
+<p style="font-size:32px;font-weight:600;color:#F8F6F1">Ele não mudou de renda. Mudou de método. E o app já está no seu celular.</p>
 <aside>Fala final: “Voltemos ao Nick. Ele começou achando que seu dinheiro desaparecia. Ao longo da jornada, percebeu que precisava enxergar a própria realidade, organizar suas dívidas e dar uma função ao dinheiro.”
 
-“Ele não resolveu tudo em um dia. Mas deixou de depender apenas da sorte e passou a contar com um plano.”
+“Ele não resolveu tudo em um dia. Mas deixou de depender apenas da sorte e passou a contar com um plano — e isso transformou um mês de −R$200 em um mês com R$150 de margem, sem nenhum aumento de renda.”
 
-“O planejamento financeiro não começa quando sobra dinheiro. Começa quando você decide olhar para sua realidade e dar um destino consciente ao dinheiro que tem.”
-
-“Qual será o seu primeiro passo?”</aside>
+“O planejamento financeiro não começa quando sobra dinheiro. Começa quando você decide olhar para sua realidade e dar um destino consciente ao dinheiro que tem. Vocês já começaram — o app está aberto. O resto é continuar.”</aside>
 </section>
 <section id="referencias" data-chapter="4" data-i="25" data-transition="fade" style="background:#F8F6F1;color:#142034;font-family:Inter, Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;flex-direction:column;gap:16px">
@@ -1234,7 +1230,7 @@ Se houver tempo, convide duas ou três pessoas a compartilhar apenas a ação es
 </div>
 <div style="position:absolute;left:128px;bottom:64px;width:1664px;display:flex;justify-content:space-between">
 <p style="font-size:24px;color:#6B7180">Nick é um personagem fictício. Atualize dados e referências antes de cada nova edição.</p>
-<p style="font-size:24px;color:#6B7180">26</p>
+<p style="font-size:24px;color:#6B7180">25</p>
 </div>
 <aside>Nota: os exemplos de Nick são fictícios. Dados estatísticos e referências devem ser atualizados antes de cada nova edição da palestra. Confira os endereços dos sites antes de apresentar.</aside>
 </section>
@@ -1250,7 +1246,7 @@ Se houver tempo, convide duas ou três pessoas a compartilhar apenas a ação es
 var S=[].slice.call(document.querySelectorAll('#stage>section')),n=S.length,i=0,stage=document.getElementById('stage'),notes=document.getElementById('notes');
 function fit(){var k=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform='scale('+k+') translate(-50%,-50%)';}
 
-var TITLES=["Capa","Conheça o Nick","Dia 20 do mês","O mistério do dinheiro","Dados: endividamento no Brasil","Educação financeira é escolher melhor","Nick decide investigar","O Método C.A.P.","Passo 1 · Enxergar a realidade","Nick e Dani: mesma renda","Passo 2 · Descobrir os vazamentos","Atividade · Classificar os gastos","Atividade · Aposta no maior gasto","Orçamento do Nick","Interpretar o diagnóstico","Ação para sair das dívidas","Passo 3 · Inventário de dívidas","Quando negociar antes do plano","Estratégia da menor dívida","Dinâmica 2 · Qual é sua decisão?","Atividade · Prioridade ao vivo","Atividade · Termômetro Nick","Simulação completa","Nick saiu do vermelho","Passo 4 · O modelo 50/30/20","Exemplo com renda de R$ 3.000","Passo 5 · Construir proteção","Atividade · Reserva de emergência","Transformar desejos em metas","O plano de 30 dias","Meu compromisso de 24h","Encerramento","Referências"];
+var TITLES=["Capa","Conheça o Nick","Dia 20 do mês","Dados: endividamento no Brasil","O mistério do dinheiro","Educação financeira é escolher melhor","Nick decide investigar","O Método C.A.P.","Nick e Dani: mesma renda","Passo 1 · Enxergar a realidade","Passo 2 · Descobrir os vazamentos","Atividade · Classificar os gastos","Atividade · Qual gasto pesa mais","Orçamento do Nick","Interpretar o diagnóstico","Ação para sair das dívidas","Passo 3 · Inventário de dívidas","Estratégia da menor dívida","Quando negociar antes do plano","Dinâmica 2 · Qual é sua decisão?","Atividade · Prioridade ao vivo","Atividade · Quão parecido com o Nick","Simulação completa","Nick saiu do vermelho","Passo 4 · O modelo 50/30/20","Exemplo com renda de R$ 3.000","Passo 5 · Construir proteção","Atividade · Reserva de emergência","Transformar desejos em metas","O plano de 30 dias","Comece agora: acesse o app","Encerramento","Referências"];
 var CHAPTER_NAMES=["Ato 1 · O problema","Capítulo C · Consciência","Capítulo A · Ação","Capítulo P · Planejamento","Fechamento"];
 var CHAPTERS=(function(){
 var map={};

@@ -27,11 +27,15 @@ const AUTH_TIMEOUT_MS = 4000;
 
 const ACTIVITIES = [
   {
+    // Moradia fica de fora de propósito: é o gasto óbvio (R$ 1.150, mais que o
+    // dobro de qualquer outro) e votar nele tira a graça da aposta. Os 4
+    // escolhidos aqui são os que mais se aproximam em valor — inclusive um
+    // empate real entre mercado e parcelas — para a aposta ser genuína.
     id: "aposta",
-    question: "Qual gasto você acha que pesa mais no orçamento do Nick?",
+    question: "Qual desses gastos pesa mais no orçamento do Nick (sem contar moradia)?",
     type: "choice",
-    options: ["Moradia e contas", "Parcelas de compras", "Lazer e delivery", "Assinaturas e outros"],
-    example: [38, 22, 31, 9]
+    options: ["Alimentação e mercado", "Parcelas de compras", "Lazer e delivery", "Transporte"],
+    example: [32, 29, 24, 15]
   },
   {
     id: "classificar",
@@ -60,14 +64,20 @@ const ACTIVITIES = [
     id: "prioridade",
     question: "Você está no lugar do Nick. Qual dívida você prioriza primeiro?",
     type: "choice",
-    options: ["Compra parcelada — R$ 400", "Eletrodoméstico — R$ 1.000", "Empréstimo — R$ 2.000"],
-    example: [61, 24, 15]
+    options: ["Cartão de crédito — R$ 300", "Celular parcelado — R$ 400", "Sofá novo — R$ 600", "Curso online — R$ 600", "Empréstimo pessoal — R$ 1.500"],
+    example: [52, 18, 12, 10, 8]
   },
   {
     id: "termometro-nick",
-    question: "A quantos passos você está do Nick hoje?",
+    question: "Quão parecida é sua situação financeira com a do Nick?",
     type: "choice",
-    options: ["1 · Muito distante", "2", "3", "4", "5 · É minha realidade"],
+    options: [
+      "1 · Nunca aperta, sempre sobra",
+      "2 · Raramente aperta",
+      "3 · Aperta de vez em quando",
+      "4 · Aperta quase todo mês",
+      "5 · É a minha realidade"
+    ],
     example: [9, 18, 30, 26, 17]
   },
   {
@@ -148,9 +158,16 @@ function renderClassifyRows(container, items, categories, tallies) {
       const pct = Math.round((counts[i] / total) * 100);
       return `<div class="poll-seg poll-seg-${i}" style="width:${pct}%" title="${cat}: ${pct}%"></div>`;
     }).join("");
+    // Percentual visível ao lado da barra — a cor some no segmento quando o voto
+    // é baixo, e ninguém vai passar o mouse pra ler o title() durante a palestra.
+    const pcts = categories.map((cat, i) => {
+      const pct = Math.round((counts[i] / total) * 100);
+      return `<span class="c${i}">${pct}%</span>`;
+    }).join("");
     return `<div class="poll-classify-row">
       <p class="poll-classify-label">${it.label}</p>
       <div class="poll-classify-track">${segs}</div>
+      <p class="poll-classify-pcts">${pcts}</p>
     </div>`;
   }).join("");
 }
