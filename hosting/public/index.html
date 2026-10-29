@@ -10,42 +10,42 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=Fraunces:ital,wght@0,400..700;1,400..700&display=swap">
 <style>
 :root{
-  --ink:#142034;--ink-soft:#4A5263;--bg:#F8F6F1;--surface:#FFFFFF;--surface-2:#EFEBE2;
-  --line:#E2DDD2;--accent:#CDA254;--accent-soft:rgba(205,162,84,.16);
-  --ok:#3D6F58;--ok-bg:#E1EBE4;
-  --warn:#7E233B;--warn-bg:#F3E3E7;
-  --zero-bg:#EFEBE2;
-  --header-bg:#142034;--header-text:#F8F6F1;--header-soft:#C9CFDA;
+  --ink:#171433;--ink-soft:#5E5A82;--bg:#F6F4FE;--surface:#FFFFFF;--surface-2:#EDE9FC;
+  --line:#DFD9F7;--accent:#6C4CFF;--accent-soft:rgba(108,76,255,.14);
+  --ok:#0FAE78;--ok-bg:#DFF7EC;
+  --warn:#E63462;--warn-bg:#FCE3EA;
+  --zero-bg:#EDE9FC;
+  --header-bg:#171433;--header-text:#F6F4FE;--header-soft:#B6AEDD;
   /* Preenchimentos sólidos (botões/chips/badges com texto claro por cima) — ficam
      fixos nos dois temas de propósito: são a cor "de marca", não texto, então não
      devem clarear no escuro como --ink/--ok/--warn fazem (senão texto claro em cima
      de um preenchimento que também clareou vira texto invisível). */
-  --ink-solid:#142034;--ok-solid:#2F6B52;--warn-solid:#7E233B;--on-solid:#FFFFFF;
-  --card-shadow:0 1px 2px rgba(20,32,52,.05), 0 10px 26px -14px rgba(20,32,52,.18);
+  --ink-solid:#171433;--ok-solid:#0C9566;--warn-solid:#D62753;--on-solid:#FFFFFF;
+  --card-shadow:0 1px 2px rgba(23,20,51,.06), 0 14px 30px -16px rgba(23,20,51,.22);
 }
-/* Modo escuro: reaproveita as cores que a palestra já usa nas seções dark */
+/* Modo escuro: indigo profundo + acento violeta vibrante */
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --ink:#F8F6F1;--ink-soft:#AEB7C9;--bg:#0F1726;--surface:#142034;--surface-2:#1A2740;
-    --line:#2A3B5C;--accent:#CDA254;--accent-soft:rgba(205,162,84,.16);
-    --ok:#5BC2A0;--ok-bg:#16291F;
-    --warn:#F3B6C2;--warn-bg:#3A2029;
-    --zero-bg:#1A2740;
-    --card-shadow:0 1px 0 rgba(0,0,0,.2), 0 12px 28px -16px rgba(0,0,0,.55);
-    /* --ink-solid claro demais não fica — mas o valor do modo claro (#142034) é
+    --ink:#F3F1FE;--ink-soft:#B2ABDA;--bg:#0D0B1F;--surface:#171433;--surface-2:#211D45;
+    --line:#352F63;--accent:#8E72FF;--accent-soft:rgba(142,114,255,.18);
+    --ok:#2FE3A0;--ok-bg:#0F2E25;
+    --warn:#FF6F93;--warn-bg:#381627;
+    --zero-bg:#211D45;
+    --card-shadow:0 1px 0 rgba(0,0,0,.25), 0 16px 32px -16px rgba(0,0,0,.6);
+    /* --ink-solid claro demais não fica — mas o valor do modo claro (#171433) é
        quase idêntico ao --surface escuro e desaparece contra o próprio card;
-       precisa de um azul-marinho mais claro só aqui para continuar visível. */
-    --ink-solid:#32486E;
+       precisa de um indigo mais claro só aqui para continuar visível. */
+    --ink-solid:#4B3FA0;
   }
 }
 :root[data-theme="dark"]{
-  --ink:#F8F6F1;--ink-soft:#AEB7C9;--bg:#0F1726;--surface:#142034;--surface-2:#1A2740;
-  --line:#2A3B5C;--accent:#CDA254;--accent-soft:rgba(205,162,84,.16);
-  --ok:#5BC2A0;--ok-bg:#16291F;
-  --warn:#F3B6C2;--warn-bg:#3A2029;
-  --zero-bg:#1A2740;
-  --card-shadow:0 1px 0 rgba(0,0,0,.2), 0 12px 28px -16px rgba(0,0,0,.55);
-  --ink-solid:#32486E;
+  --ink:#F3F1FE;--ink-soft:#B2ABDA;--bg:#0D0B1F;--surface:#171433;--surface-2:#211D45;
+  --line:#352F63;--accent:#8E72FF;--accent-soft:rgba(142,114,255,.18);
+  --ok:#2FE3A0;--ok-bg:#0F2E25;
+  --warn:#FF6F93;--warn-bg:#381627;
+  --zero-bg:#211D45;
+  --card-shadow:0 1px 0 rgba(0,0,0,.25), 0 16px 32px -16px rgba(0,0,0,.6);
+  --ink-solid:#4B3FA0;
 }
 *{box-sizing:border-box}
 @media (prefers-reduced-motion: reduce){*{transition-duration:.001ms !important;animation-duration:.001ms !important}}
@@ -55,7 +55,7 @@ h1,h2,h3{margin:0;font-weight:600;font-family:'Fraunces',Georgia,serif;letter-sp
 p{margin:0}
 button{font-family:inherit}
 header.top{position:sticky;top:0;z-index:5;background:var(--header-bg);color:var(--header-text);padding:14px 18px 18px;display:flex;flex-direction:column;gap:6px;overflow:hidden;isolation:isolate}
-header.top::before,header.top::after{content:"";position:absolute;z-index:-1;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(205,162,84,.22), rgba(205,162,84,0) 70%)}
+header.top::before,header.top::after{content:"";position:absolute;z-index:-1;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(142,114,255,.3), rgba(142,114,255,0) 70%)}
 header.top::before{width:150px;height:150px;top:-70px;right:-30px}
 header.top::after{width:90px;height:90px;top:30px;right:60px;opacity:.7}
 header.top .top-row{display:flex;justify-content:space-between;align-items:center}
@@ -67,7 +67,7 @@ header.top .brand{font-size:13px;font-weight:700;letter-spacing:.08em;text-trans
 header.top .saldo-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 header.top .saldo-label{font-size:13px;color:var(--header-soft)}
 header.top .saldo-value{font-family:'Fraunces',Georgia,serif;font-size:28px;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
-main{max-width:560px;margin:0 auto;padding:18px}
+main{max-width:640px;margin:0 auto;padding:18px;width:100%;box-sizing:border-box}
 section.tab{display:none;flex-direction:column;gap:18px}
 section.tab.on{display:flex}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--card-shadow)}
@@ -163,9 +163,9 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
   :root{--sidebar-w:240px}
   body{padding-bottom:0}
   nav.bottom{display:none}
-  header.top,main,.footer-area{margin-left:var(--sidebar-w)}
-  main{max-width:680px}
-  .footer-area{max-width:680px}
+  .content-shell{margin-left:var(--sidebar-w);display:flex;flex-direction:column;align-items:center}
+  header.top,main,.footer-area{width:100%;max-width:920px}
+  .stat-grid{grid-template-columns:repeat(4,1fr)}
   #toast{left:calc(50% + var(--sidebar-w) / 2)}
   .help-overlay{padding-left:var(--sidebar-w)}
   .sidebar{display:flex;flex-direction:column;gap:2px;position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);padding:32px 14px;background:var(--surface);border-right:1px solid var(--line);z-index:6;overflow:auto}
@@ -203,6 +203,7 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
   <button data-tab="plano" class="tabbtn"><span class="ico"><svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 14l2 2 4-4"/></svg></span>Plano</button>
 </nav>
 
+<div class="content-shell">
 <header class="top">
   <div class="top-row">
     <p class="brand">Airo Finanças Pessoais</p>
@@ -415,11 +416,6 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
     <ul class="status-actions" id="planoAcoes"></ul>
   </div>
   <div class="card">
-    <h3>Meu compromisso de 24h</h3>
-    <div class="field"><label>Meu primeiro passo será</label><input id="compromissoTexto" placeholder="Ex.: Anotar minha renda líquida"></div>
-    <div class="field"><label>Até quando</label><input type="date" id="compromissoData"></div>
-  </div>
-  <div class="card">
     <h3>Levar tudo isso com você</h3>
     <p class="muted">Gera um PDF com o diagnóstico, as dívidas em ordem, o 50/30/20, a meta e o plano de 30 dias — para imprimir ou guardar no celular.</p>
     <button class="btn btn-primary" id="pdfBtn" style="width:100%;margin-top:10px">Gerar PDF</button>
@@ -432,6 +428,8 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
 <div class="footer-area">
   <p class="privacy">Seus dados ficam só neste celular. Nada é enviado a nenhum servidor.</p>
   <button class="btn btn-danger" id="wipeData">Apagar meus dados</button>
+</div>
+
 </div>
 
 <nav class="bottom">
@@ -1319,8 +1317,6 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
     }
   }
 
-  document.getElementById("compromissoTexto").addEventListener("input", e => { state.compromisso.texto = e.target.value; save(); });
-  document.getElementById("compromissoData").addEventListener("input", e => { state.compromisso.data = e.target.value; save(); });
 
   // ---------- Carregar exemplo do Nick (antes/depois), para demonstração ----------
   function loadDemo(builder, label) {
@@ -1351,8 +1347,6 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
   function syncInputsFromState() {
     document.getElementById("nome").value = state.nome;
     rendaInput.value = state.renda;
-    document.getElementById("compromissoTexto").value = state.compromisso.texto;
-    document.getElementById("compromissoData").value = state.compromisso.data;
   }
 
   // ---------- Cabeçalho ----------
@@ -1360,7 +1354,7 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
     const saldo = calcSaldoMensal(state.renda, state.despesas, state.dividas);
     const el = document.getElementById("hdrSaldo");
     el.textContent = fmt(saldo);
-    el.style.color = saldo < 0 ? "#F3B6C2" : "#CDA254";
+    el.style.color = saldo < 0 ? "#FF6F93" : "#8E72FF";
     renderStatusHero(saldo);
   }
 
@@ -1403,7 +1397,7 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
   }
 
   function buildReportPdf(JsPDF) {
-    const INK = [20, 32, 52], ACCENT = [181, 138, 60], OK = [61, 111, 88], WARN = [126, 35, 59], MUTED = [107, 113, 128], LINE = [226, 221, 208];
+    const INK = [23, 20, 51], ACCENT = [108, 76, 255], OK = [15, 174, 120], WARN = [230, 52, 98], MUTED = [94, 90, 130], LINE = [223, 217, 247];
     const M = 18, PW = 210, PH = 297, CW = PW - M * 2, BOTTOM = PH - 20;
     const doc = new JsPDF({ unit: "mm", format: "a4", compress: true });
     let y = M;
@@ -1487,7 +1481,7 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
       const h = extraLine ? 24 : 18;
       ensure(h + 4);
       const color = s.cls === "st-ok" ? OK : s.cls === "st-warn" ? WARN : INK;
-      fillC([245, 243, 237]); doc.roundedRect(M, y, CW, h, 2, 2, "F");
+      fillC([237, 233, 252]); doc.roundedRect(M, y, CW, h, 2, 2, "F");
       fillC(color); doc.circle(M + 9, y + h / 2, 4.2, "F");
       font("bold", 11); doc.setTextColor(255, 255, 255);
       doc.text(s.badge, M + 9, y + h / 2 + 1.3, { align: "center" });
@@ -1517,7 +1511,7 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
         // Página cheia no meio da tabela: pula de página e redesenha o cabeçalho,
         // senão as linhas seguintes aparecem soltas, sem contexto de coluna.
         if (y + 6.6 > BOTTOM) { newPage(); head(); font("normal", 9); }
-        if (ri % 2 === 1) { fillC([245, 243, 237]); doc.rect(M, y, CW, 6.6, "F"); }
+        if (ri % 2 === 1) { fillC([237, 233, 252]); doc.rect(M, y, CW, 6.6, "F"); }
         ink(INK);
         let xx = M + 2;
         r.forEach((cell, i) => {
@@ -1546,7 +1540,7 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
       ensure(h + 4);
       items.forEach((it, i) => {
         const x = M + i * (w + g);
-        fillC([245, 243, 237]); doc.roundedRect(x, y, w, h, 2.5, 2.5, "F");
+        fillC([237, 233, 252]); doc.roundedRect(x, y, w, h, 2.5, 2.5, "F");
         if (it.col) { fillC(it.col); doc.rect(x, y + 3, 1.2, h - 6, "F"); }
         font("normal", 7.5); ink(MUTED);
         doc.text(pdfText(it.label), x + 4, y + 6);
@@ -1589,7 +1583,7 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
       ensure(16);
       font("bold", 9); ink(INK); doc.text(pdfText(label), M, y + 3); y += 6;
       const h = 7;
-      fillC([245, 243, 237]); doc.roundedRect(M, y, CW, h, 1.5, 1.5, "F");
+      fillC([237, 233, 252]); doc.roundedRect(M, y, CW, h, 1.5, 1.5, "F");
       let x = M;
       segs.forEach(s => {
         const w = CW * (s.v / scaleMax);
@@ -1670,17 +1664,17 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
     // Capa
     // ===================================================================
     fillC(INK); doc.rect(0, 0, PW, 62, "F");
-    fillC([30, 46, 74]); doc.circle(PW - 16, 12, 24, "F");
-    fillC([42, 61, 92]); doc.circle(PW - 6, 46, 14, "F");
+    fillC([42, 36, 96]); doc.circle(PW - 16, 12, 24, "F");
+    fillC([58, 50, 130]); doc.circle(PW - 6, 46, 14, "F");
     fillC([255, 255, 255]); doc.circle(M + 5, 17, 5, "F");
     font("bold", 8); ink(INK); doc.text("R$", M + 5, 18.3, { align: "center" });
     font("bold", 9); doc.setTextColor(255, 255, 255);
     doc.text(pdfText("AIRO FINANÇAS PESSOAIS"), M + 14, 16);
-    font("normal", 8.5); doc.setTextColor(201, 207, 218);
+    font("normal", 8.5); doc.setTextColor(182, 174, 221);
     doc.text(pdfText("Relatório gerado em " + new Date().toLocaleDateString("pt-BR")), M + 14, 21);
     font("bold", 23); doc.setTextColor(255, 255, 255);
     doc.text(pdfText("Meu plano financeiro"), M, 41);
-    font("normal", 11.5); doc.setTextColor(201, 207, 218);
+    font("normal", 11.5); doc.setTextColor(182, 174, 221);
     doc.text(pdfText(state.nome ? "Preparado para " + state.nome : "Método C.A.P. — Consciência, Ação, Planejamento"), M, 51);
     y = 76;
 
@@ -1846,7 +1840,7 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
       { label: "Guardando por mês", value: fmt(split.futuro), col: ACCENT },
       rm.pronta ? { label: "Pronta", value: "Já está pronta", vcol: OK, col: OK } : { label: "Pronta em", value: isFinite(rm.meses) ? dataEm(rm.meses) : "—", vcol: OK, col: OK, note: isFinite(rm.meses) ? "em " + rm.meses + (rm.meses === 1 ? " mês" : " meses") : "" }
     ]);
-    ensure(10); fillC([245, 243, 237]); doc.roundedRect(M, y, CW, 5, 2, 2, "F");
+    ensure(10); fillC([237, 233, 252]); doc.roundedRect(M, y, CW, 5, 2, 2, "F");
     if (rm.progresso > 0) { fillC(OK); doc.roundedRect(M, y, Math.max(4, CW * rm.progresso), 5, 2, 2, "F"); }
     y += 10;
     para("Tipo de reserva recomendado: resgate rápido e baixo risco. Guarde em Tesouro Selic, CDB com liquidez diária ou conta remunerada — evite ações, criptomoedas e títulos com carência longa para esse dinheiro.", 9);
