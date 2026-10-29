@@ -46,29 +46,30 @@ body:hover #chapterLabel,#chapterLabel:focus-within{opacity:1}
 #idx button.idxItem:hover{background:#1E2E4A;border-color:#CDA254}
 #idx button.idxItem .n{flex:none;color:#9AA4B8;font-variant-numeric:tabular-nums;font-weight:700}
 #idx button.idxClose{all:unset;position:fixed;top:24px;right:32px;color:#9AA4B8;font:13px Inter,Arial,sans-serif;cursor:pointer;background:#1E2E4A;padding:8px 14px;border-radius:8px}
-.poll{display:flex;gap:48px;align-items:center}
-.poll-qr-wrap{flex:none;width:300px;display:flex;flex-direction:column;align-items:center;gap:14px}
-.poll-qr{width:260px;height:260px;background:#fff;border-radius:18px;padding:16px}
+.poll{display:flex;gap:56px;align-items:center}
+.poll-qr-wrap{flex:none;width:300px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.poll-qr{width:260px;height:260px;background:#fff;border-radius:20px;padding:16px;border:3px solid #CDA254;box-shadow:0 12px 32px rgba(0,0,0,.35)}
 .poll-caption{font-size:20px;text-align:center;opacity:.75}
-.poll-results-wrap{flex:1;display:flex;flex-direction:column;gap:18px;min-width:0}
-.poll-example-note{display:none;font-size:18px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#CDA254;margin-bottom:4px}
+.poll-results-wrap{flex:1;display:flex;flex-direction:column;gap:16px;min-width:0;background:rgba(248,246,241,.04);border:1px solid rgba(248,246,241,.1);border-radius:24px;padding:40px 44px}
+.poll-example-note{display:none;font-size:16px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#CDA254;margin-bottom:6px}
 .poll.poll-example .poll-example-note{display:block}
-.poll-bar-row{display:flex;align-items:center;gap:16px}
-.poll-bar-label{flex:0 0 380px;font-size:26px}
-.poll-bar-track{flex:1;height:38px;background:rgba(127,127,127,.25);border-radius:10px;overflow:hidden}
-.poll-bar-fill{height:100%;background:#CDA254;border-radius:10px;transition:width .4s ease}
-.poll-bar-pct{flex:0 0 70px;text-align:right;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
-.poll-bar-total{font-size:18px;opacity:.65;margin-top:4px}
-.poll-classify-row{display:flex;align-items:center;gap:16px}
-.poll-classify-label{flex:0 0 300px;font-size:24px}
-.poll-classify-track{flex:1;height:36px;border-radius:10px;overflow:hidden;display:flex;background:rgba(127,127,127,.2)}
+.poll-results{display:flex;flex-direction:column;gap:22px}
+.poll-bar-row{display:flex;align-items:center;gap:20px}
+.poll-bar-label{flex:0 0 380px;font-size:25px;color:#F8F6F1}
+.poll-bar-track{flex:1;height:36px;background:rgba(248,246,241,.1);border-radius:10px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
+.poll-bar-fill{height:100%;background:linear-gradient(90deg,#B9893F,#E4C07E);border-radius:10px;box-shadow:0 0 14px rgba(205,162,84,.35);transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.poll-bar-pct{flex:0 0 74px;text-align:right;font-size:25px;font-weight:800;color:#E4C07E;font-variant-numeric:tabular-nums}
+.poll-bar-total{font-size:17px;letter-spacing:.02em;color:#9AA4B8;margin-top:6px}
+.poll-classify-row{display:flex;align-items:center;gap:20px}
+.poll-classify-label{flex:0 0 300px;font-size:23px;color:#F8F6F1}
+.poll-classify-track{flex:1;height:34px;border-radius:10px;overflow:hidden;display:flex;gap:2px;background:rgba(248,246,241,.1);box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
 .poll-seg{height:100%}
 /* Mesmas cores dos pills de categoria acima do gráfico — Necessidades/Desejos/
    Futuro precisam bater visualmente entre o rótulo e a barra. */
 .poll-seg-0{background:#F8F6F1}
-.poll-seg-1{background:#7E233B}
-.poll-seg-2{background:#3D6F58}
-.poll-classify-pcts{flex:0 0 230px;display:flex;gap:10px;justify-content:flex-end;font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
+.poll-seg-1{background:#F3B6C2}
+.poll-seg-2{background:#5BC2A0}
+.poll-classify-pcts{flex:0 0 230px;display:flex;gap:10px;justify-content:flex-end;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
 .poll-classify-pcts .c0{color:#F8F6F1}
 .poll-classify-pcts .c1{color:#F3B6C2}
 .poll-classify-pcts .c2{color:#5BC2A0}
