@@ -182,14 +182,16 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
 #toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(14px);opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;background:var(--ink-solid);color:var(--on-solid);padding:12px 16px;border-radius:12px;display:flex;align-items:center;gap:16px;font-size:13.5px;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:20}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 #toast button{all:unset;color:var(--accent);font-weight:700;cursor:pointer;white-space:nowrap;font-size:13.5px}
-.help-overlay{position:fixed;inset:0;background:rgba(10,16,28,.55);display:none;align-items:flex-end;justify-content:center;z-index:30;padding:0}
+.help-overlay{position:fixed;inset:0;background:rgba(13,11,31,.6);display:none;align-items:center;justify-content:center;z-index:30;padding:20px}
 .help-overlay.show{display:flex}
-.help-sheet{background:var(--surface);color:var(--ink);width:100%;max-width:560px;max-height:78vh;overflow:auto;border-radius:20px 20px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px rgba(0,0,0,.25)}
-.help-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
-.help-head h3{font-size:18px}
-.help-sheet ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px}
-.help-sheet li{font-size:14.5px;line-height:1.5;color:var(--ink-soft)}
+.help-sheet{background:var(--surface);color:var(--ink);width:100%;max-width:520px;max-height:min(640px,84vh);overflow:auto;border-radius:24px;padding:28px;box-shadow:0 24px 60px -20px rgba(0,0,0,.5);position:relative}
+.help-sheet .icon-btn{position:absolute;top:14px;right:14px}
+.help-badge{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:27px;margin-bottom:16px}
+.help-head h3{font-size:19px;line-height:1.3;padding-right:30px}
+.help-sheet ol{margin:18px 0 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:14px}
+.help-sheet li{font-size:14.5px;line-height:1.5;color:var(--ink-soft);display:flex;gap:12px;align-items:flex-start}
 .help-sheet li b{color:var(--ink)}
+.help-step-n{flex:none;width:22px;height:22px;margin-top:1px;border-radius:50%;background:var(--surface-2);color:var(--ink);font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -448,10 +450,9 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
 
 <div id="helpOverlay" class="help-overlay">
   <div class="help-sheet" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-    <div class="help-head">
-      <h3 id="helpTitle"></h3>
-      <button class="icon-btn" id="helpClose" aria-label="Fechar"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
-    </div>
+    <button class="icon-btn" id="helpClose" aria-label="Fechar"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <div class="help-badge" id="helpBadge"></div>
+    <div class="help-head"><h3 id="helpTitle"></h3></div>
     <ol id="helpSteps"></ol>
   </div>
 </div>
@@ -799,34 +800,37 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
 
   // ---------- Ajuda por aba ----------
   const TAB_HELP = {
-    consciencia: { title: "1 · Consciência — como usar", steps: [
+    consciencia: { icon: "👁️", color: "accent", title: "1 · Consciência — como usar", steps: [
       "Informe seu nome (opcional) e sua renda líquida mensal.",
+      "Sem dados ainda? Use os botões \"Antes\"/\"Depois\" para carregar o exemplo do Nick e ver o app funcionando.",
       "Adicione cada despesa do mês, com nome e valor.",
       "Adicione cada dívida com saldo restante, parcela mensal e quantas parcelas faltam — marque \"Em atraso\", \"Encargos altos\" ou \"Sazonal\" quando se aplicar.",
       "O card no topo mostra se o seu saldo está <b>positivo</b>, <b>zero</b> ou <b>negativo</b>, com sugestões do que fazer a seguir."
     ] },
-    classificar: { title: "2 · Classificar — como usar", steps: [
+    classificar: { icon: "🏷️", color: "accent", title: "2 · Classificar — como usar", steps: [
       "Para cada despesa cadastrada, escolha se ela é <b>Necessidade</b>, <b>Desejo</b> ou <b>Futuro</b>.",
       "Necessidades são essenciais, Desejos podem ser ajustados — e Futuro quase nunca é uma despesa, é o que sobra depois das outras duas.",
-      "A barra no fim da aba mostra a proporção entre as categorias sobre o total das suas despesas, incluindo o que ainda falta classificar."
+      "A barra no fim da aba mostra a proporção entre as categorias e o quanto ainda falta classificar, sobre o total das suas despesas."
     ] },
-    dividas: { title: "3 · Dívidas — como usar", steps: [
+    dividas: { icon: "📉", color: "warn", title: "3 · Dívidas — como usar", steps: [
       "Suas dívidas aparecem em ordem de prioridade: as marcadas como atraso ou encargos altos vêm primeiro — negocie essas antes.",
       "Entre as demais, a de menor saldo vem primeiro: é a mais rápida de quitar e libera fôlego mais cedo.",
-      "O card \"Quando eu fico livre das dívidas?\" simula o tempo de quitação pagando as parcelas mínimas e usando a sobra do orçamento.",
-      "Cada dívida tem um gráfico de barras mostrando o saldo caindo mês a mês até ser quitada."
+      "O card \"Quando eu fico livre das dívidas?\" simula a quitação pelo efeito bola de neve: a parcela de cada dívida já quitada se soma à sobra do mês para acelerar a próxima.",
+      "Cada dívida tem um gráfico de barras mostrando o saldo caindo mês a mês, até zerar."
     ] },
-    planejamento: { title: "4 · Planejamento — como usar", steps: [
-      "O 50/30/20 mostra o quanto da renda é desejável destinar a Necessidades, Desejos e Futuro — e compara com o que você já classificou como gasto atual.",
+    planejamento: { icon: "📊", color: "ok", title: "4 · Planejamento — como usar", steps: [
+      "O 50/30/20 mostra o quanto da renda é desejável destinar a Necessidades, Desejos e Futuro — e compara lado a lado com o que você já classificou como gasto atual.",
       "Em Reserva de emergência, escolha quantos meses de despesas essenciais você quer guardar e quanto já tem guardado.",
-      "No card Investir o \"Futuro\", arraste o controle para ver a que valor os 20% da sua renda chegariam em 5, 10, 15... anos, investidos à taxa informada.",
+      "Em Investir o \"Futuro\", arraste o controle de 1 a 35 anos para ver a que valor os 20% da sua renda chegariam, investidos à taxa informada.",
       "Em Minha meta, informe o que quer alcançar, o custo e o prazo — o app calcula quanto separar por mês e avisa se cabe no seu orçamento atual.",
-      "A calculadora de juros compostos simula qualquer investimento (valor inicial, aporte mensal, taxa e prazo), independente da sua renda."
+      "A calculadora de juros compostos simula qualquer investimento (valor inicial, aporte mensal, taxa ao mês ou ao ano, e prazo), independente da sua renda."
     ] },
-    plano: { title: "5 · Plano de 30 dias — como usar", steps: [
-      "Marque cada semana conforme for aplicando os passos do Método C.A.P. na sua vida.",
-      "Defina um compromisso para as próximas 24 horas, com prazo — algo pequeno e concreto para começar agora.",
-      "Toque em \"Gerar PDF\" para baixar um relatório com todo o seu diagnóstico, dívidas, 50/30/20, meta e plano, para guardar ou imprimir."
+    plano: { icon: "🎯", color: "accent", title: "5 · Seu plano de ação — como usar", steps: [
+      "O destaque no topo mostra a prioridade agora, calculada a partir do que você já preencheu nas outras abas — pode ser fechar um déficit, negociar ou acelerar uma dívida, completar a reserva, ou ajustar uma meta.",
+      "Se você tem dívidas cadastradas, a fila de quitação aparece logo abaixo, com a ordem e o mês previsto de cada uma.",
+      "O resumo em números reúne o essencial: saldo, total em dívidas, maior desvio no 50/30/20 e progresso da reserva.",
+      "\"Outros próximos passos\" traz sugestões complementares à prioridade do topo.",
+      "Toque em \"Gerar PDF\" para baixar um relatório completo, para imprimir ou guardar no celular."
     ] }
   };
   const helpOverlay = document.getElementById("helpOverlay");
@@ -834,8 +838,11 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
     const tabId = document.querySelector("section.tab.on").dataset.tab;
     const help = TAB_HELP[tabId];
     if (!help) return;
+    const badge = document.getElementById("helpBadge");
+    badge.textContent = help.icon;
+    badge.style.background = help.color === "accent" ? "var(--accent-soft)" : `var(--${help.color}-bg)`;
     document.getElementById("helpTitle").textContent = help.title;
-    document.getElementById("helpSteps").innerHTML = help.steps.map(s => `<li>${s}</li>`).join("");
+    document.getElementById("helpSteps").innerHTML = help.steps.map((s, i) => `<li><span class="help-step-n">${i + 1}</span><span>${s}</span></li>`).join("");
     helpOverlay.classList.add("show");
   });
   document.getElementById("helpClose").addEventListener("click", () => helpOverlay.classList.remove("show"));
