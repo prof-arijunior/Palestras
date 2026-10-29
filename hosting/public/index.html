@@ -78,6 +78,11 @@ section.tab.on{display:flex}
 .field input:focus,.field select:focus{border-color:var(--accent)}
 .field input.invalid{border-color:var(--warn)}
 .field .err{font-size:12.5px;color:var(--warn)}
+.field input[type="range"]{all:unset;display:block;box-sizing:border-box;width:100%;height:28px;cursor:pointer}
+.field input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:var(--surface-2)}
+.field input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);margin-top:-8px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.field input[type="range"]::-moz-range-track{height:6px;border-radius:3px;background:var(--surface-2)}
+.field input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);border:none;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
 .row .field{flex:1 1 120px;min-width:0;margin-bottom:0}
 .row .btn{flex:none}
@@ -138,6 +143,8 @@ section.tab.on{display:flex}
 .chart-grid{stroke:var(--line);stroke-width:1}
 .chart-tick{font-size:6.5px;fill:var(--ink-soft)}
 .chart-caption{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);margin-top:4px}
+.chart-bar{fill:var(--accent);opacity:.85}
+.chart-bar-done{fill:var(--ok);opacity:1}
 nav.bottom{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px env(safe-area-inset-bottom)}
 nav.bottom button{all:unset;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:12px;font-size:11px;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:background .15s ease,color .15s ease}
 nav.bottom button .ico{display:flex;align-items:center;justify-content:center;line-height:1}
@@ -148,6 +155,14 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 #toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(14px);opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;background:var(--ink-solid);color:var(--on-solid);padding:12px 16px;border-radius:12px;display:flex;align-items:center;gap:16px;font-size:13.5px;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:20}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 #toast button{all:unset;color:var(--accent);font-weight:700;cursor:pointer;white-space:nowrap;font-size:13.5px}
+.help-overlay{position:fixed;inset:0;background:rgba(10,16,28,.55);display:none;align-items:flex-end;justify-content:center;z-index:30;padding:0}
+.help-overlay.show{display:flex}
+.help-sheet{background:var(--surface);color:var(--ink);width:100%;max-width:560px;max-height:78vh;overflow:auto;border-radius:20px 20px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px rgba(0,0,0,.25)}
+.help-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.help-head h3{font-size:18px}
+.help-sheet ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px}
+.help-sheet li{font-size:14.5px;line-height:1.5;color:var(--ink-soft)}
+.help-sheet li b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -156,6 +171,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   <div class="top-row">
     <p class="brand">Airo Finanças Pessoais</p>
     <div class="top-controls">
+      <button class="icon-btn" id="helpBtn" aria-label="Como usar esta aba" title="Como usar esta aba"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 0 1 4.9.8c0 1.7-2.4 2-2.4 3.7"/><circle cx="12" cy="17" r=".1" fill="currentColor" stroke-width="2.5"/></svg></button>
       <button class="icon-btn" id="themeBtn" aria-label="Alternar tema claro/escuro" title="Alternar tema"></button>
       <button class="icon-btn" id="fsBtn" aria-label="Tela cheia" title="Tela cheia"></button>
     </div>
@@ -257,8 +273,11 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   <div class="card">
     <span class="eyebrow eyebrow-ok">4 · Planejamento</span>
     <h2>Seu 50/30/20</h2>
+    <p class="muted" style="font-size:12.5px;margin-bottom:4px">Desejado — 50/30/20 da sua renda</p>
     <div class="split-bar" id="splitBar"></div>
-    <div id="splitBody" class="muted"></div>
+    <p class="muted" style="font-size:12.5px;margin:12px 0 4px">Atual — despesas já classificadas</p>
+    <div class="split-bar" id="splitBarAtual"></div>
+    <div id="splitBody" class="muted" style="margin-top:12px"></div>
   </div>
   <div class="card">
     <h3>Reserva de emergência</h3>
@@ -284,6 +303,11 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       <label>Taxa de juros esperada (% ao ano)</label>
       <input type="number" inputmode="decimal" id="investRate" placeholder="Ex.: 10">
     </div>
+    <div class="field">
+      <label>Por quanto tempo? <b id="investHorizonLabel"></b></label>
+      <input type="range" id="investHorizon" min="1" max="30" step="1" value="5">
+    </div>
+    <p class="big" id="investBig">—</p>
     <p class="muted" id="investBody">Preencha a renda e a taxa para ver uma estimativa.</p>
     <div class="chart-wrap" id="investChartWrap"></div>
     <p class="muted" style="margin-top:6px;font-size:12.5px">Estimativa simples de juros compostos, sem descontar impostos ou taxas. Não é recomendação de investimento.</p>
@@ -295,7 +319,32 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       <div class="field"><label>Quanto custa?</label><input type="number" inputmode="decimal" id="metaCusto" placeholder="0,00"></div>
       <div class="field"><label>Até quando?</label><input type="date" id="metaData"></div>
     </div>
-    <p class="muted">Separe <b id="metaPorMes">—</b> por mês para chegar lá.</p>
+    <p class="big" id="metaBig">—</p>
+    <p class="muted" id="metaBody"></p>
+    <div class="chart-wrap" id="metaChartWrap"></div>
+  </div>
+  <div class="card">
+    <h3>Calculadora de juros compostos</h3>
+    <p class="muted">Simule o crescimento de um investimento, independente da sua renda.</p>
+    <div class="row">
+      <div class="field"><label>Valor inicial</label><input type="number" inputmode="decimal" id="calcInicial" placeholder="0,00"></div>
+      <div class="field"><label>Aporte mensal</label><input type="number" inputmode="decimal" id="calcAporte" placeholder="0,00"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Taxa de juros</label><input type="number" inputmode="decimal" id="calcTaxa" placeholder="Ex.: 10"></div>
+      <div class="field" style="flex:0 0 130px">
+        <label>Período</label>
+        <select id="calcTaxaPeriodo"><option value="ano">ao ano</option><option value="mes">ao mês</option></select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Por quanto tempo? <b id="calcTempoLabel"></b></label>
+      <input type="range" id="calcTempo" min="1" max="30" step="1" value="10">
+    </div>
+    <p class="big" id="calcBig">—</p>
+    <p class="muted" id="calcBody"></p>
+    <div class="chart-wrap" id="calcChartWrap"></div>
+    <p class="muted" style="margin-top:6px;font-size:12.5px">Estimativa simples de juros compostos, sem descontar impostos ou taxas. Não é recomendação de investimento.</p>
   </div>
 </section>
 
@@ -340,6 +389,16 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 
 <div id="toast"><span id="toastMsg"></span><button id="toastAction" hidden>Desfazer</button></div>
 
+<div id="helpOverlay" class="help-overlay">
+  <div class="help-sheet" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="help-head">
+      <h3 id="helpTitle"></h3>
+      <button class="icon-btn" id="helpClose" aria-label="Fechar"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <ol id="helpSteps"></ol>
+  </div>
+</div>
+
 <script>
 (function(){
   "use strict";
@@ -367,8 +426,9 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       id: d.id, nome: d.nome, saldo: Number(d.saldo) || 0, parcela: Number(d.parcela) || 0, quitadoMes: null
     }));
     function restante() { return w.reduce((s, d) => s + Math.max(0, d.saldo), 0); }
+    function saldos() { return Object.fromEntries(w.map(d => [d.id, Math.max(0, d.saldo)])); }
     let mes = 0;
-    const historico = [{ mes: 0, total: restante(), pagamentos: {} }];
+    const historico = [{ mes: 0, total: restante(), pagamentos: {}, saldos: saldos() }];
     while (restante() > 0.5 && mes < MAX_MESES) {
       mes++;
       const pagamentos = {};
@@ -390,7 +450,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
           if (d.saldo <= 0.005 && d.quitadoMes == null) d.quitadoMes = mes;
         }
       }
-      historico.push({ mes, total: Math.max(0, restante()), pagamentos });
+      historico.push({ mes, total: Math.max(0, restante()), pagamentos, saldos: saldos() });
     }
     return { meses: mes, travado: restante() > 0.5, dividas: w, historico };
   }
@@ -431,15 +491,21 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     return saldo >= meta ? mes : Infinity;
   }
   // Série mês a mês do saldo investido, para o gráfico — mesma lógica de mesesParaMeta.
-  function investirSerie(contribuicaoMensal, taxaAnualPct, horizonteMeses) {
+  // saldoInicial permite simular um aporte único de partida (0 por padrão).
+  function investirSerie(contribuicaoMensal, taxaAnualPct, horizonteMeses, saldoInicial) {
     const r = Math.pow(1 + (Number(taxaAnualPct) || 0) / 100, 1 / 12) - 1;
-    let saldo = 0;
-    const serie = [{ mes: 0, saldo: 0 }];
+    let saldo = Number(saldoInicial) || 0;
+    const serie = [{ mes: 0, saldo }];
     for (let mes = 1; mes <= horizonteMeses; mes++) {
       saldo = saldo * (1 + r) + contribuicaoMensal;
       serie.push({ mes, saldo });
     }
     return serie;
+  }
+  // Converte uma taxa mensal em equivalente anual composta (para a calculadora,
+  // que aceita a taxa nos dois formatos, mas investirSerie só entende "ao ano").
+  function taxaMensalParaAnual(taxaMensalPct) {
+    return (Math.pow(1 + (Number(taxaMensalPct) || 0) / 100, 12) - 1) * 100;
   }
 
   // ---------- Formatação ----------
@@ -496,13 +562,43 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
       container.appendChild(cap);
     }
   }
+  // Barras, uma por mês — para séries curtas e discretas (ex.: saldo de uma
+  // dívida mês a mês), onde "degraus" comunicam melhor que uma linha contínua.
+  function renderBarChart(container, series, opts) {
+    opts = opts || {};
+    container.innerHTML = "";
+    if (!series || series.length < 2) return;
+    const w = 320, h = 64, padL = 2, padR = 2, padT = 6, padB = 2, gap = 2;
+    const maxVal = Math.max(...series.map(p => p.v)) * 1.08 || 1;
+    const n = series.length;
+    const barW = (w - padL - padR) / n - gap;
+    const y = v => h - padB - (v / maxVal) * (h - padT - padB);
+    const svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, preserveAspectRatio: "none", role: "img", "aria-label": opts.label || "gráfico de barras" });
+    series.forEach((p, i) => {
+      const bx = padL + i * (barW + gap);
+      const quitada = p.v <= 0.01;
+      // Mês quitado tem altura 0 "de verdade" (saldo zero) — sem um piso mínimo,
+      // a barra fica invisível e a conclusão não aparece no gráfico.
+      const barH = quitada ? 3 : Math.max(0, h - padB - y(p.v));
+      svg.appendChild(svgEl("rect", { x: bx, y: h - padB - barH, width: Math.max(0, barW), height: barH, class: quitada ? "chart-bar-done" : "chart-bar", rx: "1.5" }));
+    });
+    container.appendChild(svg);
+    if (opts.captionLeft || opts.captionRight) {
+      const cap = document.createElement("div");
+      cap.className = "chart-caption";
+      cap.innerHTML = `<span>${opts.captionLeft || ""}</span><span>${opts.captionRight || ""}</span>`;
+      container.appendChild(cap);
+    }
+  }
 
   // ---------- Estado / persistência local (versionado) ----------
   const STORAGE_KEY = "airo.state";
   const STORAGE_VERSION = 2;
   function defaultState() {
     return { v: STORAGE_VERSION, nome: "", renda: "", despesas: [], dividas: [], classify: {}, reserveMonths: "3",
-      reservaGuardada: "", investRate: "10", meta: { nome: "", custo: "", data: "" }, weeks: {}, compromisso: { texto: "", data: "" } };
+      reservaGuardada: "", investRate: "10", investHorizonYears: "5", meta: { nome: "", custo: "", data: "" },
+      calc: { inicial: "", aporte: "", taxa: "10", taxaPeriodo: "ano", tempoAnos: "10" },
+      weeks: {}, compromisso: { texto: "", data: "" } };
   }
   // Dados de exemplo do Nick (personagem da palestra "O salário sumiu. E agora?"),
   // usados só na primeiríssima abertura do app (nenhum dado salvo ainda), para a
@@ -618,6 +714,50 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
 
+  // ---------- Ajuda por aba ----------
+  const TAB_HELP = {
+    consciencia: { title: "1 · Consciência — como usar", steps: [
+      "Informe seu nome (opcional) e sua renda líquida mensal.",
+      "Adicione cada despesa do mês, com nome e valor.",
+      "Adicione cada dívida com saldo restante, parcela mensal e quantas parcelas faltam — marque \"Em atraso\", \"Encargos altos\" ou \"Sazonal\" quando se aplicar.",
+      "O card no topo mostra se o seu saldo está <b>positivo</b>, <b>zero</b> ou <b>negativo</b>, com sugestões do que fazer a seguir."
+    ] },
+    classificar: { title: "2 · Classificar — como usar", steps: [
+      "Para cada despesa cadastrada, escolha se ela é <b>Necessidade</b>, <b>Desejo</b> ou <b>Futuro</b>.",
+      "Necessidades são essenciais, Desejos podem ser ajustados — e Futuro quase nunca é uma despesa, é o que sobra depois das outras duas.",
+      "A barra no fim da aba mostra a proporção entre as categorias sobre o total das suas despesas, incluindo o que ainda falta classificar."
+    ] },
+    dividas: { title: "3 · Dívidas — como usar", steps: [
+      "Suas dívidas aparecem em ordem de prioridade: as marcadas como atraso ou encargos altos vêm primeiro — negocie essas antes.",
+      "Entre as demais, a de menor saldo vem primeiro: é a mais rápida de quitar e libera fôlego mais cedo.",
+      "O card \"Quando eu fico livre das dívidas?\" simula o tempo de quitação pagando as parcelas mínimas e usando a sobra do orçamento.",
+      "Cada dívida tem um gráfico de barras mostrando o saldo caindo mês a mês até ser quitada."
+    ] },
+    planejamento: { title: "4 · Planejamento — como usar", steps: [
+      "O 50/30/20 mostra o quanto da renda é desejável destinar a Necessidades, Desejos e Futuro — e compara com o que você já classificou como gasto atual.",
+      "Em Reserva de emergência, escolha quantos meses de despesas essenciais você quer guardar e quanto já tem guardado.",
+      "No card Investir o \"Futuro\", arraste o controle para ver a que valor os 20% da sua renda chegariam em 5, 10, 15... anos, investidos à taxa informada.",
+      "Em Minha meta, informe o que quer alcançar, o custo e o prazo — o app calcula quanto separar por mês e avisa se cabe no seu orçamento atual.",
+      "A calculadora de juros compostos simula qualquer investimento (valor inicial, aporte mensal, taxa e prazo), independente da sua renda."
+    ] },
+    plano: { title: "5 · Plano de 30 dias — como usar", steps: [
+      "Marque cada semana conforme for aplicando os passos do Método C.A.P. na sua vida.",
+      "Defina um compromisso para as próximas 24 horas, com prazo — algo pequeno e concreto para começar agora.",
+      "Toque em \"Gerar PDF\" para baixar um relatório com todo o seu diagnóstico, dívidas, 50/30/20, meta e plano, para guardar ou imprimir."
+    ] }
+  };
+  const helpOverlay = document.getElementById("helpOverlay");
+  document.getElementById("helpBtn").addEventListener("click", () => {
+    const tabId = document.querySelector("section.tab.on").dataset.tab;
+    const help = TAB_HELP[tabId];
+    if (!help) return;
+    document.getElementById("helpTitle").textContent = help.title;
+    document.getElementById("helpSteps").innerHTML = help.steps.map(s => `<li>${s}</li>`).join("");
+    helpOverlay.classList.add("show");
+  });
+  document.getElementById("helpClose").addEventListener("click", () => helpOverlay.classList.remove("show"));
+  helpOverlay.addEventListener("click", e => { if (e.target === helpOverlay) helpOverlay.classList.remove("show"); });
+
   // ---------- Consciência ----------
   const rendaInput = document.getElementById("renda");
   rendaInput.addEventListener("input", () => { state.renda = rendaInput.value; save(); });
@@ -694,6 +834,22 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 
   // ---------- Classificar ----------
   const CATEGORIES = ["Necessidades", "Desejos", "Futuro"];
+  // Função pura: totais classificados, reaproveitada no card 50/30/20 (atual vs.
+  // desejado) além da própria aba Classificar.
+  function categoryTotals() {
+    const totals = { Necessidades: 0, Desejos: 0, Futuro: 0 };
+    state.despesas.forEach(d => { const c = state.classify[d.id]; if (c) totals[c] += Number(d.valor) || 0; });
+    const totalDespesas = state.despesas.reduce((s, d) => s + (Number(d.valor) || 0), 0);
+    const naoClassificado = Math.max(0, totalDespesas - (totals.Necessidades + totals.Desejos + totals.Futuro));
+    return { totals, totalDespesas, naoClassificado };
+  }
+  function renderSplitBar(container, segs, totalBase) {
+    const base = totalBase || 1;
+    container.innerHTML = segs.filter(([, v]) => v > 0.004).map(([label, v, bg, fg]) => {
+      const pct = Math.round((v / base) * 100);
+      return `<div class="split-seg" style="width:${(v / base) * 100}%;background:${bg};color:${fg}" title="${label}: ${pct}%">${pct >= 8 ? pct + "%" : ""}</div>`;
+    }).join("");
+  }
   function renderClassify() {
     const el = document.getElementById("classifyList");
     if (!state.despesas.length) { el.innerHTML = `<p class="muted">Cadastre despesas na aba Consciência primeiro.</p>`; document.getElementById("classifyTotals").style.display = "none"; return; }
@@ -705,21 +861,14 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     el.querySelectorAll("[data-classify]").forEach(btn => btn.addEventListener("click", () => {
       state.classify[btn.dataset.classify] = btn.dataset.cat; save();
     }));
-    const totals = { Necessidades: 0, Desejos: 0, Futuro: 0 };
-    state.despesas.forEach(d => { const c = state.classify[d.id]; if (c) totals[c] += Number(d.valor) || 0; });
+    const { totals, totalDespesas, naoClassificado } = categoryTotals();
     document.getElementById("classifyTotals").style.display = "block";
-    const totalDespesas = state.despesas.reduce((s, d) => s + (Number(d.valor) || 0), 0) || 1;
-    const naoClassificado = Math.max(0, totalDespesas - (totals.Necessidades + totals.Desejos + totals.Futuro));
-    const segs = [
+    renderSplitBar(document.getElementById("classifyChart"), [
       ["Necessidades", totals.Necessidades, "var(--ink-solid)", "var(--on-solid)"],
       ["Desejos", totals.Desejos, "var(--warn-solid)", "var(--on-solid)"],
       ["Futuro", totals.Futuro, "var(--ok-solid)", "var(--on-solid)"],
       ["Não classificado", naoClassificado, "var(--line)", "var(--ink)"]
-    ].filter(([, v]) => v > 0.004);
-    document.getElementById("classifyChart").innerHTML = segs.map(([label, v, bg, fg]) => {
-      const pct = Math.round((v / totalDespesas) * 100);
-      return `<div class="split-seg" style="width:${(v / totalDespesas) * 100}%;background:${bg};color:${fg}" title="${label}: ${pct}%">${pct >= 8 ? pct + "%" : ""}</div>`;
-    }).join("");
+    ], totalDespesas || 1);
     document.getElementById("classifyTotalsBody").innerHTML = CATEGORIES.map(c => `
       <div class="list-row"><p class="grow">${c}</p><p class="amt">${fmt(totals[c])}</p></div>`).join("")
       + (naoClassificado > 0.004 ? `<div class="list-row"><p class="grow muted">Não classificado</p><p class="amt muted">${fmt(naoClassificado)}</p></div>` : "");
@@ -736,13 +885,17 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     }
     const { ordenadas, sim, extraMensal } = quitacaoResumo();
     const porId = Object.fromEntries(sim.dividas.map(d => [d.id, d]));
+    const saldoReal = calcSaldoMensal(state.renda, state.despesas, state.dividas);
+    const primeiraNaoUrgenteId = (ordenadas.find(d => !d.urgente) || {}).id;
 
     el.innerHTML = ordenadas.map(d => {
       const s = porId[d.id];
       const quitacaoTxt = s && s.quitadoMes != null ? `quita em ${s.quitadoMes}º mês` : "sem previsão de quitação";
+      const badge = d.urgente ? '<span class="badge badge-warn">negocie primeiro</span>'
+        : (d.id === primeiraNaoUrgenteId ? '<span class="badge badge-ok">menor saldo primeiro</span>' : "");
       return `
       <div class="list-row">
-        <p class="grow"><b>${d.ordem}º</b> · ${d.nome} ${d.urgente ? '<span class="badge badge-warn">negocie primeiro</span>' : '<span class="badge badge-ok">menor saldo primeiro</span>'}
+        <p class="grow"><b>${d.ordem}º</b> · ${d.nome} ${badge}
           <span class="sub">${quitacaoTxt}</span></p>
         <p class="amt">${fmt(d.saldo)}</p>
       </div>`;
@@ -750,14 +903,35 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
 
     quitacaoCard.style.display = "block";
     const body = document.getElementById("quitacaoBody");
-    if (sim.travado) {
+    const totalParcelas = state.dividas.reduce((s, d) => s + (Number(d.parcela) || 0), 0);
+    if (saldoReal < 0) {
+      body.innerHTML = `<p>Seu orçamento está <b>${fmt(Math.abs(saldoReal))} negativo por mês</b> mesmo já contando as parcelas mínimas (${fmt(totalParcelas)}/mês) — ou seja, não há sobra de verdade: esse buraco costuma ser coberto pelo cheque especial, que cresce em vez de diminuir. ${sim.travado ? "" : `Só pagando exatamente as parcelas mínimas e usando o valor que cada dívida quitada libera para a próxima, elas ainda assim acabariam no <b>${sim.meses}º mês</b> — mas primeiro, feche esse déficit (reveja despesas na aba Classificar) para não continuar acumulando dívida nova enquanto isso.`}</p>`;
+    } else if (sim.travado) {
       body.innerHTML = `<p>Com a sobra atual (${fmt(extraMensal)}/mês), a quitação total passaria de 50 anos. Priorize negociar as dívidas marcadas acima ou aumentar a sobra mensal.</p>`;
     } else {
       body.innerHTML = `<p>Usando a sobra atual do seu orçamento (<b>${fmt(extraMensal)}/mês</b>), você fica livre de todas as dívidas em <b>${sim.meses}º mês</b>.</p>`;
     }
-    renderLineChart(document.getElementById("quitacaoChartWrap"),
-      sim.historico.map(h => ({ mes: h.mes, v: h.total })),
-      { label: "saldo total das dívidas ao longo do tempo", captionLeft: "Hoje: " + fmt(sim.historico[0].total), captionRight: "Mês " + sim.historico[sim.historico.length - 1].mes + ": " + fmt(sim.historico[sim.historico.length - 1].total) });
+
+    const chartWrap = document.getElementById("quitacaoChartWrap");
+    chartWrap.innerHTML = "";
+    ordenadas.forEach(d => {
+      const s = porId[d.id];
+      const row = document.createElement("div");
+      row.style.marginTop = "14px";
+      const titulo = document.createElement("p");
+      titulo.style.cssText = "font-size:13px;font-weight:700;margin-bottom:2px";
+      titulo.textContent = d.nome;
+      row.appendChild(titulo);
+      const mini = document.createElement("div");
+      row.appendChild(mini);
+      chartWrap.appendChild(row);
+      const serieDivida = sim.historico.map(h => ({ mes: h.mes, v: h.saldos[d.id] || 0 }));
+      renderBarChart(mini, serieDivida, {
+        label: "saldo de " + d.nome + " mês a mês",
+        captionLeft: "Hoje: " + fmt(d.saldo),
+        captionRight: s && s.quitadoMes != null ? "Quitada no " + s.quitadoMes + "º mês" : "sem previsão"
+      });
+    });
   }
 
   // ---------- Diagnóstico (Positivo / Zero / Negativo) ----------
@@ -821,13 +995,23 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   function renderPlanejamento() {
     const split = split503020(state.renda);
     const total = (Number(state.renda) || 0) || 1;
-    document.getElementById("splitBar").innerHTML = [
-      ["necessidades", split.necessidades, "var(--ink-solid)"],
-      ["desejos", split.desejos, "var(--warn-solid)"],
-      ["futuro", split.futuro, "var(--ok-solid)"]
-    ].map(([k, v, color]) => `<div class="split-seg" style="width:${(v / total) * 100}%;background:${color}">${Math.round((v / total) * 100)}%</div>`).join("");
-    document.getElementById("splitBody").innerHTML =
-      `Necessidades: <b>${fmt(split.necessidades)}</b> · Desejos: <b>${fmt(split.desejos)}</b> · Futuro: <b>${fmt(split.futuro)}</b>`;
+    renderSplitBar(document.getElementById("splitBar"), [
+      ["Necessidades", split.necessidades, "var(--ink-solid)", "var(--on-solid)"],
+      ["Desejos", split.desejos, "var(--warn-solid)", "var(--on-solid)"],
+      ["Futuro", split.futuro, "var(--ok-solid)", "var(--on-solid)"]
+    ], total);
+    const { totals: atuais, totalDespesas } = categoryTotals();
+    renderSplitBar(document.getElementById("splitBarAtual"), [
+      ["Necessidades", atuais.Necessidades, "var(--ink-solid)", "var(--on-solid)"],
+      ["Desejos", atuais.Desejos, "var(--warn-solid)", "var(--on-solid)"],
+      ["Futuro", atuais.Futuro, "var(--ok-solid)", "var(--on-solid)"]
+    ], totalDespesas || 1);
+    const splitByCat = { Necessidades: split.necessidades, Desejos: split.desejos, Futuro: split.futuro };
+    document.getElementById("splitBody").innerHTML = CATEGORIES.map(c => {
+      const atual = atuais[c] || 0, desejado = splitByCat[c], diff = atual - desejado;
+      const diffTxt = Math.abs(diff) < 0.5 ? "em linha com o ideal" : (diff > 0 ? `${fmt(diff)} acima do ideal` : `${fmt(-diff)} abaixo do ideal`);
+      return `<div class="list-row"><p class="grow">${c}<span class="sub">atual ${fmt(atual)} · desejado ${fmt(desejado)} · ${diffTxt}</span></p></div>`;
+    }).join("");
 
     const totals = { Necessidades: 0 };
     state.despesas.forEach(d => { if (state.classify[d.id] === "Necessidades") totals.Necessidades += Number(d.valor) || 0; });
@@ -847,38 +1031,95 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     }
 
     document.getElementById("investRate").value = state.investRate;
+    const horizonYears = Math.max(1, Number(state.investHorizonYears) || 5);
+    document.getElementById("investHorizon").value = horizonYears;
+    document.getElementById("investHorizonLabel").textContent = horizonYears + (horizonYears === 1 ? " ano" : " anos");
+    const investBig = document.getElementById("investBig");
     const investBody = document.getElementById("investBody");
     const investChartWrap = document.getElementById("investChartWrap");
-    if (!(Number(state.renda) > 0) || !metaReserva) {
-      investBody.textContent = "Preencha a renda e classifique despesas como \"Necessidades\" para ver uma estimativa.";
+    if (!(Number(state.renda) > 0) || !(split.futuro > 0)) {
+      investBig.textContent = "—";
+      investBody.textContent = "Preencha a renda para ver uma estimativa.";
       investChartWrap.innerHTML = "";
     } else {
-      const meses = mesesParaMeta(split.futuro, state.investRate, metaReserva);
-      investBody.innerHTML = `Investindo os <b>${fmt(split.futuro)}</b> do "Futuro" todo mês a <b>${Number(state.investRate) || 0}% ao ano</b>, você chega à meta de reserva (${fmt(metaReserva)}) em <b>${fmtMeses(meses)}</b>.`;
-      if (isFinite(meses) && meses > 0) {
-        const serie = investirSerie(split.futuro, state.investRate, meses);
-        renderLineChart(investChartWrap, serie.map(p => ({ mes: p.mes, v: p.saldo })),
-          { goal: metaReserva, label: "crescimento do investimento até a meta", captionLeft: "Mês 0", captionRight: "Mês " + meses + ": " + fmt(serie[serie.length - 1].saldo) });
-      } else {
-        investChartWrap.innerHTML = "";
-      }
+      const horizonMeses = horizonYears * 12;
+      const serie = investirSerie(split.futuro, state.investRate, horizonMeses);
+      const finalVal = serie[serie.length - 1].saldo;
+      investBig.textContent = fmt(finalVal);
+      investBody.innerHTML = `Investindo os <b>${fmt(split.futuro)}</b> do "Futuro" todo mês a <b>${Number(state.investRate) || 0}% ao ano</b> por <b>${horizonYears} ${horizonYears === 1 ? "ano" : "anos"}</b>, você chegaria a <b>${fmt(finalVal)}</b>.`;
+      renderLineChart(investChartWrap, serie.map(p => ({ mes: p.mes, v: p.saldo })),
+        { label: "crescimento do investimento", captionLeft: "Mês 0", captionRight: "Mês " + horizonMeses + ": " + fmt(finalVal) });
     }
 
     document.getElementById("metaNome").value = state.meta.nome;
     document.getElementById("metaCusto").value = state.meta.custo;
     document.getElementById("metaData").value = state.meta.data;
+    const metaCustoNum = Number(state.meta.custo) || 0;
     const porMes = metaPorPeriodo(state.meta.custo, state.meta.data);
-    document.getElementById("metaPorMes").textContent = porMes ? fmt(porMes) : "—";
+    const metaBig = document.getElementById("metaBig");
+    const metaBody = document.getElementById("metaBody");
+    const metaChartWrap = document.getElementById("metaChartWrap");
+    if (!porMes) {
+      metaBig.textContent = "—";
+      metaBody.textContent = "Preencha quanto custa e até quando para calcular.";
+      metaChartWrap.innerHTML = "";
+    } else {
+      metaBig.textContent = fmt(porMes) + "/mês";
+      const saldoAtual = calcSaldoMensal(state.renda, state.despesas, state.dividas);
+      const cabe = saldoAtual >= porMes - 0.005;
+      metaBody.innerHTML = cabe
+        ? `Separando <b>${fmt(porMes)}</b> por mês você chega lá no prazo. Seu saldo mensal atual (${fmt(saldoAtual)}) cobre essa separação.`
+        : `Separando <b>${fmt(porMes)}</b> por mês você chega lá no prazo, mas seu saldo mensal atual (<b>${fmt(saldoAtual)}</b>) não cobre esse valor — reveja despesas ou amplie o prazo.`;
+      const meses = Math.max(1, Math.round(metaCustoNum / porMes));
+      const serieMeta = [];
+      for (let m = 0; m <= meses; m++) serieMeta.push({ mes: m, v: Math.min(metaCustoNum, porMes * m) });
+      renderLineChart(metaChartWrap, serieMeta, { goal: metaCustoNum, label: "acúmulo até a meta", captionLeft: "Mês 0", captionRight: "Mês " + meses + ": " + fmt(metaCustoNum) });
+    }
+
+    document.getElementById("calcInicial").value = state.calc.inicial;
+    document.getElementById("calcAporte").value = state.calc.aporte;
+    document.getElementById("calcTaxa").value = state.calc.taxa;
+    document.getElementById("calcTaxaPeriodo").value = state.calc.taxaPeriodo;
+    const calcAnos = Math.max(1, Number(state.calc.tempoAnos) || 10);
+    document.getElementById("calcTempo").value = calcAnos;
+    document.getElementById("calcTempoLabel").textContent = calcAnos + (calcAnos === 1 ? " ano" : " anos");
+    const calcInicial = Number(state.calc.inicial) || 0;
+    const calcAporte = Number(state.calc.aporte) || 0;
+    const calcTaxaRaw = Number(state.calc.taxa) || 0;
+    const calcTaxaAnual = state.calc.taxaPeriodo === "mes" ? taxaMensalParaAnual(calcTaxaRaw) : calcTaxaRaw;
+    const calcBig = document.getElementById("calcBig");
+    const calcBody = document.getElementById("calcBody");
+    const calcChartWrap = document.getElementById("calcChartWrap");
+    if (!calcInicial && !calcAporte) {
+      calcBig.textContent = "—";
+      calcBody.textContent = "Preencha um valor inicial ou um aporte mensal para simular.";
+      calcChartWrap.innerHTML = "";
+    } else {
+      const calcMeses = calcAnos * 12;
+      const serieCalc = investirSerie(calcAporte, calcTaxaAnual, calcMeses, calcInicial);
+      const finalCalc = serieCalc[serieCalc.length - 1].saldo;
+      const totalAportado = calcInicial + calcAporte * calcMeses;
+      calcBig.textContent = fmt(finalCalc);
+      calcBody.innerHTML = `Começando com <b>${fmt(calcInicial)}</b> e aportando <b>${fmt(calcAporte)}</b> por mês a <b>${calcTaxaRaw}% ${state.calc.taxaPeriodo === "mes" ? "ao mês" : "ao ano"}</b> por <b>${calcAnos} ${calcAnos === 1 ? "ano" : "anos"}</b>, você chegaria a <b>${fmt(finalCalc)}</b> (${fmt(totalAportado)} aportados, ${fmt(Math.max(0, finalCalc - totalAportado))} em juros).`;
+      renderLineChart(calcChartWrap, serieCalc.map(p => ({ mes: p.mes, v: p.saldo })),
+        { label: "crescimento do investimento", captionLeft: "Mês 0: " + fmt(calcInicial), captionRight: "Mês " + calcMeses + ": " + fmt(finalCalc) });
+    }
   }
   document.getElementById("reserveMonths").addEventListener("change", e => { state.reserveMonths = e.target.value; save(); });
   document.getElementById("reservaGuardada").addEventListener("input", e => { state.reservaGuardada = e.target.value; save(); });
   document.getElementById("investRate").addEventListener("input", e => { state.investRate = e.target.value; save(); });
+  document.getElementById("investHorizon").addEventListener("input", e => { state.investHorizonYears = e.target.value; save(); });
   ["metaNome", "metaCusto", "metaData"].forEach(id => {
     document.getElementById(id).addEventListener("input", e => {
       const key = id.replace("meta", "").toLowerCase();
       state.meta[key] = e.target.value; save();
     });
   });
+  document.getElementById("calcInicial").addEventListener("input", e => { state.calc.inicial = e.target.value; save(); });
+  document.getElementById("calcAporte").addEventListener("input", e => { state.calc.aporte = e.target.value; save(); });
+  document.getElementById("calcTaxa").addEventListener("input", e => { state.calc.taxa = e.target.value; save(); });
+  document.getElementById("calcTaxaPeriodo").addEventListener("change", e => { state.calc.taxaPeriodo = e.target.value; save(); });
+  document.getElementById("calcTempo").addEventListener("input", e => { state.calc.tempoAnos = e.target.value; save(); });
 
   // ---------- Plano de 30 dias ----------
   document.querySelectorAll('[data-week]').forEach(cb => {
@@ -1547,7 +1788,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   });
   document.addEventListener("fullscreenchange", updateFsIcon);
 
-  wireValidation(["renda", "despValor", "divSaldo", "divParcela", "divParcelasQtd", "metaCusto", "investRate", "reservaGuardada"]);
+  wireValidation(["renda", "despValor", "divSaldo", "divParcela", "divParcelasQtd", "metaCusto", "investRate", "reservaGuardada", "calcInicial", "calcAporte", "calcTaxa"]);
   syncInputsFromState();
   renderAll();
 })();
