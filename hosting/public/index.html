@@ -551,18 +551,30 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     }
     return Object.assign(defaultState(), raw, { v: STORAGE_VERSION });
   }
+  // Marca se este dispositivo já salvou algum estado "de verdade" (edição do
+  // usuário, incluindo "Apagar meus dados"). Separado de STORAGE_KEY de
+  // propósito: testes feitos antes deste recurso existir já podem ter deixado
+  // um "airo.state" em branco salvo — sem essa marca dedicada, esse resto
+  // antigo seria lido como "usuário já usou o app" e o exemplo do Nick nunca
+  // apareceria.
+  const SEEDED_KEY = "airo.everSaved";
   function loadState() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw === null) return nickDemoState();
-      return migrate(JSON.parse(raw));
+      const everSaved = localStorage.getItem(SEEDED_KEY) !== null;
+      if (!everSaved) return nickDemoState();
+      return migrate(JSON.parse(localStorage.getItem(STORAGE_KEY)));
     } catch (e) { return defaultState(); }
   }
   let state = loadState();
   let persistTimer = null;
   function persist() {
     clearTimeout(persistTimer);
-    persistTimer = setTimeout(() => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {} }, 400);
+    persistTimer = setTimeout(() => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        localStorage.setItem(SEEDED_KEY, "1");
+      } catch (e) {}
+    }, 400);
   }
   function save() { persist(); renderAll(); }
 
