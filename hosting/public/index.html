@@ -407,6 +407,10 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
       <li><button type="button" id="planoDestaqueBtn"><span id="planoDestaqueBtnTxt"></span><span class="arrow">→</span></button></li>
     </ul>
   </div>
+  <div class="card" id="planoFilaCard" style="display:none">
+    <h3 id="planoFilaTitulo">Próximas dívidas na fila</h3>
+    <div id="planoFila"></div>
+  </div>
   <div class="card">
     <h3>Resumo em números</h3>
     <div class="stat-grid" id="planoStats"></div>
@@ -1274,7 +1278,7 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
         desc: "Sua situação está organizada — volte aqui sempre que a renda ou os gastos mudarem.", tab: "consciencia", btn: "Revisar meus dados" };
     }
 
-    return { saldo, temDados, temDividas, sim, totalDividas, primeiraDivida, primeiraDividaSim, maiorDesvioCat, maiorDesvioValor, metaReserva, rm, destaque };
+    return { saldo, temDados, temDividas, sim, ordenadas, totalDividas, primeiraDivida, primeiraDividaSim, maiorDesvioCat, maiorDesvioValor, metaReserva, rm, destaque };
   }
 
   function renderPlano() {
@@ -1293,6 +1297,28 @@ nav.bottom button.on .ico::after{content:"";position:absolute;left:50%;bottom:-7
     document.getElementById("planoDestaqueDesc").textContent = r.destaque.desc;
     document.getElementById("planoDestaqueBtnTxt").textContent = r.destaque.btn;
     document.getElementById("planoDestaqueBtn").onclick = () => switchTab(r.destaque.tab);
+
+    const filaCard = document.getElementById("planoFilaCard");
+    // Quando o destaque já é sobre uma dívida específica (negociar/acelerar), ela é
+    // a 1ª da fila — aqui mostramos só as próximas. Senão, mostra a fila inteira.
+    const jaDestacada = r.destaque.tab === "dividas" && r.ordenadas.length > 0;
+    const fila = jaDestacada ? r.ordenadas.slice(1) : r.ordenadas;
+    if (fila.length) {
+      filaCard.style.display = "block";
+      document.getElementById("planoFilaTitulo").textContent = jaDestacada ? "Próximas dívidas na fila" : "Minhas dívidas, em ordem";
+      const porId = Object.fromEntries((r.sim ? r.sim.dividas : []).map(d => [d.id, d]));
+      document.getElementById("planoFila").innerHTML = fila.map(d => {
+        const s = porId[d.id];
+        const quitacaoTxt = s && s.quitadoMes != null ? `quita no ${s.quitadoMes}º mês` : "sem previsão de quitação";
+        return `<div class="list-row">
+          <p class="grow"><b>${d.ordem}º</b> · ${d.nome} ${d.urgente ? '<span class="badge badge-warn">negocie primeiro</span>' : ""}
+            <span class="sub">${quitacaoTxt}</span></p>
+          <p class="amt">${fmt(d.saldo)}</p>
+        </div>`;
+      }).join("");
+    } else {
+      filaCard.style.display = "none";
+    }
 
     const dividasSub = !r.temDividas ? "nenhuma cadastrada"
       : (r.sim.travado ? "sem previsão de quitação" : "tudo quitado no " + r.sim.meses + "º mês");
