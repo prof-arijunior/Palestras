@@ -233,6 +233,7 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
   <div class="card" id="classifyList"><p class="muted">Cadastre despesas na aba Consciência primeiro.</p></div>
   <div class="card" id="classifyTotals" style="display:none">
     <h3>Totais por categoria</h3>
+    <div class="split-bar" id="classifyChart"></div>
     <div id="classifyTotalsBody"></div>
   </div>
 </section>
@@ -503,6 +504,38 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     return { v: STORAGE_VERSION, nome: "", renda: "", despesas: [], dividas: [], classify: {}, reserveMonths: "3",
       reservaGuardada: "", investRate: "10", meta: { nome: "", custo: "", data: "" }, weeks: {}, compromisso: { texto: "", data: "" } };
   }
+  // Dados de exemplo do Nick (personagem da palestra "O salário sumiu. E agora?"),
+  // usados só na primeiríssima abertura do app (nenhum dado salvo ainda), para a
+  // pessoa já ver o app funcionando em vez de uma tela em branco. É só um ponto de
+  // partida: editar ou apagar qualquer campo substitui o exemplo normalmente.
+  function nickDemoState() {
+    const s = defaultState();
+    s.nome = "Nick";
+    s.renda = "3000";
+    s.despesas = [
+      { id: "demo-moradia", nome: "Moradia", valor: "1150" },
+      { id: "demo-mercado", nome: "Alimentação e mercado", valor: "550" },
+      { id: "demo-transporte", nome: "Transporte", valor: "300" },
+      { id: "demo-celular", nome: "Celular e internet", valor: "120" },
+      { id: "demo-lazer", nome: "Lazer e delivery", valor: "380" },
+      { id: "demo-assinaturas", nome: "Assinaturas e outros", valor: "150" }
+    ];
+    s.dividas = [
+      { id: "demo-cartao", nome: "Cartão de crédito", saldo: "300", parcela: "80", parcelas: "", atraso: false, encargos: false, sazonal: false },
+      { id: "demo-celularparc", nome: "Celular parcelado", saldo: "400", parcela: "100", parcelas: "", atraso: false, encargos: false, sazonal: false },
+      { id: "demo-sofa", nome: "Sofá novo", saldo: "600", parcela: "120", parcelas: "", atraso: false, encargos: false, sazonal: false },
+      { id: "demo-curso", nome: "Curso online", saldo: "600", parcela: "100", parcelas: "", atraso: false, encargos: false, sazonal: false },
+      { id: "demo-emprestimo", nome: "Empréstimo pessoal", saldo: "1500", parcela: "150", parcelas: "", atraso: false, encargos: false, sazonal: false }
+    ];
+    // Segue o mesmo gabarito sugerido na palestra: moradia, mercado e transporte são
+    // Necessidades; celular, lazer e assinaturas são Desejos. Nada vai para "Futuro"
+    // de propósito — Futuro não é uma despesa, é o que sobra depois das outras duas.
+    s.classify = {
+      "demo-moradia": "Necessidades", "demo-mercado": "Necessidades", "demo-transporte": "Necessidades",
+      "demo-celular": "Desejos", "demo-lazer": "Desejos", "demo-assinaturas": "Desejos"
+    };
+    return s;
+  }
   function migrate(raw) {
     if (!raw || typeof raw !== "object") return defaultState();
     if (raw.v === STORAGE_VERSION) return raw;
@@ -519,8 +552,11 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     return Object.assign(defaultState(), raw, { v: STORAGE_VERSION });
   }
   function loadState() {
-    try { return migrate(JSON.parse(localStorage.getItem(STORAGE_KEY))); }
-    catch (e) { return defaultState(); }
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw === null) return nickDemoState();
+      return migrate(JSON.parse(raw));
+    } catch (e) { return defaultState(); }
   }
   let state = loadState();
   let persistTimer = null;
@@ -660,8 +696,21 @@ nav.bottom button.on{color:var(--ink);background:var(--surface-2)}
     const totals = { Necessidades: 0, Desejos: 0, Futuro: 0 };
     state.despesas.forEach(d => { const c = state.classify[d.id]; if (c) totals[c] += Number(d.valor) || 0; });
     document.getElementById("classifyTotals").style.display = "block";
+    const totalDespesas = state.despesas.reduce((s, d) => s + (Number(d.valor) || 0), 0) || 1;
+    const naoClassificado = Math.max(0, totalDespesas - (totals.Necessidades + totals.Desejos + totals.Futuro));
+    const segs = [
+      ["Necessidades", totals.Necessidades, "var(--ink-solid)", "var(--on-solid)"],
+      ["Desejos", totals.Desejos, "var(--warn-solid)", "var(--on-solid)"],
+      ["Futuro", totals.Futuro, "var(--ok-solid)", "var(--on-solid)"],
+      ["Não classificado", naoClassificado, "var(--line)", "var(--ink)"]
+    ].filter(([, v]) => v > 0.004);
+    document.getElementById("classifyChart").innerHTML = segs.map(([label, v, bg, fg]) => {
+      const pct = Math.round((v / totalDespesas) * 100);
+      return `<div class="split-seg" style="width:${(v / totalDespesas) * 100}%;background:${bg};color:${fg}" title="${label}: ${pct}%">${pct >= 8 ? pct + "%" : ""}</div>`;
+    }).join("");
     document.getElementById("classifyTotalsBody").innerHTML = CATEGORIES.map(c => `
-      <div class="list-row"><p class="grow">${c}</p><p class="amt">${fmt(totals[c])}</p></div>`).join("");
+      <div class="list-row"><p class="grow">${c}</p><p class="amt">${fmt(totals[c])}</p></div>`).join("")
+      + (naoClassificado > 0.004 ? `<div class="list-row"><p class="grow muted">Não classificado</p><p class="amt muted">${fmt(naoClassificado)}</p></div>` : "");
   }
 
   // ---------- Dívidas / prioridade / simulação de quitação ----------
